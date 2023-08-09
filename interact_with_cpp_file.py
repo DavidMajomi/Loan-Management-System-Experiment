@@ -1,6 +1,6 @@
 # Activate virtual environment
 # Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process 
-# project_env\scripts\activate
+# venv\scripts\activate
 
 from header_file import *
 from faker import Faker
