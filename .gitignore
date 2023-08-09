@@ -1,1 +1,8 @@
+#ignore all database files
+.db
+
+#ignore python virtual environment
 venv/
+
+#ignore Code Runner FIles
+tempCodeRunnerFile.py
