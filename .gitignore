@@ -6,3 +6,6 @@ venv/
 
 #ignore Code Runner FIles
 tempCodeRunnerFile.py
+
+#ignore executable files
+* .exe
