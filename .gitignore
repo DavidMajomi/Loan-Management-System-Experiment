@@ -1,5 +1,5 @@
 #ignore all database files
-.db
+*.db
 
 #ignore python virtual environment
 venv/
