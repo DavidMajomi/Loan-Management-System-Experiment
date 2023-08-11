@@ -8,4 +8,7 @@ venv/
 tempCodeRunnerFile.py
 
 #ignore executable files
-* .exe
+*.exe
+
+#ignore all csv files
+*.csv
