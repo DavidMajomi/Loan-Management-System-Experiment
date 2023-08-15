@@ -6,13 +6,13 @@ import sqlite3
 import subprocess
 from faker import Faker
 
-# c:\Users\David\Documents\GitHub\Loan-Management-System-Experiment
 STAND_ALONE_CPP_EXECUTABLE = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\just c++.exe"  
 MAIN_CPP_FILE = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\main.cpp"
 SQLITE3_DATABASE_PATH = 'C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sham_bam.db'
 SQLITE3_OBJECT_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.o"
 LIBRARY_CPP_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibrary.cpp"
 OUTPUT_DLL_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibrary.dll"  
+CPP_EXECUTABLE_FROM_PYTHON_PATH = "C:\\Users\\David\\Documents\\loanManagementSystem\\executable from python interface.exe"  
 
 class Loan:
     def __init__(self, loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, 
@@ -122,14 +122,13 @@ def display_dev_menu ():
 
 
 def add_loan_using_the_cpp_program():
-    executable = "C:\\Users\\David\\Documents\\loanManagementSystem\\executable_from_python_interface.exe"  
 
     # Compile the C++ program with sqlite object file (if needed)
-    compile_cpp_command = ["g++", MAIN_CPP_FILE, SQLITE3_OBJECT_FILE_PATH, "-o", executable] #original
+    compile_cpp_command = ["g++", MAIN_CPP_FILE, SQLITE3_OBJECT_FILE_PATH, "-o", CPP_EXECUTABLE_FROM_PYTHON_PATH] #original
     subprocess.run(compile_cpp_command, check=True)
     
     # Run the C++ application as a subprocess
-    cpp_process = subprocess.Popen([executable], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cpp_process = subprocess.Popen([CPP_EXECUTABLE_FROM_PYTHON_PATH], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # user_data
     request = '0'
@@ -208,14 +207,12 @@ def add_loan_using_the_cpp_program():
 
 
 def interact_cpp_dev_menu (dev_menu_response):
-    executable = "C:\\Users\\David\\Documents\\loanManagementSystem\\executable from python interface.exe"  
 
-    # Compile the C++ program with sqlite object file (if needed)
-    compile_cpp_command = ["g++", MAIN_CPP_FILE, SQLITE3_OBJECT_FILE_PATH, "-o", executable] #original
+    compile_cpp_command = ["g++", MAIN_CPP_FILE, SQLITE3_OBJECT_FILE_PATH, "-o", CPP_EXECUTABLE_FROM_PYTHON_PATH] #original
     subprocess.run(compile_cpp_command, check=True)
     
     # Run the C++ application as a subprocess
-    cpp_process = subprocess.Popen([executable], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cpp_process = subprocess.Popen([CPP_EXECUTABLE_FROM_PYTHON_PATH], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # this request variable below communicates with cpp menu on what function to run
     request = '1'
@@ -413,7 +410,7 @@ def search_for_loan_data_without_loan_id(loan_objects):
 def compile_cpp_alone():
     try:
         # Compile the C++ program with sqlite object file (if needed)
-        compile_cpp_command = ["g++", MAIN_CPP_FILE, SQLITE3_OBJECT_FILE_PATH, "-o", STAND_ALONE_CPP_EXECUTABLE] #original
+        compile_cpp_command = ["g++", MAIN_CPP_FILE, SQLITE3_OBJECT_FILE_PATH, "-o", STAND_ALONE_CPP_EXECUTABLE] 
         subprocess.run(compile_cpp_command, check=True)
     except:
         print(" Error compiling program. \n")
