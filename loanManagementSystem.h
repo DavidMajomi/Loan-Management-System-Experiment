@@ -10,6 +10,9 @@
 
 using namespace std;
 
+const char* DATABASE_NAME = "bam_bam.db";
+
+
 const unsigned short int MAX_CREDIT_SCORE = 850, MIN_CREDIT_SCORE = 300, MAX_MONTHLY_INCOME = 12000, MIN_MONTHLY_INCOME = 900;
 
 const double BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 2;
@@ -30,10 +33,11 @@ const double MIN_INTEREST_RATE = 0.58, MAX_LOAN_DURATION = 240, MIN_LOAN_DURATIO
 double calculateBestCreditMetrics();
 double calculateWorstCreditMetrics();
 
+
+
 class Loan
 {
 private:
-    int loanId;
     unsigned short int creditScore, duration;
     string userName;
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan, outstandingMonthlyDebtPaymentsPriorToLoan,
@@ -59,10 +63,6 @@ public:
     Loan(int values)
     {
 
-    }
-    void setLoanId (int id)
-    {
-        loanId = id;
     }
     void setCreditScore (int creditScoreValue)
     {
@@ -182,10 +182,10 @@ public:
     {
         return userName;
     }
-    int getLoanId () const
-    {
-        return loanId;
-    }
+    // int getLoanId () const
+    // {
+    //     return loanId;
+    // }
     int getCreditScore () const
     {
         return creditScore;
@@ -489,7 +489,6 @@ void readGeneratedData(ifstream& inputFile, vector <Loan>& loanAccounts, unsigne
             durationInMonthsInteger = convert_to_int(durationInMonths);
             loanAmonutRequestedDeciaml = convert_to_double(loanAmountRequested);
 
-            userAccount.setLoanId(count);
             userAccount.setUserName(userName);
             userAccount.setCreditScore(creditScoreInteger);
             userAccount.setMonthlyIncome(monthlyIncomeDecimal);
@@ -639,7 +638,6 @@ void addIndividualizedLoanDataFromPython (vector <Loan>& loanAccountsToAdd)
 
         Loan userAccount(count);
 
-        userAccount.setLoanId(count + 1);   // This needs to change to allow total loan id to be sent from python and then calculate this
         userAccount.setUserName(userName);
         userAccount.setCreditScore(creditScore);
         userAccount.setMonthlyIncome(monthlyIncomeDecimal);
@@ -679,7 +677,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
            adjustedLoanViabilityScore, lossGivenDefault;
     sqlite3* db;
-    int rc = sqlite3_open("sham_bam.db", &db);
+    int rc = sqlite3_open(DATABASE_NAME, &db);
 
     numberOfAddedLoanValues = loanAccountsToAdd.size();
 
@@ -787,8 +785,6 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         cout << endl;
         // cout << stringFinalSqlInsertStatement << endl;
 
-        // sql = "INSERT INTO users (name, credit_score) VALUES ('John Doe', 30)";
-        // insertToSql test = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount) VALUES ('test', 850, 12000.000000, 200000.000000, 0.000000, 0.000000, 20000.000000)";
 
         insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) VALUES (" + stringFinalSqlInsertStatement + ")"; 
 
@@ -842,7 +838,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 {
     sqlite3* db;
     int numberOfAddedLoanValues, creditScore, numMetricsToAdd;
-    int rc = sqlite3_open("bam_bam.db", &db);
+    int rc = sqlite3_open(DATABASE_NAME, &db);
     char charFinalSqlInsertStatement;
     const char* sqlInsertLine;
     const char* sql = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL, loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL, outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL)";

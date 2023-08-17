@@ -91,6 +91,30 @@ def menu():
     
     return user_menu_response
 
+def menu_for_server_client():
+    valid_inputs = False
+    
+    while (valid_inputs == False):
+        print(" Welcome to loan management system. Read and follow the instructions below to perform your operation. ", "\n")
+        
+        print(" To add a new loan, enter 1. ")
+        print(" To search for loan data enter 2.")
+        print(" To open dev menu, enter 3.")
+        
+        user_menu_response = input(" What would you like to do: ")
+        
+        min_options = 1
+        max_options = 3
+        
+        valid_inputs = validate_string_input_for_num_value(user_menu_response, max_options, min_options)
+        
+        if (valid_inputs is False):
+            print(" Data enteered is in invalid format. \n")
+    
+    user_menu_response = int(user_menu_response)
+    
+    return user_menu_response
+
 
 def display_dev_menu ():
     valid_inputs = False
@@ -119,6 +143,35 @@ def display_dev_menu ():
     print(dev_menu_response)
     
     return dev_menu_response
+
+
+def get_customer_data_from_cli(customer_data):
+    
+    user_name = "test baba"#input("Enter name in the form firstName Lastname: ")
+    # user_credit_score = input("Enter your Credit Score: ")
+    user_credit_score = "850"# str(user_credit_score)
+    # user_monthly_income = input("Enter your monthly income: ")
+    user_monthly_income = "12000"# str(user_monthly_income)
+    # user_financial_reserves = "200000"# input("Enter your financial reserves: ")
+    user_financial_reserves = "200000" # str(user_financial_reserves)
+    # user_debt_to_income_ratio = input("Enter your debt to income ratio: ")
+    user_debt_to_income_ratio = "1" # str(user_debt_to_income_ratio)
+    user_loan_amoumnt_requested = "20000" # str(user_loan_amoumnt_requested)
+    # loan_duration_to_cpp = input("Enter the duration of the loan: ")
+    user_loan_duration = "30" # str(loan_duration_to_cpp)
+    
+    customer_data = {
+        "user_name" : user_name,
+        "user_credit_score" : user_credit_score,
+        "user_monthly_income" : user_monthly_income,
+        "user_financial_reserves" : user_financial_reserves,
+        "user_debt_to_income_ratio" : user_debt_to_income_ratio,
+        "user_loan_amoumnt_requested" : user_loan_amoumnt_requested,
+        "user_loan_duration" : user_loan_duration
+    }
+    
+    
+    return customer_data
 
 
 def add_loan_using_the_cpp_program():
@@ -409,7 +462,7 @@ def search_for_loan_data_without_loan_id(loan_objects):
         
 def compile_cpp_alone():
     try:
-        # Compile the C++ program with sqlite object file (if needed)
+        # Compile the C++ program with sqlite object file (if needed) mostly for debugging
         compile_cpp_command = ["g++", MAIN_CPP_FILE, SQLITE3_OBJECT_FILE_PATH, "-o", STAND_ALONE_CPP_EXECUTABLE] 
         subprocess.run(compile_cpp_command, check=True)
     except:
@@ -427,6 +480,9 @@ def run_program_using_dll():
     
     if (initialMenuResponse == 1):
         devMenuResponse = cppLibrary.showDevMenuFromCpp()
+    else:
+        devMenuResponse = 0
+        
     
     if (devMenuResponse == 1):
         generate_data()

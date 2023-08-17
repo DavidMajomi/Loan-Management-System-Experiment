@@ -5,14 +5,27 @@
 #include <algorithm>
 #include "loanManagementSystem.h"
 
-// g++ -fPIC -shared -o loanManagementLibrary.dll loanManagementLibrary.cpp sqlite3.o
+// Use g++ -fPIC -shared -o loanManagementLibrary.dll loanManagementLibrary.cpp sqlite3.o
 
 using namespace std;
 
 
+struct UserData
+{
+    string userName;
+    int duration;
+    int creditScore;
+    int debtToIncomeRatioDecimal;
+    double monthlyIncomeDecimal;
+    double financialReservesDecimal;
+    double loanAmonutRequestedDeciaml;
+};
+
+
+
 void  fakeMain(unsigned short int initialResponse, unsigned short int devMenuResponse)
 {
-    int menuResponse,  devMenuResponse;
+    int menuResponse;
     ifstream inputfile;
     ofstream outputCsvFile;
     vector<Loan> loanAccounts, loanAccountsToAdd;
@@ -65,6 +78,25 @@ void  fakeMain(unsigned short int initialResponse, unsigned short int devMenuRes
 }
 
 
+void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <Loan>& loanAccountsToAdd)
+{
+    Loan userAccount(0);
+
+    userAccount.setUserName(tempUserData.userName);
+    userAccount.setCreditScore(tempUserData.creditScore);
+    userAccount.setMonthlyIncome(tempUserData.monthlyIncomeDecimal);
+    userAccount.setFinancialReserves(tempUserData.financialReservesDecimal);
+    userAccount.setDebtToIncomeRatio(tempUserData.debtToIncomeRatioDecimal);
+    userAccount.setLoanDuration(tempUserData.duration);
+    userAccount.setLoanAmount(tempUserData.loanAmonutRequestedDeciaml);
+    userAccount.calculateInterestForDefaultRisk();
+    userAccount.computeCreditData();
+
+
+    loanAccountsToAdd.push_back(userAccount);
+}
+
+
 extern "C"{
 
     int setInitialMenuResponse()
@@ -87,10 +119,66 @@ extern "C"{
     }
 
 
+    unsigned short int showMenuOutsideCpp()
+    {
+        unsigned short int menuResponse = menu();
+
+        return menuResponse;
+    }
+
+
     void getValuesFromPython(unsigned short int initialResponse, unsigned short int devMenuResponse)
     {
         fakeMain(initialResponse, devMenuResponse);
     }
+
+
+    void addIndividualizedDataToDb(UserData tempUserDataFromPython)
+    {
+        vector<Loan> loanAccountsToAdd;
+
+        addIndividualizedLoanDataFromPythonServer (tempUserDataFromPython, loanAccountsToAdd);
+        createDatabaseToAddUserLoanData (loanAccountsToAdd);
+    }
+
+    void readAndStoreGeneratedDataInDb(unsigned short int devMenuResponse)
+    {
+        ifstream inputfile;
+        vector<Loan> loanAccounts;
+
+        readGeneratedData(inputfile, loanAccounts, devMenuResponse);
+        storeGeneratedDataInDatabase(loanAccounts);
+
+        inputfile.close();
+    }
+
+
+
+    void readAndStoreGeneratedDataForAnalysis(unsigned short int devMenuResponse)
+    {
+        ifstream inputfile;
+        ofstream outputCsvFile;
+        vector<Loan> loanAccounts;
+
+        readGeneratedData(inputfile, loanAccounts, devMenuResponse);
+        outputFile (outputCsvFile, loanAccounts);
+
+
+        inputfile.close();
+        outputCsvFile.close();
+
+    }
+
+
+
+
+    // void getCustomerDataFromServer(UserData userDataFromPython, /*string user_name, int user_credit_score, int user_monthly_income, int user_financial_reserves, int user_debt_to_income_ratio,*/ int menu_response, int dev_menu_response, int search_menu_response)
+    // {
+    //     // UserData tempUser = {user_name, user_credit_score, user_monthly_income, user_financial_reserves, user_debt_to_income_ratio};
+
+
+
+    // }
 
 }
 
