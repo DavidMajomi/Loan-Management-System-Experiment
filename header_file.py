@@ -145,7 +145,7 @@ def display_dev_menu ():
     return dev_menu_response
 
 
-def get_customer_data_from_cli(customer_data):
+def get_customer_data_from_cli_for_server(customer_data):
     
     user_name = "test baba"#input("Enter name in the form firstName Lastname: ")
     # user_credit_score = input("Enter your Credit Score: ")

@@ -1,6 +1,6 @@
 import socket
 import json
-from header_file import menu_for_server_client, get_customer_data_from_cli, menu_to_search_for_loan, display_dev_menu
+from header_file import menu_for_server_client, get_customer_data_from_cli_for_server, menu_to_search_for_loan, display_dev_menu
 
 
 HEADER = 64
@@ -37,7 +37,7 @@ def get_customer_data_from_cli():
     menu_response = menu_for_server_client()
 
     customer_data = {}
-    customer_data = get_customer_data_from_cli(customer_data)
+    customer_data = get_customer_data_from_cli_for_server(customer_data)
 
     if (menu_response == 1):
         pass
@@ -60,7 +60,6 @@ def get_customer_data_from_cli():
 
 customer_data = get_customer_data_from_cli()
 
-# test_dict = dict (name = "Name", age = "36")
 
 json_data = json.dumps(customer_data)
 

@@ -9,7 +9,9 @@ from faker import Faker
 menu_response = menu()
 
 if (menu_response == 1):
-    add_loan_using_the_cpp_program()
+    customer_data = {}
+    customer_data = get_customer_data_from_cli_for_server(customer_data) #Resume here
+    add_loan_using_the_cpp_program(customer_data)
     
 elif (menu_response == 2):
     search_menu_response = menu_to_search_for_loan()
