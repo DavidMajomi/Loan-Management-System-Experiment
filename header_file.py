@@ -6,13 +6,25 @@ import sqlite3
 import subprocess
 from faker import Faker
 
+
+FORMAT = 'utf-8'
 STAND_ALONE_CPP_EXECUTABLE = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\just c++.exe"  
 MAIN_CPP_FILE = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\main.cpp"
 SQLITE3_DATABASE_PATH = 'C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sham_bam.db'
 SQLITE3_OBJECT_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.o"
 LIBRARY_CPP_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibrary.cpp"
 OUTPUT_DLL_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibrary.dll"  
+OUTPUT_DLL_FILE_FOR_SERVER_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementSeverLibrary2.dll"  
 CPP_EXECUTABLE_FROM_PYTHON_PATH = "C:\\Users\\David\\Documents\\loanManagementSystem\\executable from python interface.exe"  
+
+class UserData(ctypes.Structure):
+    _fields_ = [("user_name", ctypes.c_char_p),
+                ("user_credit_score", ctypes.c_short),
+                ("user_monthly_income", ctypes.c_double),
+                ("user_financial_reserves", ctypes.c_double),
+                ("user_debt_to_income_ratio", ctypes.c_double),
+                ("user_loan_amoumnt_requested", ctypes.c_double),
+                ("user_loan_duration", ctypes.c_int)]
 
 class Loan:
     def __init__(self, loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, 
@@ -91,6 +103,7 @@ def menu():
     
     return user_menu_response
 
+
 def menu_for_server_client():
     valid_inputs = False
     
@@ -145,7 +158,43 @@ def display_dev_menu ():
     return dev_menu_response
 
 
-def get_customer_data_from_cli_for_server(customer_data):
+def display_dev_menu_for_server_client():
+    valid_inputs = False
+    
+    while (valid_inputs is False):
+        
+        print(" This is dev menu for loan management system. Select from the options below what you would like to do. \n")
+
+        print("1.) Enter 1 to generate and store new data in database.")
+        print("2.) Enter 2 to perform data analysis on all csv generated data throughout the history of the program in csv file for data analysis.")
+        print("3.) Enter 3 to retrive all stored database values in csv file for data analysis. \n")
+
+        dev_menu_response = input(" What would you like to do: ")
+        
+        # Change these anytime you modify the number of available user options
+        min_options = 1         
+        max_options = 3
+        
+        valid_inputs = validate_string_input_for_num_value(dev_menu_response, max_options, min_options)
+        
+        if (valid_inputs is False):
+            print(" Data enteered is in invalid format. \n")
+
+    dev_menu_response = int(dev_menu_response)
+    
+    if (dev_menu_response == 1):
+        num_data_to_generate = input(" How much data would you like to generate (how many users do you want to generate) note cannot generate of 20 million users at a time: ")
+    else:
+        num_data_to_generate = None
+    
+    
+    
+    print(dev_menu_response)
+    
+    return dev_menu_response, num_data_to_generate
+
+
+def get_customer_data_from_cli_for_server():
     
     user_name = "test baba"#input("Enter name in the form firstName Lastname: ")
     # user_credit_score = input("Enter your Credit Score: ")
@@ -297,7 +346,7 @@ def interact_cpp_dev_menu (dev_menu_response):
     print("Errors for debugging: ", errors, "\n")
 
 
-def generate_data ():
+def generate_data (num_data_to_generate):
         
     fake = Faker()
 
@@ -308,7 +357,7 @@ def generate_data ():
     
     while (valid_inputs == False):
         
-        num_data_to_generate = input(" How much data would you like to generate (how many users do you want to generate) note cannot generate of 20 million users at a time: ")
+        
         
         min_options = 0
         max_options = 20000000
@@ -347,9 +396,44 @@ def generate_data ():
         writer.writerow(loan_data_header)
         writer.writerows(loan_data)
     
-    print(" Loan data has been written successfully.")
+    # print(" Loan data has been written successfully.")
 
+
+def menu_to_search_for_loan_from_server():
+    valid_inputs = False
     
+    while (valid_inputs == False):
+        print(" This is search for loan data menu. \n")
+        print(".1) If you have your loan id enter 1")
+        print(".2) If you do not have your loan id, enter 2 ")
+        
+        user_response = input(" What is your response: ")
+        
+        min_options = 1
+        max_options = 2
+        
+        valid_inputs = validate_string_input_for_num_value(user_response, max_options, min_options)
+        
+        if (valid_inputs is False):
+            print(" Data enteered is in invalid format. \n")
+            
+    user_response = int(user_response)
+    
+    if (user_response == 1):
+        user_has_loan_id = True
+        loan_id = input("Enter Loan ID: ")
+        
+    elif (user_response == 2):
+        user_has_loan_id = False
+        loan_id = None
+        
+    search_menu_response_data = {"user_has_loan_id" : user_has_loan_id, 
+                            "loan_id" : loan_id
+                            }
+    
+    return user_has_loan_id, search_menu_response_data
+
+
 def menu_to_search_for_loan():
     valid_inputs = False
     
@@ -406,6 +490,74 @@ def search_for_loan_data_given_loan_id(single_loan_detils):
         conn.close()
         
         return single_loan_detils
+    
+    
+def search_for_loan_data_given_loan_id_from_server(loan_id):
+    operation_state_data = {
+        "successful_search" : False,
+        "found_user_data" : False,
+        "error_searching_db" : False,
+        "sqlite_error_value" : None
+    }
+    
+    try:
+        # Connect to the SQLite database
+        conn = sqlite3.connect(SQLITE3_DATABASE_PATH)
+        cursor = conn.cursor()
+
+        # Replace 'your_table' with the name of your table and 'primary_key_column' with the name of the primary key column
+        cursor.execute("SELECT * FROM users WHERE Loan_id = ?", (loan_id,))
+
+        # Fetch the result (should be a single row if primary key is unique)
+        row = cursor.fetchone()
+
+        # If the row is not None, print or process the data
+        if row:
+            operation_state_data["successful_search"] = True
+            operation_state_data["found_user_data"] = True
+            # print("Row found:")
+            # print(row, "\n")
+            (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) = row
+            # print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
+            
+            user_accessible_db_data = {
+                "loan_id" : loan_id,
+                "user_name" : user_name,
+                "credit_score" : credit_score,
+                "monthly_income" : monthly_income,
+                "financial_reserves" : financial_reserves,
+                "debt_to_income_ratio" : debt_to_income_ratio,
+                "loan_duration_left" : loan_duration,
+                "requested_loan_amount" : requested_loan_amount,
+                "monthly_interest_rates" : monthly_interest_rates,
+                "yearly_interst_rate" : yearly_interst_rate
+                
+                # "loss_given_default" : loss_given_default,
+                # "recovery_rate" : recovery_rate,
+                # "outstanding_monthly_debt_payments_to_satisfy_loan" : outstanding_monthly_debt_payments_to_satisfy_loan,
+                # "default_risk_score" : default_risk_score,
+                # "loan_viability_score" : loan_viability_score,
+                # "adjusted_loan_viability_score" : adjusted_loan_viability_score
+            }
+
+        else:
+            operation_state_data["successful_search"] = True
+            operation_state_data["found_user_data"] = False
+            # print("Row not found.")
+    except sqlite3.Error as e:
+        operation_state_data["error_searching_db"] = True
+        operation_state_data["sqlite_error_value"] = e
+        
+        print("Error:", e)
+        
+    finally:
+        # Close the cursor and the connection
+        cursor.close()
+        conn.close()
+        
+        
+        return operation_state_data, user_accessible_db_data
+
 
 
 def search_for_loan_data_without_loan_id(loan_objects):
@@ -488,4 +640,57 @@ def run_program_using_dll():
         generate_data()
             
     cppLibrary.getValuesFromPython(initialMenuResponse, devMenuResponse)
+    
+    
+def compile_dll_for_server():
+    compile_commands = "g++ -fPIC -shared -o"
+    
+    complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH + " " + SQLITE3_OBJECT_FILE_PATH
+    subprocess.run(complete_command_instruction, check=True)
+    
+    
+def use_cpp_from_server(recieved_data, cpp_library):
+    data_to_send_to_client = {
+        
+    }
+    user_data = recieved_data["customer_data"]
+    instructions = recieved_data["instructions"]
+    
+    print(user_data)
+    print(" On cpp server side")
+    
+    # print(f" User Monthly income type = {type(user_data['user_monthly_income'])}")
+    
+    menu_response = instructions["menu_response"]
+    dev_menu_response= instructions["dev_menu_response"]
+    search_menu_response = instructions["search_menu_response"]
+    
+    if (menu_response == 1): # Add individualized loan using data
+        data_to_cpp = UserData(user_data['user_name'].encode(FORMAT), int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), 
+                    float(user_data['user_debt_to_income_ratio']), float(user_data['user_loan_amoumnt_requested']), int(user_data['user_loan_duration']))
+        
+        cpp_library.addIndividualizedDataToDb(data_to_cpp)
+        
+    elif (menu_response == 2):
+        
+        if (user_data["user_has_loan_id"] == False):
+            search_for_loan_operation_state, recovered_db_data = search_for_loan_data_given_loan_id_from_server(user_data["user_has_loan_id"])
+        else:
+            pass
+            # search_for_loan_data_given_loan_id_from_server(user["user_loan_id"])
+            
+    elif (menu_response == 3):
+    
+        if (instructions["generate_data_for_db"] == True):
+            generate_data(instructions["num_data_to_generate"])
+            cpp_library.readAndStoreGeneratedDataInDb(instructions["dev_menu_response"])
+            
+        elif (dev_menu_response == 2):
+            instructions["perform_data_analysis_on_all_generated_csv_data"] = True
+            cpp_library.readAndStoreGeneratedDataForAnalysis(instructions["dev_menu_response"])
+        elif (dev_menu_response == 3):
+            instructions["store_all_db_data_for_external_analysis"] = True
+        
+        
+    print("Done")
     

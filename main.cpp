@@ -45,7 +45,8 @@ int main()
         }
         else if (devMenuResponse == 2) // read and output data for analysis in csv format
         {
-            cout << " This is perform data analysis from csv file. " << endl;
+            // cout << " This is perform data analysis from csv file. " << endl;
+            outputCsvFile.open("processedLoanData.csv");
             readGeneratedData(inputfile, loanAccounts, devMenuResponse);
             outputFile (outputCsvFile, loanAccounts);
         }
