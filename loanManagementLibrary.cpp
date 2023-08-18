@@ -12,13 +12,13 @@ using namespace std;
 
 struct UserData
 {
-    string userName;
-    int duration;
+    char *userName;
     int creditScore;
-    int debtToIncomeRatioDecimal;
     double monthlyIncomeDecimal;
     double financialReservesDecimal;
+    double debtToIncomeRatioDecimal;
     double loanAmonutRequestedDeciaml;
+    int duration;
 };
 
 
@@ -80,7 +80,7 @@ void  fakeMain(unsigned short int initialResponse, unsigned short int devMenuRes
 
 void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <Loan>& loanAccountsToAdd)
 {
-    Loan userAccount(0);
+    Loan userAccount(1);
 
     userAccount.setUserName(tempUserData.userName);
     userAccount.setCreditScore(tempUserData.creditScore);
@@ -137,9 +137,14 @@ extern "C"{
     {
         vector<Loan> loanAccountsToAdd;
 
+        cout << " Got data. " << endl;
+        cout << tempUserDataFromPython.monthlyIncomeDecimal;
+        cout << endl;
+
         addIndividualizedLoanDataFromPythonServer (tempUserDataFromPython, loanAccountsToAdd);
         createDatabaseToAddUserLoanData (loanAccountsToAdd);
     }
+    
 
     void readAndStoreGeneratedDataInDb(unsigned short int devMenuResponse)
     {
@@ -151,7 +156,6 @@ extern "C"{
 
         inputfile.close();
     }
-
 
 
     void readAndStoreGeneratedDataForAnalysis(unsigned short int devMenuResponse)
@@ -169,16 +173,6 @@ extern "C"{
 
     }
 
-
-
-
-    // void getCustomerDataFromServer(UserData userDataFromPython, /*string user_name, int user_credit_score, int user_monthly_income, int user_financial_reserves, int user_debt_to_income_ratio,*/ int menu_response, int dev_menu_response, int search_menu_response)
-    // {
-    //     // UserData tempUser = {user_name, user_credit_score, user_monthly_income, user_financial_reserves, user_debt_to_income_ratio};
-
-
-
-    // }
 
 }
 
