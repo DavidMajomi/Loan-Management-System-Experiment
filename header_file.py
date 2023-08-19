@@ -13,8 +13,9 @@ MAIN_CPP_FILE = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Exp
 SQLITE3_DATABASE_PATH = 'C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sham_bam.db'
 SQLITE3_OBJECT_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.o"
 LIBRARY_CPP_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibrary.cpp"
+LIBRARY_CPP_FILE_PATH_FOR_SERVER = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibraryForServer.cpp"
 OUTPUT_DLL_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibrary.dll"  
-OUTPUT_DLL_FILE_FOR_SERVER_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementSeverLibrary2.dll"  
+OUTPUT_DLL_FILE_FOR_SERVER_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementSeverLibrary.dll"  
 CPP_EXECUTABLE_FROM_PYTHON_PATH = "C:\\Users\\David\\Documents\\loanManagementSystem\\executable from python interface.exe"  
 
 class UserData(ctypes.Structure):
@@ -645,14 +646,12 @@ def run_program_using_dll():
 def compile_dll_for_server():
     compile_commands = "g++ -fPIC -shared -o"
     
-    complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH + " " + SQLITE3_OBJECT_FILE_PATH
+    complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH_FOR_SERVER + " " + SQLITE3_OBJECT_FILE_PATH
     subprocess.run(complete_command_instruction, check=True)
     
     
 def use_cpp_from_server(recieved_data, cpp_library):
-    data_to_send_to_client = {
-        
-    }
+    data_to_send_to_client = {}
     user_data = recieved_data["customer_data"]
     instructions = recieved_data["instructions"]
     
@@ -683,11 +682,11 @@ def use_cpp_from_server(recieved_data, cpp_library):
     
         if (instructions["generate_data_for_db"] == True):
             generate_data(instructions["num_data_to_generate"])
-            cpp_library.readAndStoreGeneratedDataInDb(instructions["dev_menu_response"])
+            error_opening_file_to_store_generated_data = cpp_library.readAndStoreGeneratedDataInDb(instructions["dev_menu_response"])
             
         elif (dev_menu_response == 2):
             instructions["perform_data_analysis_on_all_generated_csv_data"] = True
-            cpp_library.readAndStoreGeneratedDataForAnalysis(instructions["dev_menu_response"])
+            error_opening_file = cpp_library.readAndStoreGeneratedDataForAnalysis(instructions["dev_menu_response"])
         elif (dev_menu_response == 3):
             instructions["store_all_db_data_for_external_analysis"] = True
         

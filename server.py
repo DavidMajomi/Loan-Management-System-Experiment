@@ -14,7 +14,7 @@ ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"
 FORMAT = 'utf-8'
 
-OUTPUT_DLL_FILE_FOR_SERVER_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementSeverLibrary2.dll"  
+OUTPUT_DLL_FILE_FOR_SERVER_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementSeverLibrary.dll"  
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
