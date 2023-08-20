@@ -5,6 +5,7 @@ import random
 import sqlite3
 import subprocess
 from faker import Faker
+from colorama import Fore
 
 
 FORMAT = 'utf-8'
@@ -84,7 +85,7 @@ def menu():
     valid_inputs = False
     
     while (valid_inputs == False):
-        print(" Welcome to loan management system. Read and follow the instructions below to perform your operation. ", "\n")
+        print(" Welcome to loan management system. Read and follow the recieved_instructions below to perform your operation. ", "\n")
         
         print(" To add a new loan, enter 1. ")
         print(" To search for loan data enter 2.")
@@ -110,7 +111,7 @@ def menu_for_server_client():
     valid_inputs = False
     
     while (valid_inputs == False):
-        print(" Welcome to loan management system. Read and follow the instructions below to perform your operation. ", "\n")
+        print(" Welcome to loan management system. Read and follow the recieved_instructions below to perform your operation. ", "\n")
         
         print(" To add a new loan, enter 1. ")
         print(" To search for loan data enter 2.")
@@ -511,7 +512,7 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
         "debt_to_income_ratio" : None,
         "loan_duration_left" : None,
         "requested_loan_amount" : None,
-        "monthly_interest_rates" : None,
+        "monthly_interest_rate" : None,
         "yearly_interst_rate" : None
         
     }
@@ -534,7 +535,7 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             # print("Row found:")
             # print(row, "\n")
             (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) = row
-            print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
+            # print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
             
             retrieved_user_data = {
                 "loan_id" : loan_id,
@@ -555,7 +556,7 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
                 # "loan_viability_score" : loan_viability_score,
                 # "adjusted_loan_viability_score" : adjusted_loan_viability_score
             }
-            print(f" print loan id {loan_id}")
+            # print(f" print loan id {loan_id}")
             
             user_accessible_db_data.update(retrieved_user_data)
 
@@ -568,7 +569,7 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
         operation_state_data["error_searching_db"] = True
         operation_state_data["sqlite_error_value"] = str(e)
         
-        print("Error:", e)
+        # print("Error:", e)
         
     finally:
         # Close the cursor and the connection
@@ -577,7 +578,6 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
         
         
     return operation_state_data, user_accessible_db_data
-
 
 
 def search_for_loan_data_without_loan_id(loan_objects):
@@ -669,9 +669,43 @@ def compile_dll_for_server():
     subprocess.run(complete_command_instruction, check=True)
     
     
+def display_single_retreved_data(retrieved_user_data):
+    print("Loan id: ", retrieved_user_data['loan_id'])
+    print("Your Fullname: ", retrieved_user_data['user_name'])
+    print("Your Credit Score: ", retrieved_user_data['credit_score'])
+    print("Your Stated Monhtly Income: $", retrieved_user_data['monthly_income'])
+    print("Your stated Financial Reserves Valuation: $", retrieved_user_data['financial_reserves'])
+    print("Your provided debt to income ratio:", retrieved_user_data['debt_to_income_ratio'])
+    print("Your requested Loan Duration is", retrieved_user_data['loan_duration_left'], "months")
+    print("Your requested Loan Amount: $", retrieved_user_data['requested_loan_amount'])
+    print("Your monthly interest rate:", retrieved_user_data['monthly_interest_rate'], "%")
+    print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "% \n")
+ 
+
+def dev_menu_response(instructions, operation_state):
+    if (instructions["dev_menu_response"] == 1):
+        if (operation_state["error_opening_file_to_store_generated_data"] is False):
+            print(Fore.Green + " Generated Data Successfully")
+        else:
+            print(Fore.RED + " Failed to generate data.")
+        # instructions["num_data_to_generate"] = num_data_to_generate
+    elif (instructions["dev_menu_response"] == 2):
+        if (instructions["error_opening_file_to_store_analyzed_data"] is False):
+                print(Fore.Green + " Analyzed Data Successfully")
+        else:
+            print(Fore.RED + " Failed to analyze data.")
+                
+    elif (instructions["dev_menu_response"] == 3):
+        
+        if (operation_state["error_getting_data_from_db_to_analyxe"] is False):
+                print(Fore.Green + " Analyzed Data Successfully")
+        else:
+            print(Fore.RED + " Failed to analyze data.")
+    
+    
 def use_cpp_from_server(recieved_data, cpp_library):
     user_data = recieved_data["customer_data"]
-    instructions = recieved_data["instructions"]
+    recieved_instructions = recieved_data["instructions"]
     
     operation_state_to_return = {
         "added_user_data_successfully" : False,
@@ -680,7 +714,8 @@ def use_cpp_from_server(recieved_data, cpp_library):
         "found_user_data" : False,
         "error_searching_db" : False,
         "sqlite_error_value" : None,
-        "error_opening_file_to_store_analyzed_data" : False
+        "error_opening_file_to_store_analyzed_data" : False,
+        "error_getting_data_from_db_to_analyxe" : False
     }
     
     retrieved_user_data_to_return = {
@@ -692,7 +727,7 @@ def use_cpp_from_server(recieved_data, cpp_library):
         "debt_to_income_ratio" : None,
         "loan_duration_left" : None,
         "requested_loan_amount" : None,
-        "monthly_interest_rates" : None,
+        "monthly_interest_rate" : None,
         "yearly_interst_rate" : None
     }
     
@@ -702,9 +737,9 @@ def use_cpp_from_server(recieved_data, cpp_library):
     
     # print(f" User Monthly income type = {type(user_data['user_monthly_income'])}")
     
-    menu_response = instructions["menu_response"]
-    dev_menu_response= instructions["dev_menu_response"]
-    search_menu_response = instructions["search_menu_response"]
+    menu_response = recieved_instructions["menu_response"]
+    dev_menu_response= recieved_instructions["dev_menu_response"]
+    search_menu_response = recieved_instructions["search_menu_response"]
     
     if (menu_response == 1): # Add individualized loan using data
         data_to_cpp = UserData(user_data['user_name'].encode(FORMAT), int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), 
@@ -712,11 +747,14 @@ def use_cpp_from_server(recieved_data, cpp_library):
         
         cpp_library.addIndividualizedDataToDb(data_to_cpp)
         
+        operation_state_to_return["added_user_data_successfully"] = True    # Edit to add validation to the cppLibrary  function above
+        
+        
     elif (menu_response == 2):
         
         if (user_data["user_has_loan_id"] == True):
             search_for_loan_operation_state, recovered_db_data = search_for_loan_data_given_loan_id_from_server(int(user_data["user_loan_id"]))
-            print(f"recovered data = {recovered_db_data}")
+            # print(f"recovered data = {recovered_db_data}")
             
             retrieved_user_data_to_return.update(recovered_db_data)
             operation_state_to_return.update(search_for_loan_operation_state)
@@ -726,16 +764,16 @@ def use_cpp_from_server(recieved_data, cpp_library):
             
     elif (menu_response == 3):
     
-        if (instructions["generate_data_for_db"] == True):
-            generate_data(instructions["num_data_to_generate"])
-            operation_state_to_return["error_opening_file_to_store_generated_data"] = cpp_library.readAndStoreGeneratedDataInDb(instructions["dev_menu_response"])
+        if (recieved_instructions["generate_data_for_db"] == True):
+            generate_data(recieved_instructions["num_data_to_generate"])
+            operation_state_to_return["error_opening_file_to_store_generated_data"] = cpp_library.readAndStoreGeneratedDataInDb(recieved_instructions["dev_menu_response"])
             
         elif (dev_menu_response == 2):
-            instructions["perform_data_analysis_on_all_generated_csv_data"] = True
-            operation_state_to_return["error_opening_file_to_store_analyzed_data"] = cpp_library.readAndStoreGeneratedDataForAnalysis(instructions["dev_menu_response"])
+            recieved_instructions["perform_data_analysis_on_all_generated_csv_data"] = True
+            operation_state_to_return["error_opening_file_to_store_analyzed_data"] = cpp_library.readAndStoreGeneratedDataForAnalysis(recieved_instructions["dev_menu_response"])
         elif (dev_menu_response == 3):
-            instructions["store_all_db_data_for_external_analysis"] = True
-            
+            # recieved_instructions["store_all_db_data_for_external_analysis"] = True
+            operation_state_to_return["error_getting_data_from_db_to_analyxe"] = True # Place holder for cpp program baseed response
             
             
     data_to_send_Back_to_client = {

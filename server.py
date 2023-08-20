@@ -31,6 +31,7 @@ def handle_client(conn, addr, cpp_library):
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
             if msg == DISCONNECT_MESSAGE:
+                conn.send(" Disconnected Successfully".encode(FORMAT))
                 connected = False
                 # print("\n")
             else:
@@ -38,9 +39,9 @@ def handle_client(conn, addr, cpp_library):
                 data_to_send_to_client = use_cpp_from_server(data_to_use, cpp_library)
                 data_to_return = json.dumps(data_to_send_to_client, indent = 2)
                 conn.send(data_to_return.encode(FORMAT))
+                conn.send("Message Recieved".encode(FORMAT))
             
             # print(f'[{addr}] {msg}')
-            conn.send("Message Recieved".encode(FORMAT))
         
         
     conn.close()
