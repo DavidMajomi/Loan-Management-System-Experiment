@@ -42,9 +42,6 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 
 
 extern "C"{
-
-    
-
     void addIndividualizedDataToDb(UserData tempUserDataFromPython)
     {
         vector<Loan> loanAccountsToAdd;

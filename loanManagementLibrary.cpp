@@ -160,9 +160,18 @@ extern "C"{
 
     void readAndStoreGeneratedDataForAnalysis(unsigned short int devMenuResponse)
     {
+        bool fileOpeningError = false;
         ifstream inputfile;
         ofstream outputCsvFile;
         vector<Loan> loanAccounts;
+
+        outputCsvFile.open("processedLoanData.csv");
+
+        if (outputCsvFile.fail())
+        {
+            cout << " Output File Opening Error. " << endl;
+            exit(1);
+        }
 
         readGeneratedData(inputfile, loanAccounts, devMenuResponse);
         outputFile (outputCsvFile, loanAccounts);

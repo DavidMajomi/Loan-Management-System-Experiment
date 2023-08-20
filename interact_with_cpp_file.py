@@ -11,7 +11,7 @@ menu_response = menu()
 if (menu_response == 1):
     customer_data = {}
     customer_data = get_customer_data_from_cli_for_server(customer_data) #Resume here
-    add_loan_using_the_cpp_program(customer_data)
+    add_loan_using_the_cpp_program()
     
 elif (menu_response == 2):
     search_menu_response = menu_to_search_for_loan()
@@ -29,7 +29,8 @@ elif menu_response == 3:
     dev_menu_response = display_dev_menu()
     
     if (dev_menu_response == 1):
-        generate_data ()
+        num_data_to_generate = input(" How much data would you like to generate (how many users do you want to generate) note cannot generate of 20 million users at a time: ")
+        generate_data (num_data_to_generate)
     elif (dev_menu_response == 2):
         interact_cpp_dev_menu (dev_menu_response)
     elif (dev_menu_response == 3):

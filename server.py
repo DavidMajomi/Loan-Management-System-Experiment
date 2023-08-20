@@ -34,10 +34,12 @@ def handle_client(conn, addr, cpp_library):
                 connected = False
                 # print("\n")
             else:
-                data_to_send = json.loads(msg)
-                use_cpp_from_server(data_to_send, cpp_library)
+                data_to_use = json.loads(msg)
+                data_to_send_to_client = use_cpp_from_server(data_to_use, cpp_library)
+                data_to_return = json.dumps(data_to_send_to_client, indent = 2)
+                conn.send(data_to_return.encode(FORMAT))
             
-            print(f'[{addr}] {msg}')
+            # print(f'[{addr}] {msg}')
             conn.send("Message Recieved".encode(FORMAT))
         
         
