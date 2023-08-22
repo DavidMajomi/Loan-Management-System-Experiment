@@ -742,6 +742,9 @@ def use_cpp_from_server(recieved_data, cpp_library):
     search_menu_response = recieved_instructions["search_menu_response"]
     
     if (menu_response == 1): # Add individualized loan using data
+        print(" In server backend")
+        print(f" Thi is user data before db {user_data['user_name']}")
+        
         data_to_cpp = UserData(user_data['user_name'].encode(FORMAT), int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), 
                     float(user_data['user_debt_to_income_ratio']), float(user_data['user_loan_amoumnt_requested']), int(user_data['user_loan_duration']))
         
