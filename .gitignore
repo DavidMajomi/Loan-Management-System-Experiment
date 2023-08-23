@@ -1,16 +1,19 @@
-#ignore all database files
+# Ignore all database files
 *.db
 
-#ignore python virtual environment
+# Ignore python virtual environment
 venv/
 
-#ignore Code Runner FIle
+# Ignore Code Runner FIle
 tempCodeRunnerFile.py
 
-#ignore executable files
+# Ignore executable files
 *.exe
 
-#ignore all csv files
+# Ignore all csv files
 *.csv
+
+# Ignore all pycache files
+ *. pyc
 
 interact_with_cpp_file.py
