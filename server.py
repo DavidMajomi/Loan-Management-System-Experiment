@@ -5,7 +5,8 @@ import threading
 from header_file import use_cpp_from_server, compile_dll_for_server
 # from header_file import run_program_using_dll
 
-COMPILE_FOR_DEBUGGING = True
+DEBUGGING = True
+COMPILE_FOR_DEBUGGING = DEBUGGING
 
 HEADER = 64
 PORT = 5050

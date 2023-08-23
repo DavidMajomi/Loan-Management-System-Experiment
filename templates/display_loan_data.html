@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+    <p>Added Loan Data Successfully</p>
+    <p>Your Fullname: {{ customer_data['user_name'] }}</p>
+    <p>Your Credit Score: {{ customer_data['user_credit_score'] }}</p>
+    <p>Your Stated Monhtly Income: $ {{ customer_data['user_monthly_income'] }}</p>
+    <p>Your stated Financial Reserves Valuation: $ {{ customer_data['user_financial_reserves'] }}</p>
+    <p>Your requested Loan Duration is: {{ customer_data['user_loan_duration'] }} months</p>
+    <p>Your provided debt to income ratio: {{ customer_data['user_debt_to_income_ratio'] }}</p>
+    <p>Your requested Loan Amount: $ {{ customer_data['user_loan_amoumnt_requested'] }}</p>
+{% endblock %}
+
+

@@ -284,7 +284,7 @@ double Loan::calculateDefaultRisk ()  // function not needed now since calc inte
 
 
 // When minimizing inefficiencies in this programme, initialize the credit metrics instead of assignning them values after decleration
-void Loan::simple_set_credit_metrics()
+void Loan::simple_set_credit_metrics ()
 {
     normalizedCreditScore =  normalizeScore(creditScore, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
     normalizedDuration = normalizeScore(duration, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
@@ -390,7 +390,7 @@ int devMenu ()
 }
 
 
-int menu()
+int menu ()
 {
     unsigned short int minPossibleUserResponseValue = 1, maxPossibleUserResponseValue = 3, intMenuResponse;
     bool validResponse = false;
@@ -442,7 +442,7 @@ double convert_to_double (string valueToConvert)
 }
 
 
-void readGeneratedData(ifstream& inputFile, vector <Loan>& loanAccounts, unsigned short int devMenuResponse)
+void readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsigned short int devMenuResponse)
 {
     int count = 0, values, creditScoreInteger, durationInMonthsInteger;
     double monthlyIncomeDecimal, financialReservesDecimal, debtToIncomeRatioDecimal, loanAmonutRequestedDeciaml;
@@ -515,6 +515,7 @@ void outputFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
     int numLoanAccounts;
 
     outputCsvFile.open("processedLoanData.csv");
+
 
     if (outputCsvFile.fail())
     {

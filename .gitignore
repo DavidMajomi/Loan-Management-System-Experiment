@@ -4,7 +4,7 @@
 #ignore python virtual environment
 venv/
 
-#ignore Code Runner FIles
+#ignore Code Runner FIle
 tempCodeRunnerFile.py
 
 #ignore executable files
@@ -12,3 +12,5 @@ tempCodeRunnerFile.py
 
 #ignore all csv files
 *.csv
+
+interact_with_cpp_file.py

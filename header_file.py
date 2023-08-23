@@ -783,8 +783,6 @@ def use_cpp_from_server(recieved_data, cpp_library):
         "operation_state_to_return" : operation_state_to_return,
         "retrieved_user_data_to_return" : retrieved_user_data_to_return
     }
-    
-
         
     print("Done")
     return data_to_send_Back_to_client
