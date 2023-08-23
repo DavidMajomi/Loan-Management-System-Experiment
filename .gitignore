@@ -14,6 +14,6 @@ tempCodeRunnerFile.py
 *.csv
 
 # Ignore all pycache files
- *. pyc
+*. pyc
 
 interact_with_cpp_file.py
