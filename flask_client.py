@@ -14,7 +14,7 @@ FORMAT = 'utf-8'
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '0b8da1363835a1f14def74db4df9668e'
+app.config['SECRET_KEY'] = '0b8da1363835a1f14dbuc86gcw8ef74db4df9668e'
 
 
 @app.route("/")
@@ -95,4 +95,5 @@ def display_loan_data():
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    # app.run(debug = True)
+    app.run(host='0.0.0.0', port=5000)

@@ -752,7 +752,6 @@ def use_cpp_from_server(recieved_data, cpp_library):
         
         operation_state_to_return["added_user_data_successfully"] = True    # Edit to add validation to the cppLibrary  function above
         
-        
     elif (menu_response == 2):
         
         if (user_data["user_has_loan_id"] == True):
