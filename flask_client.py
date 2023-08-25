@@ -1,6 +1,6 @@
 import json
 import socket
-from forms import Test
+from forms import Test, LoginForm, RegistrationForm
 from flask_client_header import disconnect_from_server, send_data_to_server
 from flask import Flask, render_template, request, flash, redirect, url_for, session
 
@@ -91,9 +91,42 @@ def display_loan_data():
     
     return render_template('display_loan_data.html', customer_data = customer_data, title = 'display_loan_data')
     
+
+@app.route("/bank_with_us", methods=['GET', 'POST'])
+def bank_with_us():
+    return "<h1> Coming soon</h1>"
+
+
+@app.route("/register", methods = ['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f' Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
+    
+    return render_template('register.html', title = 'Register', form = form)
+
+
+@app.route("/login", methods = ['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+            flash('You have been logged in!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html', title = 'Login', form = form)
+
+
+@app.route("/test_canva", methods=['GET', 'POST'])
+def test_canva():
+    # test_canva_site = https://test-canva-with-flask32.my.canva.site/
+    return redirect("https://test-canva-with-flask32.my.canva.site/")
+    
     
 
 
 if __name__ == '__main__':
     # app.run(debug = True)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug = True)

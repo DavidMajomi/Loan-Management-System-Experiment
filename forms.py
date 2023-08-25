@@ -2,6 +2,20 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, FloatField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, NumberRange
 
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators = [DataRequired(), Length(min = 2, max = 20)])
+    email = StringField('Email', validators = [DataRequired(), Email()])
+    password = PasswordField('Password', validators = [DataRequired()])
+    confirm_password = PasswordField('confirm_password', validators = [DataRequired(), EqualTo('password')])
+    submit = SubmitField("Sign_up")
+    
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators = [DataRequired(), Email()])
+    password = PasswordField('Password', validators = [DataRequired()])
+    remember = BooleanField('Remember ME')
+    submit = SubmitField('Login')
+
 class Test(FlaskForm):
     username = StringField('Username:', validators = [DataRequired(), Length(min = 2, max = 20)])
     test_number = IntegerField('Test Number:', validators = [DataRequired()])
