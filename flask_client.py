@@ -1,6 +1,6 @@
 import json
 import socket
-from forms import Test, LoginForm, RegistrationForm
+from forms import ApplyForm, LoginForm, RegistrationForm
 from flask_client_header import disconnect_from_server, send_data_to_server
 from flask import Flask, render_template, request, flash, redirect, url_for, session
 
@@ -27,7 +27,7 @@ def home():
 @app.route("/apply_for_loan", methods=['GET', 'POST'])
 def apply_for_loan():
     menu_response = 1
-    form = Test()
+    form = ApplyForm()
 
     while form.validate_on_submit():
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -37,7 +37,7 @@ def apply_for_loan():
         user_credit_score = form.user_credit_score.data
         user_monthly_income = form.user_monthly_income.data
         user_financial_reserves = form.user_financial_reserves.data
-        user_debt_to_income_ratio = form.user_debt_to_income_ratio.data
+        user_debt_to_income_percentage = form.user_debt_to_income_ratio.data
         user_loan_amoumnt_requested = form.user_loan_amoumnt_requested.data
         user_loan_duration = form.user_loan_duration.data
         
@@ -46,7 +46,7 @@ def apply_for_loan():
             "user_credit_score" : user_credit_score,
             "user_monthly_income" : user_monthly_income,
             "user_financial_reserves" : user_financial_reserves,
-            "user_debt_to_income_ratio" : user_debt_to_income_ratio,
+            "user_debt_to_income_ratio" : user_debt_to_income_percentage / 100,
             "user_loan_amoumnt_requested" : user_loan_amoumnt_requested,
             "user_loan_duration" : user_loan_duration,
             "user_loan_id" : None,
@@ -79,8 +79,6 @@ def apply_for_loan():
         if  (operation_state["added_user_data_successfully"] == True):
             session['customer_data'] = customer_data
             return redirect(url_for("display_loan_data"))
-
-        
         
     return render_template('apply_for_loan.html', form = form, title = 'apply_for_loan')
 

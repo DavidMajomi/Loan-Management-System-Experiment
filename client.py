@@ -82,7 +82,6 @@ def get_customer_data_from_cli():
         "user_has_loan_id" : None
     }
     
-    
     instructions = {
         "menu_response" : menu_response,
         "dev_menu_response" : dev_menu_response,

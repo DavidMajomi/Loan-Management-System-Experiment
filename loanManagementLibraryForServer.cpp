@@ -41,12 +41,12 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 }
 
 
-extern "C"{
+extern "C" {
     void addIndividualizedDataToDb(UserData tempUserDataFromPython)
     {
         vector<Loan> loanAccountsToAdd;
 
-        cout << " Got data. " << endl;
+        // cout << " Got data. " << endl;
         cout << tempUserDataFromPython.monthlyIncomeDecimal;
         cout << endl;
 
