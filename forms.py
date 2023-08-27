@@ -26,4 +26,8 @@ class ApplyForm(FlaskForm):
     user_loan_duration = IntegerField('Enter the duration of the loan in months:', validators = [DataRequired(), NumberRange(min = 10, max = 240)])
     
     submit = SubmitField('Submit')
-    
+
+
+class FindLoanDataForm(FlaskForm):
+    username = StringField('Username:', validators = [DataRequired(), Length(min = 2, max = 20)])
+    submit = SubmitField('Submit')

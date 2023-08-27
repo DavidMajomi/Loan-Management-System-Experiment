@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Enter Your Name to find your details</h1>
+    <form method="POST" action="{{ url_for('find_loan_details') }}">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.username.label }} {{ form.username() }}
+        </div>
+        <div>
+            {{ form.submit() }}
+        </div>
+
+    </form>
+{% endblock %}

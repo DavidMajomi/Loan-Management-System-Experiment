@@ -1,6 +1,6 @@
 import json
 import socket
-from forms import ApplyForm, LoginForm, RegistrationForm
+from forms import ApplyForm, LoginForm, RegistrationForm, FindLoanDataForm
 from flask_client_header import disconnect_from_server, send_data_to_server
 from flask import Flask, render_template, request, flash, redirect, url_for, session
 
@@ -29,7 +29,7 @@ def apply_for_loan():
     menu_response = 1
     form = ApplyForm()
 
-    while form.validate_on_submit():
+    if form.validate_on_submit():
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect(ADDR)
         
@@ -71,10 +71,9 @@ def apply_for_loan():
         json_data = json.dumps(data_to_send, indent = 2)
         print(json_data)
         
-        operation_state, retrieved_user_data = send_data_to_server(json_data, client)
+        operation_state, retrieved_user_data, list_of_retrieved_user_data = send_data_to_server(json_data, client)
         
         disconnect_from_server(client)
-        # del retrieved_user_data, temp_operation_state, temp_retrieved_data
         
         if  (operation_state["added_user_data_successfully"] == True):
             session['customer_data'] = customer_data
@@ -85,9 +84,36 @@ def apply_for_loan():
 
 @app.route("/display_loan_data", methods = ['GET', 'POST'])
 def display_loan_data():
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect(ADDR)
+        
+    menu_response = 2
     customer_data = session.get('customer_data')
     
-    return render_template('display_loan_data.html', customer_data = customer_data, title = 'display_loan_data')
+    instructions = {
+        "menu_response" : menu_response,
+        "dev_menu_response" : None,
+        "search_menu_response" : None,
+        "generate_data_for_db" : False,
+        "num_data_to_generate" : None,
+        "perform_data_analysis_on_all_generated_csv_data" : False,
+        "store_all_db_data_for_external_analysis" : False
+    }
+    
+    data_to_send = {
+        "customer_data" : customer_data,
+        "instructions" : instructions
+    }
+    
+    json_data = json.dumps(data_to_send, indent = 2)
+    print(json_data)
+    
+    operation_state, retrieved_user_data, list_of_retrieved_user_data = send_data_to_server(json_data, client)
+    
+    disconnect_from_server(client)
+    
+    return render_template('display_loan_data.html', list_of_retrieved_user_data = list_of_retrieved_user_data, title = 'display_loan_data')
+    # return list_of_retrieved_user_data
     
 
 @app.route("/bank_with_us", methods=['GET', 'POST'])
@@ -117,9 +143,54 @@ def login():
     return render_template('login.html', title = 'Login', form = form)
 
 
+@app.route("/find_loan_details", methods = ['GET', 'POST'])
+def find_loan_details():
+    menu_response = 2
+    form = FindLoanDataForm()
+    
+    if form.validate_on_submit():
+        
+        user_name = form.username.data
+        
+        customer_data = {
+            "user_name" : user_name,
+            "user_credit_score" : None,
+            "user_monthly_income" : None,
+            "user_financial_reserves" : None,
+            "user_debt_to_income_ratio" : None,
+            "user_loan_amoumnt_requested" : None,
+            "user_loan_duration" : None,
+            "user_loan_id" : None,
+            "user_has_loan_id" : False
+        }
+        
+        instructions = {
+            "menu_response" : menu_response,
+            "dev_menu_response" : None,
+            "search_menu_response" : None,
+            "generate_data_for_db" : False,
+            "num_data_to_generate" : None,
+            "perform_data_analysis_on_all_generated_csv_data" : False,
+            "store_all_db_data_for_external_analysis" : False
+        }
+        
+        data_to_send = {
+            "customer_data" : customer_data,
+            "instructions" : instructions
+        }
+        
+        json_data = json.dumps(data_to_send, indent = 2)
+        
+        print(json_data)
+        session['customer_data'] = customer_data
+
+        return redirect(url_for("display_loan_data"))
+    
+    return render_template('find_loan_details.html', form = form, title = 'find_loan_details')
+
+
 @app.route("/test_canva", methods=['GET', 'POST'])
 def test_canva():
-    # test_canva_site = https://test-canva-with-flask32.my.canva.site/
     return redirect("https://test-canva-with-flask32.my.canva.site/")
     
     

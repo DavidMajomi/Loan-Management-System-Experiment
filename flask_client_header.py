@@ -8,8 +8,7 @@ ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"
 FORMAT = 'utf-8'
 
-# client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# client.connect(ADDR)
+
 
 def disconnect_from_server(client):
     
@@ -35,14 +34,16 @@ def send_data_to_server(msg, client):
     client.send(send_length)
     client.send(message)
     
-    # if (msg != DISCONNECT_MESSAGE):
-    recieved_data = client.recv(2048).decode(FORMAT)
+    recieve_data_length = int(client.recv(2048).decode(FORMAT))
+    recieved_data = client.recv(recieve_data_length).decode(FORMAT)
     
     recieved_data = json.loads(recieved_data)
     
     operation_state = recieved_data["operation_state_to_return"]
     retrieved_user_data = recieved_data["retrieved_user_data_to_return"]
+    list_of_retrieved_user_data = recieved_data["list_of_retrieved_user_data"]
+    
         
         
-    return  operation_state, retrieved_user_data
+    return  operation_state, retrieved_user_data, list_of_retrieved_user_data
         

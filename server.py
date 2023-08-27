@@ -40,6 +40,10 @@ def handle_client(conn, addr, cpp_library):
                 data_to_use = json.loads(msg)
                 data_to_send_to_client = use_cpp_from_server(data_to_use, cpp_library)
                 data_to_return = json.dumps(data_to_send_to_client, indent = 2)
+                data_to_return_size = str(len(data_to_return.encode(FORMAT)))
+                # print(data_to_return_size)
+                # print(data_to_return)
+                conn.send(data_to_return_size.encode(FORMAT))
                 conn.send(data_to_return.encode(FORMAT))
                 conn.send("Message Recieved".encode(FORMAT))
             
@@ -63,7 +67,7 @@ def start():
         thread = threading.Thread(target = handle_client, args = (conn, addr, cpp_library))
         thread.start()
         
-        print(f"Num Connections: {threading.active_count() - 1} \n")
+        print(f"Number of Connections: {threading.active_count() - 1} \n")
 
 print("Starting Server...... \n")
 start()

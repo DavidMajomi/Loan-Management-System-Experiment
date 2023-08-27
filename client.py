@@ -2,7 +2,7 @@ import socket
 import json
 from colorama import Fore
 from header_file import menu_for_server_client, get_customer_data_from_cli_for_server, display_dev_menu_for_server_client, menu_to_search_for_loan_from_server
-from header_file import display_single_retreved_data, dev_menu_response
+from header_file import display_single_retrieved_data, dev_menu_response, display_multiple_retrieved_data
 
 HEADER = 64
 PORT = 5050
@@ -26,33 +26,44 @@ def send(msg, instructions):
     client.send(message)
     
     if (msg != DISCONNECT_MESSAGE):
-        recieved_data = client.recv(2048).decode(FORMAT)
+        recieve_data_length = int(client.recv(2048).decode(FORMAT))
         
-        recieved_data = json.loads(recieved_data)
+        recieved_json_data = client.recv(recieve_data_length).decode(FORMAT)
+        # print(recieved_json_data)
+        
+        recieved_data = json.loads(recieved_json_data)
         
         operation_state = recieved_data["operation_state_to_return"]
         retrieved_user_data = recieved_data["retrieved_user_data_to_return"]
+        list_of_retrieved_user_data = recieved_data["list_of_retrieved_user_data"]
         
         if (instructions["menu_response"] == 1):
             if (operation_state["added_user_data_successfully"]) == True:
+                print("\n")
                 print(Fore.GREEN + " Loan data added successfully")
                 
         elif (instructions["menu_response"] == 2):
-            if (instructions["search_menu_response"] == 1):
-                if (operation_state["successful_search"] is True):
-                    if (operation_state["found_user_data"] is True):
-                        print(Fore.GREEN + " Retrieved data successfully \n")
-                        display_single_retreved_data(retrieved_user_data)
-                    else:
-                        print(Fore.RED + " User data not found \n")
+            if (operation_state["successful_search"] is True):
+                if (operation_state["found_user_data"] is True):
+                    print(Fore.GREEN + " Retrieved data successfully \n")
+                    
+                    if (instructions["search_menu_response"] == 1):
+                        display_single_retrieved_data(retrieved_user_data)
+                        
+                    elif(instructions["search_menu_response"] == 2):
+                        display_multiple_retrieved_data(list_of_retrieved_user_data)
                         
                 else:
-                    print(Fore.RED + " Error searchng for user data \n")
-            elif(instructions["search_menu_response"] == 2):
-                pass
+                    print("\n")
+                    print(Fore.RED + " User data not found \n")
+                        
+            else:
+                print("\n")
+                print(Fore.RED + " Error searchng for user data \n")
             
         elif (instructions["menu_response"] == 3):
             dev_menu_response(instructions, operation_state)
+
     else:
         recieved_disconnect_message = client.recv(2048).decode(FORMAT)
         print(" Disconnect Message Sent.")
@@ -64,10 +75,7 @@ def get_customer_data_from_cli():
     menu_response = None
     dev_menu_response = None
     search_menu_response = None
-    generate_data_for_db = False
     num_data_to_generate = None
-    perform_data_analysis_on_all_generated_csv_data = False
-    # store_all_db_data_for_external_analysis = False
     
     
     customer_data = {
