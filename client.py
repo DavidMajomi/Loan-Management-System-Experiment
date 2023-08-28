@@ -41,6 +41,9 @@ def send(msg, instructions):
             if (operation_state["added_user_data_successfully"]) == True:
                 print("\n")
                 print(Fore.GREEN + " Loan data added successfully")
+            else:
+                print(Fore.RED + " Loan data could not be added")
+                
                 
         elif (instructions["menu_response"] == 2):
             if (operation_state["successful_search"] is True):
@@ -140,11 +143,6 @@ def get_customer_data_from_cli():
 data_to_send, instructions = get_customer_data_from_cli()
 
 json_data = json.dumps(data_to_send)
-
-# print(json_data)
-
-# # print("After function call")
-# # print(customer_data)
 
 send(json_data, instructions)
 send(DISCONNECT_MESSAGE, instructions)

@@ -661,12 +661,6 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
     }
     
 
-    
-    # user_first_name = input("Enter your first name: ")
-    # user_last_name = input("Enter your last name: ")
-    # user_name = user_first_name + " " + user_last_name
-    print(" This is name: ", user_name, " \n")
-
     try:
         # Connect to the SQLite database
         conn = sqlite3.connect(SQLITE3_DATABASE_PATH)
@@ -702,11 +696,8 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                     
                 }
                 
-                
                 list_of_loan_data.append(retrieved_user_data)
             
-                
-                
         else:
             operation_state_to_return["successful_search"] = True
             operation_state_to_return["found_user_data"] = False
@@ -782,7 +773,6 @@ def display_single_retrieved_data(retrieved_user_data):
 
     else:
         print(" Credentials do not match")
-    
  
 
 def display_multiple_retrieved_data(list_of_retrieved_user_data):
