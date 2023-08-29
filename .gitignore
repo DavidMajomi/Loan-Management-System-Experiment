@@ -14,7 +14,7 @@ tempCodeRunnerFile.py
 *.csv
 
 # Ignore all pycache files
-*. pyc
-
+*.pyc
 
 /sqlite3.h
+
