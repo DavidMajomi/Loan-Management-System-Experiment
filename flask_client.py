@@ -1,5 +1,6 @@
 import json
 import socket
+import secrets
 from forms import ApplyForm, LoginForm, RegistrationForm, FindLoanDataForm
 from flask_client_header import disconnect_from_server, send_data_to_server
 from flask import Flask, render_template, request, flash, redirect, url_for, session
@@ -14,7 +15,7 @@ FORMAT = 'utf-8'
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '0b8da1363835a1f14dbuc86gcw8ef74db4df9668e'
+app.config['SECRET_KEY'] = secrets.token_bytes(16) 
 
 
 @app.route("/")
@@ -113,7 +114,6 @@ def display_loan_data():
     disconnect_from_server(client)
     
     return render_template('display_loan_data.html', list_of_retrieved_user_data = list_of_retrieved_user_data, title = 'display_loan_data')
-    # return list_of_retrieved_user_data
     
 
 @app.route("/bank_with_us", methods=['GET', 'POST'])
