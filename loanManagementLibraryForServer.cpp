@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "loanManagementSystemForServer.h"
 
-// Use g++ -fPIC -shared -o loanManagementLibrary.dll loanManagementLibrary.cpp sqlite3.o
+// Use g++ -fPIC -shared -o loanManagementLibraryForServer.dll loanManagementLibraryForServer.cpp sqlite3.o
 
 using namespace std;
 
