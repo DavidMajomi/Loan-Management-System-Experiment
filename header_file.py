@@ -190,10 +190,6 @@ def display_dev_menu_for_server_client():
     else:
         num_data_to_generate = None
     
-    
-    
-    print(dev_menu_response)
-    
     return dev_menu_response, num_data_to_generate
 
 
@@ -356,50 +352,54 @@ def generate_data (num_data_to_generate):
     loan_data_header = ['Name', "credit score", 'monthly income', 'financial reserves', 'debt to income ratio', 'Duration in months', 'loan amount requested']
     loan_data = []
     
-    valid_inputs = False
+    min_options = 0
+    max_options = 20000000
     
-    while (valid_inputs == False):
+    if ((num_data_to_generate < min_options) or (num_data_to_generate > max_options)):
+        print(" Data entered is in invalid format. \n")
         
-        
-        
-        min_options = 0
-        max_options = 20000000
-        
-        valid_inputs = validate_string_input_for_num_value(num_data_to_generate, max_options, min_options)
-        
-        if (valid_inputs is False):
-            print(" Data entered is in invalid format. \n")
-
-    num_data_to_generate = int(num_data_to_generate)
-
-    # Generate user data
-    for i in range(num_data_to_generate):
-        credit_score = random.randint(300, 850)
-        user_name = fake.name()
-        user_monthly_income = round(random.uniform(900, 12000), 2)
-        user_debt_to_income_ratio = round(random.uniform(0.00, 1.00), 2)
-        financial_reserves = round(random.uniform(500.00, 200000.00), 2)
-        loan_duration_in_months = random.randint(2, 240)
-        loan_amonut_requested = random.randint(500, 200000)
-            
-        loan_data.append([user_name, credit_score, user_monthly_income, financial_reserves, user_debt_to_income_ratio, loan_duration_in_months, loan_amonut_requested])
-        
-    if os.path.exists("allGeneratedLoanData.csv"):
-        with open("allGeneratedLoanData.csv", "a", newline = '') as file:
-            writer = csv.writer(file)
-            writer.writerows(loan_data)    
     else:
-        with open("allGeneratedLoanData.csv", "w", newline = '') as file:
+        num_data_to_generate = int(num_data_to_generate)
+
+        # Generate user data
+        for i in range(num_data_to_generate):
+            credit_score = random.randint(300, 850)
+            user_name = fake.name()
+            user_monthly_income = round(random.uniform(900, 12000), 2)
+            user_debt_to_income_ratio = round(random.uniform(0.00, 1.00), 2)
+            
+            if (user_monthly_income < 3000):
+                financial_reserves = round(random.uniform(500.00, 5000.00), 2)
+            elif (user_monthly_income > 3000 and user_monthly_income < 5000):
+                financial_reserves = round(random.uniform(5000.00, 10000.00), 2)
+            elif (user_monthly_income > 5000 and user_monthly_income < 10000):
+                financial_reserves = round(random.uniform(10000.00, 20000.00), 2)
+            elif (user_monthly_income > 10000 and user_monthly_income < 20000):
+                financial_reserves = round(random.uniform(20000.00, 35000.00), 2)
+            else:
+                financial_reserves = round(random.uniform(35000.00, 50000.00), 2)
+                
+            loan_duration_in_months = random.randint(2, 60)
+            loan_amonut_requested = random.randint(500, 20000)
+                
+            loan_data.append([user_name, credit_score, user_monthly_income, financial_reserves, user_debt_to_income_ratio, loan_duration_in_months, loan_amonut_requested])
+            
+        if os.path.exists("allGeneratedLoanData.csv"):
+            with open("allGeneratedLoanData.csv", "a", newline = '') as file:
+                writer = csv.writer(file)
+                writer.writerows(loan_data)    
+        else:
+            with open("allGeneratedLoanData.csv", "w", newline = '') as file:
+                writer = csv.writer(file)
+                writer.writerow(loan_data_header)
+                writer.writerows(loan_data)
+        
+        with open("tempGeneratedLoanDataForDbStorage.csv", "w", newline = '') as file:  # This is used to store newly generated data to be used
             writer = csv.writer(file)
             writer.writerow(loan_data_header)
             writer.writerows(loan_data)
-    
-    with open("tempGeneratedLoanDataForDbStorage.csv", "w", newline = '') as file:  # This is used to store newly generated data to be used
-        writer = csv.writer(file)
-        writer.writerow(loan_data_header)
-        writer.writerows(loan_data)
-    
-    # print(" Loan data has been written successfully.")
+        
+        # print(" Loan data has been written successfully.")
 
 
 def menu_to_search_for_loan_from_server():
@@ -795,22 +795,24 @@ def display_multiple_retrieved_data(list_of_retrieved_user_data):
 
 
 def dev_menu_response(instructions, operation_state):
+    print(Fore.WHITE)
+    
     if (instructions["dev_menu_response"] == 1):
-        if (operation_state["error_opening_file_to_store_generated_data"] is False):
-            print(Fore.Green + " Generated Data Successfully")
+        if not (operation_state["error_opening_file_to_store_generated_data"]):
+            print(Fore.GREEN + " Generated Data Successfully")
         else:
             print(Fore.RED + " Failed to generate data.")
         # instructions["num_data_to_generate"] = num_data_to_generate
     elif (instructions["dev_menu_response"] == 2):
-        if (instructions["error_opening_file_to_store_analyzed_data"] is False):
-                print(Fore.Green + " Analyzed Data Successfully")
+        if not (instructions["error_opening_file_to_store_analyzed_data"]):
+                print(Fore.GREEN + " Analyzed Data Successfully")
         else:
             print(Fore.RED + " Failed to analyze data.")
                 
     elif (instructions["dev_menu_response"] == 3):
         
-        if (operation_state["error_getting_data_from_db_to_analyxe"] is False):
-                print(Fore.Green + " Analyzed Data Successfully")
+        if not (operation_state["error_getting_data_from_db_to_analyxe"]):
+                print(Fore.GREEN + " Analyzed Data Successfully")
         else:
             print(Fore.RED + " Failed to analyze data.")
     
@@ -857,7 +859,6 @@ def use_cpp_from_server(recieved_data, cpp_library):
     search_menu_response = recieved_instructions["search_menu_response"]
     
     if (menu_response == 1): # Add individualized loan using data
-        print(" In server backend")
         # print(f" Thi is user data before db {user_data['user_name']}")
         
         data_to_cpp = UserData(user_data['user_name'].encode(FORMAT), int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), 
@@ -908,6 +909,6 @@ def use_cpp_from_server(recieved_data, cpp_library):
         "list_of_retrieved_user_data" : list_of_retrieved_user_data
     }
         
-    print("Done")
+    print(" \n Done")
     return data_to_send_Back_to_client
     

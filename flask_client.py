@@ -149,6 +149,7 @@ def find_loan_details():
     form = FindLoanDataForm()
     
     if form.validate_on_submit():
+        flash(f' Loan data for {form.username.data}', 'success')
         
         user_name = form.username.data
         

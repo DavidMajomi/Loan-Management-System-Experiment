@@ -47,7 +47,7 @@ def handle_client(conn, addr, cpp_library):
                 conn.send(data_to_return.encode(FORMAT))
                 conn.send("Message Recieved".encode(FORMAT))
             
-            print(f'[{addr}] {msg}')
+            # print(f'[{addr}] {msg}')
         
         
     conn.close()

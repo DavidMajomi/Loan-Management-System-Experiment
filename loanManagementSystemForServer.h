@@ -13,7 +13,7 @@ using namespace std;
 const char* DATABASE_NAME = "bam_bam.db";
 
 
-const unsigned short int MAX_CREDIT_SCORE = 850, MIN_CREDIT_SCORE = 300, MAX_MONTHLY_INCOME = 12000, MIN_MONTHLY_INCOME = 900;
+const unsigned short int MAX_CREDIT_SCORE = 850, MIN_CREDIT_SCORE = 300, MAX_MONTHLY_INCOME = 12000, MIN_MONTHLY_INCOME = 800;
 
 const double BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 2;
 const double BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION / 12;
@@ -27,11 +27,14 @@ const double DEFAULT_RISK_SCORE_WEIGHT = -0.10;   // Risk accrued for higher ret
 const double DEBT_TO_INCOME_RATIO_WEIGHT = -0.15;   // Works as a measure of the customer's ability to shoulder debt weight
 const double LOSS_GIVEN_DEFAULT_WEIGHT = -0.15;   // Potential Losses when considering Financial Reserves
 
+const int MAX_LOAN_DURATION = 60;
+const double MIN_LOAN_DURATION = 2;
 const double MAX_INTEREST_RATE = 2.08;
-const double MIN_INTEREST_RATE = 0.58, MAX_LOAN_DURATION = 240, MIN_LOAN_DURATION = 2, MAX_FINANCIAL_RESERVES = 200000, MIN_FINANCIAL_RESERVES = 500, MAX_LOAN_AMOUNT = 200000, MIN_LOAN_AMOUNT = 500;
-
-double calculateBestCreditMetrics();
-double calculateWorstCreditMetrics();
+const double MIN_INTEREST_RATE = 0.58;
+const double MAX_FINANCIAL_RESERVES = 200000;
+const double MIN_FINANCIAL_RESERVES = 10000;
+const double MAX_LOAN_AMOUNT = 50000;
+const double MIN_LOAN_AMOUNT = 500;
 
 
 
@@ -256,6 +259,75 @@ double Loan::normalizeScore(double rawScore, double maxScore, double minScore)
 }
 
 
+double normalizeScoreOutsideClass(double rawScore, double maxScore, double minScore)
+{
+    double normalizedScore, maxScaleValue = 1, minScaleValue = 0;
+
+    normalizedScore = ((rawScore - minScore) / (maxScore - minScore)) * (maxScaleValue - minScaleValue) + (minScaleValue);
+
+    return normalizedScore;
+}
+
+
+double calculateBestCreditMetrics()
+{
+    double debtToIncomeRatio, duration, lossGivenDefault
+           , defaultRiskScore, loanViabilityScore, finalMonthlyInterestRate, normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount
+           , normalizedInterest, normalizedDuration, normalizedFinancialReserves;
+
+
+    defaultRiskScore = 0;   // add this to loan viability formula
+    lossGivenDefault = 0;
+    duration = 228; // Duration is in months
+    debtToIncomeRatio = 0; //Users expected to have some experience with loans
+    finalMonthlyInterestRate = 0.58;
+
+    normalizedCreditScore =  normalizeScoreOutsideClass(MAX_CREDIT_SCORE, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
+    normalizedDuration = normalizeScoreOutsideClass(duration, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
+    normalizedFinancialReserves = normalizeScoreOutsideClass(MAX_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
+    normalizedInterest = normalizeScoreOutsideClass(finalMonthlyInterestRate, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
+    normalizedmonthlyIncome = normalizeScoreOutsideClass(MAX_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
+    normalizedLoanAmount = normalizeScoreOutsideClass(MAX_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
+
+
+    loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (debtToIncomeRatio * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)
+                            + (normalizedInterest * INTEREST_RATE_WEIGHT) + (lossGivenDefault * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (defaultRiskScore * DEFAULT_RISK_SCORE_WEIGHT);
+
+    cout << " Best loan viability score = " << loanViabilityScore << endl;
+
+    return loanViabilityScore;
+}
+
+
+// Need to review the logic here as well as finding a way to put it in the class we will see how it goes
+double calculateWorstCreditMetrics()
+{
+    double debtToIncomeRatio, duration, lossGivenDefault
+           , defaultRiskScore, loanViabilityScore, finalMonthlyInterestRate, normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount
+           , normalizedInterest, normalizedDuration, normalizedFinancialReserves;
+
+
+    defaultRiskScore = 1;   // add this to loan viability formula
+    lossGivenDefault = 0.8;   // possible value includes 0.2, 0.1 1 = to high
+    duration = 11; // Duration is in months bad duration = 21 years Check the logic behind this
+    debtToIncomeRatio = 0.9; //
+    finalMonthlyInterestRate = 2;   // Check the logic behind this
+
+    normalizedCreditScore =  normalizeScoreOutsideClass(MIN_CREDIT_SCORE, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
+    normalizedDuration = normalizeScoreOutsideClass(duration, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
+    normalizedFinancialReserves = normalizeScoreOutsideClass(MIN_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
+    normalizedInterest = normalizeScoreOutsideClass(finalMonthlyInterestRate, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
+    normalizedmonthlyIncome = normalizeScoreOutsideClass(MIN_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
+    normalizedLoanAmount = normalizeScoreOutsideClass(MIN_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
+
+    loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (debtToIncomeRatio * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)
+                            + (normalizedInterest * INTEREST_RATE_WEIGHT) + (lossGivenDefault * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (defaultRiskScore * DEFAULT_RISK_SCORE_WEIGHT);
+
+    return loanViabilityScore;
+}
+
+
+
 double Loan::adjustLoanViabiltyScore (double rawLoanViabilityScore)
 {
     unsigned short int maxScaleValue = 100, minScaleValue = 0;
@@ -303,15 +375,6 @@ void Loan::simple_set_credit_metrics ()
     finalAdjustedViabilityScore = adjustLoanViabiltyScore(loanViabilityScore);
 }
 
-
-double normalizeScoreOutsideClass(double rawScore, double maxScore, double minScore)
-{
-    double normalizedScore, maxScaleValue = 1, minScaleValue = 0;
-
-    normalizedScore = ((rawScore - minScore) / (maxScore - minScore)) * (maxScaleValue - minScaleValue) + (minScaleValue);
-
-    return normalizedScore;
-}
 
 
 int convert_to_int (string valueToConvert)
@@ -459,61 +522,6 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
 
 
 // Need to review the logic here as well as finding a way to put it in the class we will see how it goes
-double calculateBestCreditMetrics()
-{
-    double debtToIncomeRatio, duration, lossGivenDefault
-           , defaultRiskScore, loanViabilityScore, finalMonthlyInterestRate, normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount
-           , normalizedInterest, normalizedDuration, normalizedFinancialReserves;
-
-
-    defaultRiskScore = 0;   // add this to loan viability formula
-    lossGivenDefault = 0;
-    duration = 228; // Duration is in months
-    debtToIncomeRatio = 0; //Users expected to have some experience with loans
-    finalMonthlyInterestRate = 0.58;
-
-    normalizedCreditScore =  normalizeScoreOutsideClass(MAX_CREDIT_SCORE, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
-    normalizedDuration = normalizeScoreOutsideClass(duration, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
-    normalizedFinancialReserves = normalizeScoreOutsideClass(MAX_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
-    normalizedInterest = normalizeScoreOutsideClass(finalMonthlyInterestRate, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
-    normalizedmonthlyIncome = normalizeScoreOutsideClass(MAX_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
-    normalizedLoanAmount = normalizeScoreOutsideClass(MAX_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
-
-
-    loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (debtToIncomeRatio * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)
-                            + (normalizedInterest * INTEREST_RATE_WEIGHT) + (lossGivenDefault * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (defaultRiskScore * DEFAULT_RISK_SCORE_WEIGHT);
-
-
-    return loanViabilityScore;
-}
-
-
-// Need to review the logic here as well as finding a way to put it in the class we will see how it goes
-double calculateWorstCreditMetrics()
-{
-    double debtToIncomeRatio, duration, lossGivenDefault
-           , defaultRiskScore, loanViabilityScore, finalMonthlyInterestRate, normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount
-           , normalizedInterest, normalizedDuration, normalizedFinancialReserves;
-
-
-    defaultRiskScore = 1;   // add this to loan viability formula
-    lossGivenDefault = 0.8;   // possible value includes 0.2, 0.1 1 = to high
-    duration = 11; // Duration is in months bad duration = 21 years Check the logic behind this
-    debtToIncomeRatio = 0.9; //
-    finalMonthlyInterestRate = 2;   // Check the logic behind this
-
-    normalizedCreditScore =  normalizeScoreOutsideClass(MIN_CREDIT_SCORE, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
-    normalizedDuration = normalizeScoreOutsideClass(duration, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
-    normalizedFinancialReserves = normalizeScoreOutsideClass(MIN_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
-    normalizedInterest = normalizeScoreOutsideClass(finalMonthlyInterestRate, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
-    normalizedmonthlyIncome = normalizeScoreOutsideClass(MIN_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
-    normalizedLoanAmount = normalizeScoreOutsideClass(MIN_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
-
-    loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (debtToIncomeRatio * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)
-                            + (normalizedInterest * INTEREST_RATE_WEIGHT) + (lossGivenDefault * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (defaultRiskScore * DEFAULT_RISK_SCORE_WEIGHT);
-
-    return loanViabilityScore;
-}
 
 
 void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd) 
