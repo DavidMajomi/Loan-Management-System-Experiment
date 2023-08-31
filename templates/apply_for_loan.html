@@ -8,25 +8,75 @@
         </div>
         <div>
             {{ form.user_credit_score.label }} {{ form.user_credit_score() }}
+
+            {% if form.user_credit_score.errors %}
+            <ul class="errors">
+                {% for error in form.user_credit_score.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
         <div>
             {{ form.user_monthly_income.label }} {{ form.user_monthly_income() }}
+
+            {% if form.user_monthly_income.errors %}
+            <ul class="errors">
+                {% for error in form.user_monthly_income.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
         <div>
             {{ form.user_financial_reserves.label }} {{ form.user_financial_reserves() }}
+
+            {% if form.user_financial_reserves.errors %}
+            <ul class="errors">
+                {% for error in form.user_financial_reserves.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            
         </div>
         <div>
             {{ form.user_debt_to_income_ratio.label }} {{ form.user_debt_to_income_ratio() }}
+
+            {% if form.user_debt_to_income_ratio.errors %}
+            <ul class="errors">
+                {% for error in form.user_debt_to_income_ratio.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
         <div>
             {{ form.user_loan_amoumnt_requested.label }} {{ form.user_loan_amoumnt_requested() }}
+
+            {% if form.user_loan_amoumnt_requested.errors %}
+            <ul class="errors">
+                {% for error in form.user_loan_amoumnt_requested.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
         <div>
             {{ form.user_loan_duration.label }} {{ form.user_loan_duration() }}
+
+            {% if form.user_loan_duration.errors %}
+            <ul class="errors">
+                {% for error in form.user_loan_duration.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
         <div>
             {{ form.submit() }}
         </div>
+
     </form>
 {% endblock %}
 

@@ -35,7 +35,7 @@ def handle_client(conn, addr, cpp_library):
             if msg == DISCONNECT_MESSAGE:
                 conn.send(" Disconnected Successfully".encode(FORMAT))
                 connected = False
-                # print("\n")
+                print("\n")
             else:
                 data_to_use = json.loads(msg)
                 data_to_send_to_client = use_cpp_from_server(data_to_use, cpp_library)

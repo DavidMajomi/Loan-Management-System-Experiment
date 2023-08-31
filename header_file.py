@@ -802,7 +802,6 @@ def dev_menu_response(instructions, operation_state):
             print(Fore.GREEN + " Generated Data Successfully")
         else:
             print(Fore.RED + " Failed to generate data.")
-        # instructions["num_data_to_generate"] = num_data_to_generate
     elif (instructions["dev_menu_response"] == 2):
         if not (instructions["error_opening_file_to_store_analyzed_data"]):
                 print(Fore.GREEN + " Analyzed Data Successfully")

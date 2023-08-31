@@ -46,9 +46,7 @@ extern "C" {
     {
         vector<Loan> loanAccountsToAdd;
 
-        // cout << " Got data. " << endl;
         cout << tempUserDataFromPython.monthlyIncomeDecimal;
-        cout << endl;
 
         addIndividualizedLoanDataFromPythonServer (tempUserDataFromPython, loanAccountsToAdd);
         createDatabaseToAddUserLoanData (loanAccountsToAdd);
@@ -71,10 +69,10 @@ extern "C" {
 
     bool readAndStoreGeneratedDataForAnalysis(unsigned short int devMenuResponse)
     {
-        bool openInputFileError = false, openOutputFileError = true,  fileOpeningError = false;
         ifstream inputFile;
         ofstream outputCsvFile;
         vector<Loan> loanAccounts;
+        bool openInputFileError = false, openOutputFileError = true,  fileOpeningError = false;
 
         openInputFileError = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
         openOutputFileError = outputToFile (outputCsvFile, loanAccounts);
