@@ -4,10 +4,10 @@ In this Repo, i experiment with python and c++ features to create a Loan Managem
 Currently, I intend to use the loan management cpp library as is. 
 
 # Current Features
- Generate data <br>
- Server functionality
- Storing data in sqlite3 database
- Recieving user data from web app
- Recieving user data from command line interface
- Displaying user data once received from database both in cli and web app
- Using csv file for analysis of data in excel, possibly data analysis in python
+  1.) Generate data <br>
+  2.) Server functionality <br>
+  3.) Storing data in sqlite3 database <br>
+  4.) Recieving user data from web app <br>
+  5.) Recieving user data from command line interface <br>
+  5.) Displaying user data once received from database both in cli and web app <br>
+  6.) Using csv file for analysis of data in excel, possibly data analysis in python <br>
