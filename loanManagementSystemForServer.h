@@ -292,7 +292,7 @@ double calculateBestCreditMetrics()
                             + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)+ (normalizedInterest * INTEREST_RATE_WEIGHT) 
                             + (BEST_LOSS_GIVEN_DEFAULT * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (BEST_DEFAULT_RISK_SCORE * DEFAULT_RISK_SCORE_WEIGHT);
 
-    cout << " Best loan viability score = " << loanViabilityScore << endl;
+    // cout << " Best loan viability score = " << loanViabilityScore << endl;
 
     return loanViabilityScore;
 }
@@ -313,7 +313,7 @@ double calculateWorstCreditMetrics()
     loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (WORST_DEBT_TO_INCOME_RATIO * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)
                             + (normalizedInterest * INTEREST_RATE_WEIGHT) + (WORST_LOSS_GIVEN_DEFAULT * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (WORST_DEFAULT_RISK_SCORE * DEFAULT_RISK_SCORE_WEIGHT);
 
-    cout << " Worst loan viability score = " << loanViabilityScore << endl;
+    // cout << " Worst loan viability score = " << loanViabilityScore << endl;
 
     return loanViabilityScore;
 }
@@ -515,9 +515,7 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
 
 }
 
-
 // Need to review the logic here as well as finding a way to put it in the class we will see how it goes
-
 
 void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd) 
 {
