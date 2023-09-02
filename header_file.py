@@ -374,7 +374,7 @@ def generate_data (num_data_to_generate):
                 financial_reserves = round(random.uniform(5000.00, 10000.00), 2)
             elif (user_monthly_income > 5000 and user_monthly_income < 10000):
                 financial_reserves = round(random.uniform(10000.00, 20000.00), 2)
-            elif (user_monthly_income > 10000 and user_monthly_income < 20000):
+            elif (user_monthly_income > 10000 and user_monthly_income <= 20000):
                 financial_reserves = round(random.uniform(20000.00, 35000.00), 2)
             else:
                 financial_reserves = round(random.uniform(35000.00, 50000.00), 2)
