@@ -810,7 +810,7 @@ def dev_menu_response(instructions, operation_state):
                 
     elif (instructions["dev_menu_response"] == 3):
         
-        if not (operation_state["error_getting_data_from_db_to_analyxe"]):
+        if not (operation_state["error_getting_data_from_db_to_analyze"]):
                 print(Fore.GREEN + " Analyzed Data Successfully")
         else:
             print(Fore.RED + " Failed to analyze data.")
@@ -899,7 +899,7 @@ def use_cpp_from_server(recieved_data, cpp_library):
             operation_state_to_return["error_opening_file_to_store_analyzed_data"] = cpp_library.readAndStoreGeneratedDataForAnalysis(recieved_instructions["dev_menu_response"])
         elif (dev_menu_response == 3):
             # recieved_instructions["store_all_db_data_for_external_analysis"] = True
-            operation_state_to_return["error_getting_data_from_db_to_analyze"] = True # Place holder for cpp program baseed response
+            operation_state_to_return["error_getting_data_from_db_to_analyze"] = cpp_library.readAllDatabaseDataForAnalysis()
             
             
     data_to_send_Back_to_client = {

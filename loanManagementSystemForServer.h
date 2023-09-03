@@ -319,7 +319,6 @@ double calculateWorstCreditMetrics()
 }
 
 
-
 double Loan::adjustLoanViabiltyScore (double rawLoanViabilityScore)
 {
     unsigned short int maxScaleValue = 100, minScaleValue = 0;
@@ -369,7 +368,6 @@ void Loan::simple_set_credit_metrics ()
     cout << " This is adjusted Loan viability score: " << finalAdjustedViabilityScore << endl;
     
 }
-
 
 
 int convert_to_int (string valueToConvert)
@@ -526,8 +524,8 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
                       " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
                       " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL)";
     vector <string> valsToInsert;
-    string insertToSql, userName, stringFinalSqlInsertStatement, stringCreditScore, stringMonthlyIncome, stringFinancialReserves, stringDebtToIncomeRatio, stringLoanDurationInMonths, stringLoanAmount, stringMonthlyInteresRate, 
-           stringyearlyInterestRate, stringrecoveryRate, stringOutstandingMonthlyDebtPaymentsFromLoan, stringDefaultRiskScore, stringLoanViabilityScore,
+    string insertToSql, userName, stringFinalSqlInsertStatement, stringCreditScore, stringMonthlyIncome, stringFinancialReserves, stringDebtToIncomeRatio, stringLoanDurationInMonths, 
+           stringLoanAmount, stringMonthlyInteresRate, stringyearlyInterestRate, stringrecoveryRate, stringOutstandingMonthlyDebtPaymentsFromLoan, stringDefaultRiskScore, stringLoanViabilityScore,
            stringAdjustedLoanViabilityScore, stringLossGivenDefault;
     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
@@ -664,23 +662,6 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
     }
 
 
-    sql = "SELECT * FROM users";
-    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
-
-    if (rc != SQLITE_OK) {
-        // Handle error
-        cout << " Step 5 error. " << endl;
-        sqlite3_close(db);
-        exit (1);
-    }
-
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        int id = sqlite3_column_int(stmt, 0);
-        const unsigned char* name = sqlite3_column_text(stmt, 1);
-        int age = sqlite3_column_int(stmt, 2);
-
-    }
-
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
@@ -812,7 +793,9 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         cout << endl;
         // cout << stringFinalSqlInsertStatement << endl;
 
-        insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) VALUES (" + stringFinalSqlInsertStatement + ")"; 
+        insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
+                      " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
+                      " adjusted_loan_viability_score) VALUES (" + stringFinalSqlInsertStatement + ")"; 
 
         // cout << insertToSql;
 
@@ -832,32 +815,111 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
     }
 
 
-    sql = "SELECT * FROM users";
-    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
-
-    if (rc != SQLITE_OK) {
-        // Handle error
-        cout << " Step 5 error. 2" << endl;
-        sqlite3_close(db);
-        exit (1);
-    }
-
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
-        int id = sqlite3_column_int(stmt, 0);
-        const unsigned char* name = sqlite3_column_text(stmt, 1);
-        int age = sqlite3_column_int(stmt, 2);
-
-        // Process retrieved data
-    }
-
     sqlite3_finalize(stmt);
     sqlite3_close(db);
-
-    // cout << "The base 2" << endl;
-    // cout << " New values for testing python execution. 2" << endl;
 
 }
 
 
+bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile) 
+{
+    int creditScore, loanId;
+    bool errorRetrievingData = false;
+    const char* sql = "SELECT * FROM users";
+    double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
+           yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
+           adjustedLoanViabilityScore, lossGivenDefault;
+    sqlite3* db;
+    int rc = sqlite3_open(DATABASE_NAME, &db);
+
+    if (rc != SQLITE_OK)
+    {
+        // Handle error
+        cout << "Step 1 error." << endl;
+        errorRetrievingData = true;
+    }
+    else
+    {
+
+        outputCsvFile.open("analyzedDataFromDb.csv");
+
+        if (outputCsvFile.fail())
+        {
+            cout << " Output File Opening Error. " << endl;
+            errorRetrievingData = true;
+        }
+        else
+        {
+            sqlite3_stmt* stmt;
+            
+            rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+
+            if (rc != SQLITE_OK) {
+                // Handle error
+                cout << " Step 5 error. " << endl;
+                sqlite3_close(db);
+                errorRetrievingData = true;
+            }
+
+            outputCsvFile << "Name, credit score, monthly income, financial reserves, debt to income ratio, Duration in months, loan amount requested, Monthly interest rate, Interest rate over a year, loss Given Default, Recovery Rate, outstanding Monthly Debt Payments, ";
+            outputCsvFile << " default risk score, Loan Viability Score, Adjusted Loan viability Score" << endl;
+
+            while (sqlite3_step(stmt) == SQLITE_ROW) {
+                // loanId = sqlite3_column_int(stmt, 0);
+                const unsigned char* userName = sqlite3_column_text(stmt, 1);
+                creditScore = sqlite3_column_int(stmt, 2);
+                monthlyIncome = sqlite3_column_double(stmt, 3);
+                financialReserves = sqlite3_column_double(stmt, 4);
+                debtToIncomeRatio = sqlite3_column_double(stmt, 5);
+                loanDurationInMonths = sqlite3_column_double(stmt, 6);
+                loanAmount = sqlite3_column_double(stmt, 7);
+                monthlyInteresRate = sqlite3_column_double(stmt, 8);
+                yearlyInterestRate = sqlite3_column_double(stmt, 9);
+                lossGivenDefault = sqlite3_column_double(stmt, 10);
+                recoveryRate = sqlite3_column_double(stmt, 11);
+                outstandingMonthlyDebtPaymentsFromLoan = sqlite3_column_double(stmt, 12);
+                defaultRiskScore = sqlite3_column_double(stmt, 13);
+                loanViabilityScore = sqlite3_column_double(stmt, 14);
+                adjustedLoanViabilityScore = sqlite3_column_double(stmt, 15);
+
+                outputCsvFile << userName << ",";
+                outputCsvFile << creditScore << ",";
+                outputCsvFile << monthlyIncome << ",";
+                outputCsvFile << financialReserves << ",";
+                outputCsvFile << debtToIncomeRatio << ",";
+                outputCsvFile << loanDurationInMonths << ",";
+                outputCsvFile << loanAmount << ",";
+                outputCsvFile << monthlyInteresRate << ",";
+                outputCsvFile << yearlyInterestRate << ",";
+                outputCsvFile << lossGivenDefault << ",";
+                outputCsvFile << recoveryRate << ",";
+                outputCsvFile << outstandingMonthlyDebtPaymentsFromLoan << ",";
+                outputCsvFile << defaultRiskScore << ",";
+                outputCsvFile << loanViabilityScore << ",";
+                outputCsvFile << adjustedLoanViabilityScore << "\n";
+                // outputCsvFile << loanDurationInMonths << ",";
+                // outputCsvFile << loanDurationInMonths << "\n";
+
+                
+
+                // cout << " This is id " << loanId << endl;
+                // cout << " This is name " << userName << endl;
+                // cout << " This is credit score" << creditScore << endl;
+
+            }
+
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+        }
+
+
+        outputCsvFile.close();
+
+    }
+
+
+    return errorRetrievingData;
+
+}
 
 #endif // LOANMANAGEMENTSYSTEM_H_INCLUDED

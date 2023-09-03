@@ -85,6 +85,16 @@ extern "C" {
         return fileOpeningError;
     }
 
+    bool readAllDatabaseDataForAnalysis()
+    {
+        bool errorRetrievingData = false;
+        ofstream outputCsvFile;
+
+        errorRetrievingData = retrieveAllUserDataFromDatabase(outputCsvFile);
+
+        return errorRetrievingData;
+    }
+
 
 }
 
