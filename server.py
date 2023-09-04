@@ -2,7 +2,11 @@ import json
 import ctypes
 import socket
 import threading
+from pathlib import Path
 from header_file import use_cpp_from_server, compile_dll_for_server
+
+PATH = str(Path.cwd())
+
 # from header_file import run_program_using_dll
 
 DEBUGGING = True
@@ -15,7 +19,7 @@ ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"
 FORMAT = 'utf-8'
 
-OUTPUT_DLL_FILE_FOR_SERVER_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementSeverLibrary.dll"  
+OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementSeverLibrary.dll"
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)

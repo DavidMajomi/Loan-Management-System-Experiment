@@ -1,4 +1,5 @@
-#include "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.h"
+// #include "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.h"
+#include "sqlite3.h"
 #include <iostream>
 #include <fstream>
 #include <vector>

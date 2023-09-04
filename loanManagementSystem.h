@@ -1,7 +1,7 @@
 #ifndef LOANMANAGEMENTSYSTEM_H_INCLUDED
 #define LOANMANAGEMENTSYSTEM_H_INCLUDED
 
-#include "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.h"
+#include "sqlite3.h"
 #include <iostream>
 #include <fstream>
 #include <vector>

@@ -5,19 +5,21 @@ import random
 import sqlite3
 import subprocess
 from faker import Faker
+from pathlib import Path
 from colorama import Fore
 
+PATH = str(Path.cwd())
 
 FORMAT = 'utf-8'
-STAND_ALONE_CPP_EXECUTABLE = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\just c++.exe"  
-MAIN_CPP_FILE = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\main.cpp"
-SQLITE3_DATABASE_PATH = 'C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\bam_bam.db'
-SQLITE3_OBJECT_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.o"
-LIBRARY_CPP_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibrary.cpp"
-LIBRARY_CPP_FILE_PATH_FOR_SERVER = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibraryForServer.cpp"
-OUTPUT_DLL_FILE_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementLibrary.dll"  
-OUTPUT_DLL_FILE_FOR_SERVER_PATH = "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\loanManagementSeverLibrary.dll"  
-CPP_EXECUTABLE_FROM_PYTHON_PATH = "C:\\Users\\David\\Documents\\loanManagementSystem\\executable from python interface.exe"  
+STAND_ALONE_CPP_EXECUTABLE = PATH + "\\just c++.exe"  
+MAIN_CPP_FILE = PATH + "\\main.cpp"
+SQLITE3_DATABASE_PATH = PATH + "\\bam_bam.db"
+SQLITE3_OBJECT_FILE_PATH = PATH + "\\sqlite3.o"
+LIBRARY_CPP_FILE_PATH = PATH + "\\loanManagementLibrary.cpp"
+LIBRARY_CPP_FILE_PATH_FOR_SERVER = PATH + "\\loanManagementLibraryForServer.cpp"
+OUTPUT_DLL_FILE_PATH = PATH + "\\loanManagementLibrary.dll"  
+OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementSeverLibrary.dll"
+CPP_EXECUTABLE_FROM_PYTHON_PATH = PATH + "\\executable from python interface.exe"  
 
 class UserData(ctypes.Structure):
     _fields_ = [("user_name", ctypes.c_char_p),
