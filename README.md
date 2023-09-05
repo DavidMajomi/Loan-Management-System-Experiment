@@ -14,3 +14,6 @@ Currently, I intend to use the loan management cpp library as is.
 
  # Known Future Changes
   1.) A revision of the risk assessment methods to utilise statistics, this will be added once i have finished a basic statistics library in c++ <br>
+
+# Using Depricated Files
+The current server based files currently has most of the functionality used in the depricated files, however if you want to use or modify the depricated files, remove them from the depricated files folder, and place them back into the Loan Management System Experiment folder <br>
