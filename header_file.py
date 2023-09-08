@@ -18,8 +18,9 @@ SQLITE3_OBJECT_FILE_PATH = PATH + "\\sqlite3.o"
 LIBRARY_CPP_FILE_PATH = PATH + "\\loanManagementLibrary.cpp"
 LIBRARY_CPP_FILE_PATH_FOR_SERVER = PATH + "\\loanManagementLibraryForServer.cpp"
 OUTPUT_DLL_FILE_PATH = PATH + "\\loanManagementLibrary.dll"  
-OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementSeverLibrary.dll"
+OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 CPP_EXECUTABLE_FROM_PYTHON_PATH = PATH + "\\executable from python interface.exe"  
+
 
 class UserData(ctypes.Structure):
     _fields_ = [("user_name", ctypes.c_char_p),
@@ -749,12 +750,17 @@ def run_program_using_dll():
     cppLibrary.getValuesFromPython(initialMenuResponse, devMenuResponse)
     
     
+    
+    
 def compile_dll_for_server():
     compile_commands = "g++ -fPIC -shared -o"
     
     complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH_FOR_SERVER + " " + SQLITE3_OBJECT_FILE_PATH
     subprocess.run(complete_command_instruction, check=True)
     
+    
+def compile_dll_with_make():
+    os.system("make")
     
 def display_single_retrieved_data(retrieved_user_data):
     print(Fore.WHITE)

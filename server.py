@@ -3,7 +3,7 @@ import ctypes
 import socket
 import threading
 from pathlib import Path
-from header_file import use_cpp_from_server, compile_dll_for_server
+from header_file import use_cpp_from_server, compile_dll_with_make
 
 PATH = str(Path.cwd())
 
@@ -19,7 +19,7 @@ ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"
 FORMAT = 'utf-8'
 
-OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementSeverLibrary.dll"
+OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
@@ -62,7 +62,7 @@ def start():
     print(f"Server is listening on {SERVER}")
     
     if COMPILE_FOR_DEBUGGING is True:
-        compile_dll_for_server()
+        compile_dll_with_make()
         
     cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH)
     
