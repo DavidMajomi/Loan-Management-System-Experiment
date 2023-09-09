@@ -1,22 +1,5 @@
-#include <vector>
-#include <algorithm>
+#ifndef STATISTICSLIBRARY_H_INCLUDED
+#define STATISTICSLIBRARY_H_INCLUDED
 
-using namespace std;
 
-class BasicStatistics
-{
-    private:
-        vector <double> mode;
-        double mean, median, standardDeviation;
-    public:
-        BasicStatistics(/* args */);
-        ~BasicStatistics();
-};
-
-BasicStatistics::BasicStatistics(/* args */)
-{
-}
-
-BasicStatistics::~BasicStatistics()
-{
-}
+#endif // STATISTICSLIBRARY_H_INCLUDED
