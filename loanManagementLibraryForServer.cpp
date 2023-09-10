@@ -11,6 +11,8 @@
 using namespace std;
 
 
+// double PLACEHOLDER_BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 250;
+
 struct UserData
 {
     char *userName;
@@ -43,11 +45,15 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 
 
 extern "C" {
+    void changeBaseRate(double primeRate)
+    {
+        BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = primeRate;
+        BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION / 12;
+    }
+
     void addIndividualizedDataToDb(UserData tempUserDataFromPython)
     {
         vector<Loan> loanAccountsToAdd;
-
-        cout << tempUserDataFromPython.monthlyIncomeDecimal;
 
         addIndividualizedLoanDataFromPythonServer (tempUserDataFromPython, loanAccountsToAdd);
         createDatabaseToAddUserLoanData (loanAccountsToAdd);
@@ -62,7 +68,6 @@ extern "C" {
 
         fileOpeningError = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
         storeGeneratedDataInDatabase(loanAccounts);
-
 
         return fileOpeningError;
     }
@@ -85,6 +90,7 @@ extern "C" {
 
         return fileOpeningError;
     }
+
 
     bool readAllDatabaseDataForAnalysis()
     {

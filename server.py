@@ -3,15 +3,14 @@ import ctypes
 import socket
 import threading
 from pathlib import Path
-from header_file import use_cpp_from_server, compile_dll_with_make
+from header_file import use_cpp_from_server, compile_dll_with_make, get_prime_rate_with_alpha_vantage_api, change_base_rate_for_server
 
 PATH = str(Path.cwd())
-
-# from header_file import run_program_using_dll
 
 DEBUGGING = True
 COMPILE_FOR_DEBUGGING = DEBUGGING
 
+# Network related constants
 HEADER = 64
 PORT = 5050
 SERVER = socket.gethostbyname(socket.gethostname())
@@ -58,13 +57,25 @@ def handle_client(conn, addr, cpp_library):
         
 
 def start():
-    server.listen()
-    print(f"Server is listening on {SERVER}")
+    print("Setting up server...")
+    
+    change_base_rate, this_months_prime_rate = get_prime_rate_with_alpha_vantage_api()
     
     if COMPILE_FOR_DEBUGGING is True:
         compile_dll_with_make()
         
+        
     cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH)
+    
+    if (change_base_rate == True):
+        change_base_rate_for_server(cpp_library, this_months_prime_rate)
+    else:
+        del this_months_prime_rate    
+    
+    
+    server.listen()
+    print(f"Server is listening on {SERVER}")
+    
     
     while True:
         conn, addr = server.accept()
@@ -72,6 +83,8 @@ def start():
         thread.start()
         
         print(f"Number of Connections: {threading.active_count() - 1} \n")
+
+
 
 print("Starting Server...... \n")
 start()

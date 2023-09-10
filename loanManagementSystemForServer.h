@@ -253,13 +253,13 @@ double calculateBestCreditMetrics()
     normalizedFinancialReserves = normalizeScoreOutsideClass(MAX_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
     normalizedInterest = normalizeScoreOutsideClass(BEST_FINAL_MONTHLY_INTEREST_RATE, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
     normalizedmonthlyIncome = normalizeScoreOutsideClass(MAX_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
-    normalizedLoanAmount = normalizeScoreOutsideClass(MAX_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
+    normalizedLoanAmount = normalizeScoreOutsideClass(MIN_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
 
     loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (BEST_DEBT_TO_INCOME_RATIO * DEBT_TO_INCOME_RATIO_WEIGHT)  
                             + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)+ (normalizedInterest * INTEREST_RATE_WEIGHT) 
                             + (BEST_LOSS_GIVEN_DEFAULT * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (BEST_DEFAULT_RISK_SCORE * DEFAULT_RISK_SCORE_WEIGHT);
 
-    // cout << " Best loan viability score = " << loanViabilityScore << endl;
+    // //cout << " Best loan viability score = " << loanViabilityScore << endl;
 
     return loanViabilityScore;
 }
@@ -275,12 +275,12 @@ double calculateWorstCreditMetrics()
     normalizedFinancialReserves = normalizeScoreOutsideClass(MIN_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
     normalizedInterest = normalizeScoreOutsideClass(WORST_FINAL_MONTHLY_INTEREST_RATE, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
     normalizedmonthlyIncome = normalizeScoreOutsideClass(MIN_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
-    normalizedLoanAmount = normalizeScoreOutsideClass(MIN_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
+    normalizedLoanAmount = normalizeScoreOutsideClass(MAX_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
 
     loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (WORST_DEBT_TO_INCOME_RATIO * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)
                             + (normalizedInterest * INTEREST_RATE_WEIGHT) + (WORST_LOSS_GIVEN_DEFAULT * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (WORST_DEFAULT_RISK_SCORE * DEFAULT_RISK_SCORE_WEIGHT);
 
-    // cout << " Worst loan viability score = " << loanViabilityScore << endl;
+    // //cout << " Worst loan viability score = " << loanViabilityScore << endl;
 
     return loanViabilityScore;
 }
@@ -332,7 +332,8 @@ void Loan::simple_set_credit_metrics ()
 
     finalAdjustedViabilityScore = adjustLoanViabiltyScore(loanViabilityScore);
 
-    cout << " This is adjusted Loan viability score: " << finalAdjustedViabilityScore << endl;
+    // //cout << " This is adjusted Loan viability score: " << finalAdjustedViabilityScore << endl;
+
     
 }
 
@@ -361,9 +362,10 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
     double monthlyIncomeDecimal, financialReservesDecimal, debtToIncomeRatioDecimal, loanAmonutRequestedDeciaml;
     string userName, creditScore, monthlyIncome, financialReserves, debtToIncomeRatio, durationInMonths, loanAmountRequested;
 
+
     if (devMenuResponse == 2)
     {
-        // cout << " 2" << endl;
+        // //cout << " 2" << endl;
         inputFile.open("allGeneratedLoanData.csv"); // Based only on historical generated data, no new generated data here
     }
     else if (devMenuResponse == 1)
@@ -374,7 +376,7 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
 
     if (inputFile.fail())
     {
-        cout << " File opening failure. " << endl;
+        //cout << " File opening failure. " << endl;
         fileOpeningError = true;
     }
     else
@@ -440,17 +442,18 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
 
     if (outputCsvFile.fail())
     {
-        cout << " Output File Opening Error. " << endl;
+        //cout << " Output File Opening Error. " << endl;
         fileOpeningError = true;
     }
     else
     {
 
         numLoanAccounts = loanAccounts.size();
-        cout << " This is num processed values. outputFile function: " << numLoanAccounts << endl;
+        //cout << " This is num processed values. outputFile function: " << numLoanAccounts << endl;
 
-        outputCsvFile << "Name, credit score, monthly income, financial reserves, debt to income ratio, Duration in months, loan amount requested, Monthly interest rate, Interest rate over a year, loss Given Default, Recovery Rate, outstanding Monthly Debt Payments, ";
-        outputCsvFile << " default risk score, Loan Viability Score, Adjusted Loan viability Score" << endl;
+        outputCsvFile << "Name,credit_score,monthly_income,financial_reserves,debt_to_income_ratio,Duration_in_months,loan_amount_requested,Monthly_interest_rate,Interest_rate_over_a_year,"
+                    "loss_Given_Default,Recovery_Rate,outstanding_Monthly_Debt_Payments,";
+        outputCsvFile << "default_risk_score,Loan_Viability_Score,Adjusted_Loan_viability_Score" << endl;
 
         for (int count = 0; count < numLoanAccounts; count++)
         {
@@ -502,9 +505,11 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
 
     numberOfAddedLoanValues = loanAccountsToAdd.size();
 
+
+
     if (rc != SQLITE_OK) {
         // Handle error
-        cout << "Step 1 error." << endl;
+        //cout << "Step 1 error." << endl;
         exit(1);
     }
 
@@ -515,7 +520,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
 
     if (rc != SQLITE_OK) {
         // Handle error preparing the statement
-        cout << "Step 2 error." << endl;
+        //cout << "Step 2 error." << endl;
         sqlite3_close(db);
         exit(1);
     }
@@ -523,7 +528,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
 
     if (rc != SQLITE_OK) {
         // Handle error
-        cout << " Step 3 error. " << endl;
+        //cout << " Step 3 error. " << endl;
         sqlite3_close(db);
         exit (1);
     }
@@ -547,7 +552,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         loanViabilityScore = loanAccountsToAdd[count].getLoanViabilityScore();
         adjustedLoanViabilityScore = loanAccountsToAdd[count].getFinalAdjustedLoanViabilityScore();
         
-        cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
+        // //cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
 
         stringCreditScore = to_string(creditScore);
         stringMonthlyIncome = to_string(monthlyIncome);
@@ -564,7 +569,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         stringLoanViabilityScore = to_string(loanViabilityScore);
         stringAdjustedLoanViabilityScore = to_string(adjustedLoanViabilityScore);
 
-        cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
+        // //cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
 
         valsToInsert.push_back(stringCreditScore);
         valsToInsert.push_back(stringMonthlyIncome);
@@ -583,11 +588,11 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
 
         numMetricsToAdd = valsToInsert.size();
 
-        // cout << " after pushback" << endl;
+        // //cout << " after pushback" << endl;
 
         stringFinalSqlInsertStatement = "'" + userName + "',";
 
-        // cout << " This is userNmae after string addition: " << stringFinalSqlInsertStatement << endl;
+        // //cout << " This is userNmae after string addition: " << stringFinalSqlInsertStatement << endl;
 
         for (int count = 0; count < numMetricsToAdd; count++)
         {
@@ -603,14 +608,14 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
             }
         }
         
-        cout << endl;
-        // cout << stringFinalSqlInsertStatement << endl;
+        //cout << endl;
+        // //cout << stringFinalSqlInsertStatement << endl;
 
 
         insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) VALUES (" + stringFinalSqlInsertStatement + ")"; 
 
 
-        cout << insertToSql;
+        // //cout << insertToSql;
 
         sqlInsertLine = insertToSql.c_str();
         sql = sqlInsertLine;
@@ -619,7 +624,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
 
         if (rc != SQLITE_OK) {
             // Handle error
-            cout << " Step 4 error. " << endl;
+            //cout << " Step 4 error. " << endl;
             sqlite3_close(db);
             exit (1);
         }
@@ -632,8 +637,8 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
-    // cout << "The base" << endl;
-    // cout << " New values for testing python execution." << endl;
+    // //cout << "The base" << endl;
+    // //cout << " New values for testing python execution." << endl;
 
 }
 
@@ -661,7 +666,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
     if (rc != SQLITE_OK) {
         // Handle error
-        cout << "Step 1 error. 2" << endl;
+        //cout << "Step 1 error. 2" << endl;
         exit(1);
     }
 
@@ -672,7 +677,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
     if (rc != SQLITE_OK) {
         // Handle error preparing the statement
-        cout << "Step 2 error. 2" << endl;
+        //cout << "Step 2 error. 2" << endl;
         sqlite3_close(db);
         exit(1);
     }
@@ -680,7 +685,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
     if (rc != SQLITE_OK) {
         // Handle error
-        cout << " Step 3 error. 2" << endl;
+        //cout << " Step 3 error. 2" << endl;
         sqlite3_close(db);
         exit (1);
     }
@@ -718,7 +723,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         stringLoanViabilityScore = to_string(loanViabilityScore);
         stringAdjustedLoanViabilityScore = to_string(adjustedLoanViabilityScore);
 
-        // cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
+        // //cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
 
         valsToInsert.push_back(stringCreditScore);
         valsToInsert.push_back(stringMonthlyIncome);
@@ -737,11 +742,11 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
         numMetricsToAdd = valsToInsert.size();
 
-        // cout << " after pushback" << endl;
+        // //cout << " after pushback" << endl;
 
         stringFinalSqlInsertStatement = "'" + userName + "',";
 
-        // cout << " This is userNmae after string addition: " << stringFinalSqlInsertStatement << endl;
+        // //cout << " This is userNmae after string addition: " << stringFinalSqlInsertStatement << endl;
 
         for (int count = 0; count < numMetricsToAdd; count++)
         {
@@ -757,14 +762,14 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
             }
         }
         
-        cout << endl;
-        // cout << stringFinalSqlInsertStatement << endl;
+        //cout << endl;
+        // //cout << stringFinalSqlInsertStatement << endl;
 
         insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
                       " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
                       " adjusted_loan_viability_score) VALUES (" + stringFinalSqlInsertStatement + ")"; 
 
-        // cout << insertToSql;
+        // //cout << insertToSql;
 
         sqlInsertLine = insertToSql.c_str();
         sql = sqlInsertLine;
@@ -773,7 +778,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
         if (rc != SQLITE_OK) {
             // Handle error
-            cout << " Step 4 error. 2" << endl;
+            //cout << " Step 4 error. 2" << endl;
             sqlite3_close(db);
             exit (1);
         }
@@ -802,7 +807,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
     if (rc != SQLITE_OK)
     {
         // Handle error
-        cout << "Step 1 error." << endl;
+        //cout << "Step 1 error." << endl;
         errorRetrievingData = true;
     }
     else
@@ -812,7 +817,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 
         if (outputCsvFile.fail())
         {
-            cout << " Output File Opening Error. " << endl;
+            //cout << " Output File Opening Error. " << endl;
             errorRetrievingData = true;
         }
         else
@@ -823,13 +828,14 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 
             if (rc != SQLITE_OK) {
                 // Handle error
-                cout << " Step 5 error. " << endl;
+                //cout << " Step 5 error. " << endl;
                 sqlite3_close(db);
                 errorRetrievingData = true;
             }
 
-            outputCsvFile << "Name, credit score, monthly income, financial reserves, debt to income ratio, Duration in months, loan amount requested, Monthly interest rate, Interest rate over a year, loss Given Default, Recovery Rate, outstanding Monthly Debt Payments, ";
-            outputCsvFile << " default risk score, Loan Viability Score, Adjusted Loan viability Score" << endl;
+            outputCsvFile << "Name,credit_score,monthly_income,financial_reserves,debt_to_income_ratio,Duration_in_months,loan_amount_requested,Monthly_interest_rate,Interest_rate_over_a_year,"
+            "loss_Given_Default,Recovery_Rate,outstanding_Monthly_Debt_Payments,";
+            outputCsvFile << "default_risk_score,Loan_Viability_Score,Adjusted_Loan_viability_Score" << endl;
 
             while (sqlite3_step(stmt) == SQLITE_ROW) {
                 // loanId = sqlite3_column_int(stmt, 0);
@@ -869,9 +875,9 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 
                 
 
-                // cout << " This is id " << loanId << endl;
-                // cout << " This is name " << userName << endl;
-                // cout << " This is credit score" << creditScore << endl;
+                // //cout << " This is id " << loanId << endl;
+                // //cout << " This is name " << userName << endl;
+                // //cout << " This is credit score" << creditScore << endl;
 
             }
 

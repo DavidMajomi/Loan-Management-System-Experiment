@@ -1,13 +1,17 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+
 const char* DATABASE_NAME = "bam_bam.db";
 
 
-const unsigned short int MAX_CREDIT_SCORE = 850, MIN_CREDIT_SCORE = 300, MAX_MONTHLY_INCOME = 12000, MIN_MONTHLY_INCOME = 800;
+const unsigned short int MAX_CREDIT_SCORE = 850;
+const unsigned short int MIN_CREDIT_SCORE = 300;
+const unsigned short int MAX_MONTHLY_INCOME = 12000;
+const unsigned short int MIN_MONTHLY_INCOME = 800;
 
-const double BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 2;
-const double BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION / 12;
+double BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 2; // This is not a constatnt because it is the only important metric modified by the python program. The base rate is always 2% except when modified to be up to date
+double BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION / 12;
 const double CREDIT_SCORE_WEIGHT = 0.20;          // Most important metric, it shows credit worthiness, while minimizing risk
 const double LOSS_GIVEN_DEFAULT_WEIGHT = -0.15;   // Potential Losses when considering Financial Reserves
 const double DEBT_TO_INCOME_RATIO_WEIGHT = -0.15;   // Works as a measure of the customer's ability to shoulder debt weight
@@ -27,7 +31,7 @@ const double MIN_FINANCIAL_RESERVES = 10000;
 const double MAX_LOAN_AMOUNT = 50000;
 const double MIN_LOAN_AMOUNT = 500;
 
-const double BEST_DEFAULT_RISK_SCORE = 0;   // add this to loan viability formula
+const double BEST_DEFAULT_RISK_SCORE = 0; 
 const double BEST_LOSS_GIVEN_DEFAULT = 0;
 const double BEST_DEBT_TO_INCOME_RATIO = 0;
 const double BEST_FINAL_MONTHLY_INTEREST_RATE = 0.58;

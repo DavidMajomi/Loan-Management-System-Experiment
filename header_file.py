@@ -1,6 +1,8 @@
 import os
 import csv
+import json
 import ctypes
+import requests
 import random
 import sqlite3
 import subprocess
@@ -750,8 +752,6 @@ def run_program_using_dll():
     cppLibrary.getValuesFromPython(initialMenuResponse, devMenuResponse)
     
     
-    
-    
 def compile_dll_for_server():
     compile_commands = "g++ -fPIC -shared -o"
     
@@ -761,6 +761,8 @@ def compile_dll_for_server():
     
 def compile_dll_with_make():
     os.system("make")
+    os.system("make clean")
+    
     
 def display_single_retrieved_data(retrieved_user_data):
     print(Fore.WHITE)
@@ -822,6 +824,37 @@ def dev_menu_response(instructions, operation_state):
                 print(Fore.GREEN + " Analyzed Data Successfully")
         else:
             print(Fore.RED + " Failed to analyze data.")
+    
+    
+def get_prime_rate_with_alpha_vantage_api():
+    change_base_rate = True
+
+    if os.path.exists("alphaVantageApiKey.txt"):
+        with open("alphaVantageApiKey.txt", "r") as file:
+            api_key = file.readline()
+    else:
+        change_base_rate = False
+
+    url = f'https://www.alphavantage.co/query?function=FEDERAL_FUNDS_RATE&interval=monthly&apikey={api_key}'
+    returnedData = requests.get(url)
+    data = returnedData.json()
+
+    # last_month = data["data"][0]["date"]
+    last_months_federal_funds_rate = float(data["data"][0]["value"])
+    
+    this_months_prime_rate = last_months_federal_funds_rate + 1
+    this_months_prime_rate = ctypes.c_double(this_months_prime_rate)
+
+    # jsonData = json.dumps(data, indent = 2)
+
+    # print(last_month)
+    # print(last_months_prime_rate)
+    
+    return change_base_rate, this_months_prime_rate
+
+    
+def change_base_rate_for_server(cpp_library, this_months_prime_rate):
+    cpp_library.changeBaseRate(this_months_prime_rate)
     
     
 def use_cpp_from_server(recieved_data, cpp_library):
