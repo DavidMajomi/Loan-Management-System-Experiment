@@ -28,11 +28,9 @@ Duration_in_months = 34
 loan_amount_requested = 1861
 loss_Given_Default = (loan_amount_requested - financial_reserves) / loan_amount_requested; # SOURCE = WIKIPEDIA
 predicted_monthly_interest_rate = float(predict_interest_rate.predict([[credit_score, monthly_income, financial_reserves, debt_to_income_ratio, Duration_in_months, loan_amount_requested, loss_Given_Default]]))
-print(type(predicted_monthly_interest_rate)) 
-print(predicted_monthly_interest_rate) 
 predicted_default_risk_score = float(predict_default_risk_score.predict([[credit_score, monthly_income, financial_reserves, debt_to_income_ratio, Duration_in_months, loan_amount_requested, predicted_monthly_interest_rate, loss_Given_Default]]))
 predicted_loan_viability_score = float(predict_loan_viability_score.predict([[credit_score, monthly_income, financial_reserves, debt_to_income_ratio, Duration_in_months, loan_amount_requested, predicted_monthly_interest_rate, loss_Given_Default, predicted_default_risk_score]]))
-
+# predict_loan_viability_score.-
 
 
 
