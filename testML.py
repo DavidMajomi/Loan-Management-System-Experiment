@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn import linear_model
+import matplotlib.pyplot as pyplot
+import pickle
 
 df = pd.read_csv("analyzedDataFromDb.csv")
 
@@ -40,6 +42,9 @@ test_predict_adjusted_loan_viability_score = test_predict_adjusted_loan_viabilit
 # test_prediction = regressionObject.predict([[411, 2966.61, 3530.38, 0.68, 34, 1861, 2.194170, -0.897034,  1.183120, 0.076221]])
 
 print(test_predict_adjusted_loan_viability_score)
+
+with open("LMSModel.pickle", "wb") as file:
+    pickle.dump(test_predict_adjusted_loan_viability_score, file)
 
 
     
