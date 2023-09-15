@@ -9,7 +9,7 @@ df = pd.read_csv("analyzedDataFromDb.csv")
 # print(df)
 
 # print(df["loan_amount_requested"])
-
+ 
 test_predict_adjusted_loan_viability_score_object = linear_model.LinearRegression()
 predict_default_risk_score = linear_model.LinearRegression()
 predict_interest_rate = linear_model.LinearRegression()
@@ -35,17 +35,12 @@ predicted_loan_viability_score = float(predict_loan_viability_score.predict([[cr
 # predict_loan_viability_score.-
 
 
-
-
 # print(regressionObject.coef_)
 test_predict_adjusted_loan_viability_score = test_predict_adjusted_loan_viability_score_object.predict([[credit_score, monthly_income, financial_reserves, debt_to_income_ratio, Duration_in_months, loan_amount_requested, predicted_monthly_interest_rate, loss_Given_Default, predicted_default_risk_score, predicted_loan_viability_score]])
 # test_prediction = regressionObject.predict([[411, 2966.61, 3530.38, 0.68, 34, 1861, 2.194170, -0.897034,  1.183120, 0.076221]])
 
+list_of_models = [predict_interest_rate, predict_default_risk_score, predict_loan_viability_score, test_predict_adjusted_loan_viability_score_object]
 print(test_predict_adjusted_loan_viability_score)
 
 with open("LMSModel.pickle", "wb") as file:
-    pickle.dump(test_predict_adjusted_loan_viability_score, file)
-
-
-    
-    
+    pickle.dump(list_of_models, file)

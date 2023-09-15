@@ -1,17 +1,17 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONSTANTS_H_INCLUDED
+#define CONSTANTS_H_INCLUDED
 
 
 const char* DATABASE_NAME = "bam_bam.db";
 
+double BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 2; // This is not a constatnt because it is the only important metric modified by the python program. The base rate is always 2% except when modified to be up to date
+double BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION / 12;
 
 const unsigned short int MAX_CREDIT_SCORE = 850;
 const unsigned short int MIN_CREDIT_SCORE = 300;
 const unsigned short int MAX_MONTHLY_INCOME = 12000;
 const unsigned short int MIN_MONTHLY_INCOME = 800;
 
-double BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 2; // This is not a constatnt because it is the only important metric modified by the python program. The base rate is always 2% except when modified to be up to date
-double BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION / 12;
 const double CREDIT_SCORE_WEIGHT = 0.20;          // Most important metric, it shows credit worthiness, while minimizing risk
 const double LOSS_GIVEN_DEFAULT_WEIGHT = -0.15;   // Potential Losses when considering Financial Reserves
 const double DEBT_TO_INCOME_RATIO_WEIGHT = -0.15;   // Works as a measure of the customer's ability to shoulder debt weight

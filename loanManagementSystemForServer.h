@@ -37,6 +37,7 @@ private:
     }
 
 public:
+    static double normalizeScoreOutsideClass(double rawScore, double maxScore, double minScore);
     double adjustLoanViabiltyScore (double rawLoanViabilityScore);
     Loan(int values)
     {
@@ -234,7 +235,7 @@ double Loan::normalizeScore(double rawScore, double maxScore, double minScore)
 }
 
 
-double normalizeScoreOutsideClass(double rawScore, double maxScore, double minScore)
+double Loan::normalizeScoreOutsideClass(double rawScore, double maxScore, double minScore)
 {
     double normalizedScore, maxScaleValue = 1, minScaleValue = 0;
 
@@ -248,12 +249,12 @@ double calculateBestCreditMetrics()
 {
     double loanViabilityScore, normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount, normalizedInterest, normalizedDuration, normalizedFinancialReserves;
 
-    normalizedCreditScore =  normalizeScoreOutsideClass(MAX_CREDIT_SCORE, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
-    normalizedDuration = normalizeScoreOutsideClass(MAX_LOAN_DURATION, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
-    normalizedFinancialReserves = normalizeScoreOutsideClass(MAX_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
-    normalizedInterest = normalizeScoreOutsideClass(BEST_FINAL_MONTHLY_INTEREST_RATE, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
-    normalizedmonthlyIncome = normalizeScoreOutsideClass(MAX_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
-    normalizedLoanAmount = normalizeScoreOutsideClass(MIN_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
+    normalizedCreditScore =  Loan::normalizeScoreOutsideClass(MAX_CREDIT_SCORE, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
+    normalizedDuration = Loan::normalizeScoreOutsideClass(MAX_LOAN_DURATION, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
+    normalizedFinancialReserves = Loan::normalizeScoreOutsideClass(MAX_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
+    normalizedInterest = Loan::normalizeScoreOutsideClass(BEST_FINAL_MONTHLY_INTEREST_RATE, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
+    normalizedmonthlyIncome = Loan::normalizeScoreOutsideClass(MAX_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
+    normalizedLoanAmount = Loan::normalizeScoreOutsideClass(MIN_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
 
     loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (BEST_DEBT_TO_INCOME_RATIO * DEBT_TO_INCOME_RATIO_WEIGHT)  
                             + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)+ (normalizedInterest * INTEREST_RATE_WEIGHT) 
@@ -270,12 +271,12 @@ double calculateWorstCreditMetrics()
 {
     double loanViabilityScore, normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount, normalizedInterest, normalizedDuration, normalizedFinancialReserves;
 
-    normalizedCreditScore =  normalizeScoreOutsideClass(MIN_CREDIT_SCORE, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
-    normalizedDuration = normalizeScoreOutsideClass(MIN_LOAN_DURATION, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
-    normalizedFinancialReserves = normalizeScoreOutsideClass(MIN_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
-    normalizedInterest = normalizeScoreOutsideClass(WORST_FINAL_MONTHLY_INTEREST_RATE, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
-    normalizedmonthlyIncome = normalizeScoreOutsideClass(MIN_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
-    normalizedLoanAmount = normalizeScoreOutsideClass(MAX_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
+    normalizedCreditScore =  Loan::normalizeScoreOutsideClass(MIN_CREDIT_SCORE, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
+    normalizedDuration = Loan::normalizeScoreOutsideClass(MIN_LOAN_DURATION, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
+    normalizedFinancialReserves = Loan::normalizeScoreOutsideClass(MIN_FINANCIAL_RESERVES, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
+    normalizedInterest = Loan::normalizeScoreOutsideClass(WORST_FINAL_MONTHLY_INTEREST_RATE, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
+    normalizedmonthlyIncome = Loan::normalizeScoreOutsideClass(MIN_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
+    normalizedLoanAmount = Loan::normalizeScoreOutsideClass(MAX_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
 
     loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (WORST_DEBT_TO_INCOME_RATIO * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)
                             + (normalizedInterest * INTEREST_RATE_WEIGHT) + (WORST_LOSS_GIVEN_DEFAULT * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (WORST_DEFAULT_RISK_SCORE * DEFAULT_RISK_SCORE_WEIGHT);
