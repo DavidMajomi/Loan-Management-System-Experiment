@@ -2,11 +2,8 @@
 #define LOAN_H_INCLUDED
 
 
-// #include "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.h"
-#include "sqlite3.h"
 #include "constants.h"
 #include <iostream>
-#include <fstream>
 #include <vector>
 #include <algorithm>
 #include <string>
@@ -42,6 +39,7 @@ public:
     static double calculateWorstCreditMetrics();
     static double calculateBestCreditMetrics();
     static double calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, double normalizedFinancialReserves, double defaultRiskScore);
+    double calculateInterestForDefaultRisk (double baseRate);
     Loan(int values)
     {
 
@@ -57,67 +55,6 @@ public:
     void setLoanAmount (double amount)
     {
         loanAmount = amount;
-    }
-    void calculateInterestForDefaultRisk ()
-    {
-        double baseRate;
-
-        set_monthly_debt_payments();
-        baseRate = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION;
-
-        if (creditScore >= 800)
-        {
-            baseRate = baseRate + 2;
-
-        }
-        else if (creditScore >= 740 && creditScore < 800)
-        {
-            baseRate = baseRate + 6;
-        }
-        else if (creditScore >= 670 && creditScore <= 739)
-        {
-            baseRate = baseRate + 9;
-        }
-        else if (creditScore >=580 && creditScore <= 669)
-        {
-           baseRate = baseRate + 12;
-        }
-        else if (creditScore >= 300 && creditScore <= 579)
-        {
-            baseRate = baseRate + 20;
-        }
-
-
-
-        finalMonthlyInterestRate = baseRate / 12;
-
-    }
-    double calculateInterestForDefaultRisk (double baseRate)
-    {
-        if (creditScore >= 800)
-        {
-            baseRate = baseRate + 2;
-
-        }
-        else if (creditScore >= 740 && creditScore < 800)
-        {
-            baseRate = baseRate + 6;
-        }
-        else if (creditScore >= 670 && creditScore <= 739)
-        {
-            baseRate = baseRate + 9;
-        }
-        else if (creditScore >=580 && creditScore <= 669)
-        {
-           baseRate = baseRate + 12;
-        }
-        else if (creditScore >= 300 && creditScore <= 579)
-        {
-            baseRate = baseRate + 20;
-        }
-
-        return baseRate / 12;
-
     }
     void setLoanDuration(int loanDuration)
     {
@@ -143,10 +80,6 @@ public:
     {
         return userName;
     }
-    // int getLoanId () const
-    // {
-    //     return loanId;
-    // }
     int getCreditScore () const
     {
         return creditScore;
@@ -217,16 +150,6 @@ double Loan::normalizeScore(double rawScore, double maxScore, double minScore)
 }
 
 
-// double Loan::normalizeScore(double rawScore, double maxScore, double minScore)
-// {
-//     double normalizedScore, maxScaleValue = 1, minScaleValue = 0;
-
-//     normalizedScore = ((rawScore - minScore) / (maxScore - minScore)) * (maxScaleValue - minScaleValue) + (minScaleValue);
-
-//     return normalizedScore;
-// }
-
-
 double Loan::calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, double normalizedFinancialReserves, double defaultRiskScore)
 {
     double loanViabilityScore;
@@ -283,6 +206,34 @@ double Loan::calculateWorstCreditMetrics ()
 }
 
 
+double Loan::calculateInterestForDefaultRisk (double baseRate)
+{
+    if (creditScore >= 800)
+    {
+        baseRate = baseRate + 2;
+
+    }
+    else if (creditScore >= 740 && creditScore < 800)
+    {
+        baseRate = baseRate + 6;
+    }
+    else if (creditScore >= 670 && creditScore <= 739)
+    {
+        baseRate = baseRate + 9;
+    }
+    else if (creditScore >=580 && creditScore <= 669)
+    {
+        baseRate = baseRate + 12;
+    }
+    else if (creditScore >= 300 && creditScore <= 579)
+    {
+        baseRate = baseRate + 20;
+    }
+
+    return baseRate / 12;
+}
+
+
 double Loan::adjustLoanViabiltyScore (double rawLoanViabilityScore)
 {
     unsigned short int maxScaleValue = 100, minScaleValue = 0;
@@ -332,6 +283,17 @@ void Loan::simple_set_credit_metrics ()
 
     
 }
+
+
+
+// double normalizeScoreOutsideClass(double rawScore, double maxScore, double minScore)
+// {
+//     double normalizedScore, maxScaleValue = 1, minScaleValue = 0;
+
+//     normalizedScore = ((rawScore - minScore) / (maxScore - minScore)) * (maxScaleValue - minScaleValue) + (minScaleValue);
+
+//     return normalizedScore;
+// }
 
 
 
