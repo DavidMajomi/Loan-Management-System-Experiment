@@ -55,7 +55,7 @@ public:
     {
         loanAmount = amount;
     }
-    void calculateInterestForDefaultRisk ()
+    void setFinalMonthlyInterestRate ()
     {
         double baseRate;
 
@@ -161,10 +161,6 @@ public:
     {
         return userName;
     }
-    // int getLoanId () const
-    // {
-    //     return loanId;
-    // }
     int getCreditScore () const
     {
         return creditScore;
@@ -415,7 +411,7 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
                 userAccount.setLoanDuration(durationInMonthsInteger);
                 userAccount.setLoanAmount(loanAmonutRequestedDeciaml);
                 // userAccount.set_monthly_debt_payments();
-                userAccount.calculateInterestForDefaultRisk();
+                userAccount.setFinalMonthlyInterestRate();
                 userAccount.computeCreditData();
 
                 loanAccounts.push_back(userAccount);

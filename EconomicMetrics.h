@@ -5,29 +5,33 @@
 class EconomicMetrics
 {
 private:
-    double federalFundsRatePercent, baseRate, yearOnYearInflationRatePercent, gdp;
+    double federalFundsRatePercent, baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans, yearOnYearInflationRatePercent, gdp;
+
 public:
     void setFederalFundsRatePercent(double ffr)
     {
         federalFundsRatePercent = ffr;
+        baseYearlyInterestRatePercentForLoans = federalFundsRatePercent + 3;
+        baseMonthlyInterestRatePercentForLoans = baseYearlyInterestRatePercentForLoans / 12;
+
     }
     double getFederalFundsRate()
     {
         return federalFundsRatePercent;
     }
-    void setBaseRate(double rate)
+    double getBaseYearlyInterestRatePercentForLoans()
     {
-        baseRate = rate;
+        return baseYearlyInterestRatePercentForLoans;
     }
-    double getBaseRate()
+    double getBaseMonthlyInterestRatePercentForLoans() const
     {
-        return baseRate;
+        return baseMonthlyInterestRatePercentForLoans;
     }
     void setYearOnYearInflationRatePercent(double rate)
     {
         yearOnYearInflationRatePercent = rate;
     }
-    double getYearOnYearInflationRatePercent()
+    double getYearOnYearInflationRatePercent() const
     {
         return yearOnYearInflationRatePercent;
     }

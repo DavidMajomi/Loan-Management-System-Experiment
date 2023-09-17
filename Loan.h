@@ -3,6 +3,8 @@
 
 
 #include "constants.h"
+#include "EconomicMetrics.h"
+#include "exposePythonToCpp.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -10,14 +12,15 @@
 
 using namespace std;
 
-
+EconomicMetrics CURRENT_METRICS = getTodaysMetrics();
 class Loan
 {
 private:
     unsigned short int creditScore, duration;
     string userName;
-    double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan, outstandingMonthlyDebtPaymentsPriorToLoan,
-           totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, loanViabilityScore, finalAdjustedViabilityScore, normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount,
+    double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
+           outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, loanViabilityScore,
+           finalAdjustedViabilityScore, normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount,
            normalizedInterest, normalizedDuration, normalizedFinancialReserves;
 
 
@@ -39,7 +42,8 @@ public:
     static double calculateWorstCreditMetrics();
     static double calculateBestCreditMetrics();
     static double calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, double normalizedFinancialReserves, double defaultRiskScore);
-    double calculateInterestForDefaultRisk (double baseRate);
+    double calculateInterestForDefaultRisk ();
+    void setFinalMonthlyInterestRate ();
     Loan(int values)
     {
 
@@ -205,9 +209,50 @@ double Loan::calculateWorstCreditMetrics ()
     return loanViabilityScore;
 }
 
-
-double Loan::calculateInterestForDefaultRisk (double baseRate)
+/**
+ * @brief Funtion: It sets a base inteest rate by group used in calculating default risk sourced form CFPB's Market report, as well as Forbe's Average Personal Loan Interest Rates By Credit Score "https://www.forbes.com/advisor/personal-loans/personal-loan-rates/". The results from the linked article 
+ * are the foundation of this function, however the values for the rates are modified to better integrate with this program.
+ * 
+ * @param baseRate 
+ * @return double 
+ */
+double Loan::calculateInterestForDefaultRisk ()
 {
+    double interestRateByGroup;
+
+    if (creditScore >= 781)
+    {
+        interestRateByGroup = SUPER_PRIME_RATE;
+
+    }
+    else if (creditScore >= 661 && creditScore <= 780)
+    {
+        interestRateByGroup = PRIME;
+    }
+    else if (creditScore >= 601 && creditScore <= 660)
+    {
+        interestRateByGroup = NEAR_PRIME;
+    }
+    else if (creditScore >= 500 && creditScore <= 600)
+    {
+        interestRateByGroup = SUB_PRIME_RATE;
+    }
+    else if (creditScore <= 499)
+    {
+        interestRateByGroup = DEEP_SUBPRIME_RATE;
+    }
+
+    return interestRateByGroup / 12;
+}
+
+
+void Loan::setFinalMonthlyInterestRate ()
+{
+    double baseRate;
+
+    set_monthly_debt_payments();
+    baseRate = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION;
+
     if (creditScore >= 800)
     {
         baseRate = baseRate + 2;
@@ -230,7 +275,9 @@ double Loan::calculateInterestForDefaultRisk (double baseRate)
         baseRate = baseRate + 20;
     }
 
-    return baseRate / 12;
+
+    finalMonthlyInterestRate = baseRate / 12;
+
 }
 
 
@@ -249,13 +296,10 @@ double Loan::adjustLoanViabiltyScore (double rawLoanViabilityScore)
 
 double Loan::calculateDefaultRisk ()  // function not needed now since calc interest rate is not complete
 {
-    //int  creditScore = 850;
-    //double lossGivenDefault = 0, duration = 19, loanAmount = 200000, bestRecoveryRate = 1, calculatedDefaultRisk;
-    double bestRate, finalInterestRate, calculatedDefaultRisk, bestMonthlyRate;
+    double monthlyInterestRateByCreditGroup, calculatedDefaultRisk;
 
-    // bestMonthlyRate = BASE_INTEREST_RATE_FOR_CALCULATION / 12;
-    finalInterestRate = calculateInterestForDefaultRisk(BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION);      // since at best credit rate, base rate is the automatic rate
-    calculatedDefaultRisk = finalInterestRate - BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION;
+    monthlyInterestRateByCreditGroup = calculateInterestForDefaultRisk();
+    calculatedDefaultRisk = monthlyInterestRateByCreditGroup - CURRENT_METRICS.getBaseMonthlyInterestRatePercentForLoans();
 
     return calculatedDefaultRisk;
 }
