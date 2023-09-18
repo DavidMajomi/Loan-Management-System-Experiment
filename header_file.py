@@ -206,12 +206,12 @@ def get_customer_data_from_cli_for_server():
     # user_monthly_income = input("Enter your monthly income: ")
     user_monthly_income = "12000"# str(user_monthly_income)
     # user_financial_reserves = "200000"# input("Enter your financial reserves: ")
-    user_financial_reserves = "200000" # str(user_financial_reserves)
+    user_financial_reserves = "50000" # str(user_financial_reserves)
     # user_debt_to_income_ratio = input("Enter your debt to income ratio: ")
-    user_debt_to_income_ratio = "1" # str(user_debt_to_income_ratio)
+    user_debt_to_income_ratio = "0" # str(user_debt_to_income_ratio)
     user_loan_amoumnt_requested = "20000" # str(user_loan_amoumnt_requested)
     # loan_duration_to_cpp = input("Enter the duration of the loan: ")
-    user_loan_duration = "30" # str(loan_duration_to_cpp)
+    user_loan_duration = "1" # str(loan_duration_to_cpp)
     
     customer_data = {
         "user_name" : user_name,

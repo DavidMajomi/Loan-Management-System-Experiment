@@ -4,7 +4,6 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
-#include "exposePythonToCpp.h"
 #include "loanManagementSystemForServer.h"
 
 // Use g++ -fPIC -shared -o loanManagementLibraryForServer.dll loanManagementLibraryForServer.cpp sqlite3.o
@@ -26,6 +25,12 @@ struct UserData
 };
 
 
+void setCurrentMetrics(double primeRate)
+{
+    CURRENT_METRICS.setFederalFundsRatePercent(primeRate);
+    CURRENT_METRICS.lockModificationOfClass();
+}
+
 void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <Loan>& loanAccountsToAdd)
 {
     Loan userAccount(1);
@@ -37,8 +42,8 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
     userAccount.setDebtToIncomeRatio(tempUserData.debtToIncomeRatioDecimal);
     userAccount.setLoanDuration(tempUserData.duration);
     userAccount.setLoanAmount(tempUserData.loanAmonutRequestedDeciaml);
-    userAccount.setFinalMonthlyInterestRate();
     userAccount.computeCreditData();
+    userAccount.setFinalMonthlyInterestRate();
 
 
     loanAccountsToAdd.push_back(userAccount);
@@ -48,14 +53,7 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 extern "C" {
     void changeBaseRate(double primeRate)
     {
-        EconomicMetrics recievedMetrics;
-
-        BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = primeRate;
-        BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION / 12;
-
-        recievedMetrics.setFederalFundsRatePercent(primeRate);
-        TODAYS_METRICS = recievedMetrics;
-
+        setCurrentMetrics(primeRate);
     }
 
 
@@ -66,8 +64,8 @@ extern "C" {
         addIndividualizedLoanDataFromPythonServer (tempUserDataFromPython, loanAccountsToAdd);
         createDatabaseToAddUserLoanData (loanAccountsToAdd);
 
-        cout << " This is federalFundsRate from todays metrics: " << TODAYS_METRICS.getFederalFundsRate() << endl;
-        cout << " This is federalFundsRate from current metrics: " << CURRENT_METRICS.getFederalFundsRate() << endl;
+        // cout << " This is federalFundsRate from todays metrics: " << TODAYS_METRICS.getFederalFundsRate() << endl;
+        // cout << " This is federalFundsRate from current metrics: " << CURRENT_METRICS.getFederalFundsRate() << endl;
     }
     
 
