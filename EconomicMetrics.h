@@ -33,15 +33,15 @@ public:
         else
         {
             cout << " Error, cannot set value to a locked class. This is done to replicate a constant. This ensures that values cannot be changed by accident when using the dll. " << endl;
-
+            exit(1);
         }
 
     }
-    double getFederalFundsRate()
+    double getFederalFundsRate() const
     {
         return federalFundsRatePercent;
     }
-    double getBaseYearlyInterestRatePercentForLoans()
+    double getBaseYearlyInterestRatePercentForLoans() const
     {
         return baseYearlyInterestRatePercentForLoans;
     }
@@ -57,7 +57,8 @@ public:
         }
         else
         {
-            cout << " Error, cannot set value to a locked class. This is done to replicate a constant. This ensures that values cannot be changed by accident when using the dll. " << endl;            
+            cout << " Error, cannot set value to a locked class. This is done to replicate a constant. This ensures that values cannot be changed / modified unnecesserily by accident when using the dll. " << endl;
+            exit(1);
         }
     }
     double getYearOnYearInflationRatePercent() const

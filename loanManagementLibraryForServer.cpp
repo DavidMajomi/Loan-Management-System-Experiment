@@ -10,9 +10,6 @@
 
 using namespace std;
 
-
-// double PLACEHOLDER_BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 250;
-
 struct UserData
 {
     char *userName;
@@ -113,4 +110,3 @@ extern "C" {
 
 
 }
-

@@ -1,18 +1,19 @@
 #ifndef CONSTANTS_H_INCLUDED
 #define CONSTANTS_H_INCLUDED
 
+#include <string>
 
-const char* DATABASE_NAME = "newTest.db";
+// using namespace std;
+// FILE NAMES
+const char* DATABASE_NAME = "newTest.db";       // Has to be a constant char to be compatibe with sqlite
+const string CSV_FILE_FOR_ALL_GENERATED_LOAN_DATA = "allGeneratedLoanData.csv";     // Based only on historical generated data, no new generated data here
+const string OUTPUT_CSV_FILE_FOR_PROCESSED_DATA = "processedLoanData.csv";
+const string CSV_FILE_FOR_STORING_ANALAYZED_DB_VALUES = "analyzedDataFromDb.csv";
+const string CSV_FILE_FOR_TEMP_GENERTED_DATA_FOR_BD = "tempGeneratedLoanDataForDbStorage.csv";
+
 
 // double BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION = 2; // This is not a constatnt because it is the only important metric modified by the python program. The base rate is always 2% except when modified to be up to date
 // double BEST_MONTHLY_INTEREST_RATE_FOR_CALCULATION = BASE_YEARLY_INTEREST_RATE_FOR_CALCULATION / 12;
-
-
-const double SUPER_PRIME_RATE = 6.39;
-const double PRIME = 10.54;
-const double NEAR_PRIME = 15.63;
-const double SUB_PRIME_RATE = 17.27;
-const double DEEP_SUBPRIME_RATE = 50.00;
 
 
 const unsigned short int MAX_CREDIT_SCORE = 850;

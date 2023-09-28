@@ -221,24 +221,24 @@ double Loan::calculateInterestForDefaultRisk ()
 
     if (creditScore >= 781)
     {
-        interestRateByGroup = SUPER_PRIME_RATE;
+        interestRateByGroup = CURRENT_METRICS.getSuperPrimeRate();
 
     }
     else if (creditScore >= 661 && creditScore <= 780)
     {
-        interestRateByGroup = PRIME;
+        interestRateByGroup = CURRENT_METRICS.getPrimeRate();
     }
     else if (creditScore >= 601 && creditScore <= 660)
     {
-        interestRateByGroup = NEAR_PRIME;
+        interestRateByGroup = CURRENT_METRICS.getNearPrimeRate();
     }
     else if (creditScore >= 500 && creditScore <= 600)
     {
-        interestRateByGroup = SUB_PRIME_RATE;
+        interestRateByGroup = CURRENT_METRICS.getSubPrimeRate();
     }
     else if (creditScore <= 499)
     {
-        interestRateByGroup = DEEP_SUBPRIME_RATE;
+        interestRateByGroup = CURRENT_METRICS.getDeepSubPrimeRate();
     }
 
     return interestRateByGroup / 12;
@@ -247,13 +247,14 @@ double Loan::calculateInterestForDefaultRisk ()
 
 void Loan::setFinalMonthlyInterestRate ()
 {
-    double baseRate, mathematicalSlope = ((DEEP_SUBPRIME_RATE - SUPER_PRIME_RATE) / (-100));
+    double baseRate, mathematicalSlope = ((CURRENT_METRICS.getDeepSubPrimeRate() - CURRENT_METRICS.getSuperPrimeRate()) / (-100));
     // double baseRate, mathematicalSlope = ((DEEP_SUBPRIME_RATE - CURRENT_METRICS.getBaseYearlyInterestRatePercentForLoans()) / (-100));
 
     set_monthly_debt_payments();
 
 
-    baseRate = (mathematicalSlope * finalAdjustedViabilityScore) + DEEP_SUBPRIME_RATE;
+    // Think of this as a linear model represented by the equation y = slope(m) * finalAdjustedViabilityScore (x) + getDeepSubPrimeRate (b)
+    baseRate = (mathematicalSlope * finalAdjustedViabilityScore) + CURRENT_METRICS.getDeepSubPrimeRate();
 
     finalMonthlyInterestRate = baseRate / 12;
 
@@ -267,9 +268,9 @@ double Loan::adjustLoanViabiltyScore (double rawLoanViabilityScore)
 
     bestLoanViabilityScore = calculateBestCreditMetrics();
     worstLoanViabilityScore = calculateWorstCreditMetrics();
-    cout << " This is best lvs " << bestLoanViabilityScore << endl;
-    cout << " This is worst lvs " << worstLoanViabilityScore << endl;
-    cout << " This is raw lvs " << rawLoanViabilityScore << endl;
+    // cout << " This is best lvs " << bestLoanViabilityScore << endl;
+    // cout << " This is worst lvs " << worstLoanViabilityScore << endl;
+    // cout << " This is raw lvs " << rawLoanViabilityScore << endl;
     adjustedViabilityScore = (((rawLoanViabilityScore - worstLoanViabilityScore) / (bestLoanViabilityScore - worstLoanViabilityScore)) * (maxScaleValue - minScaleValue)) + (minScaleValue);
 
     return adjustedViabilityScore;
@@ -287,11 +288,11 @@ double Loan::calculateDefaultRisk ()  // function not needed now since calc inte
 }
 
 
-// When minimizing inefficiencies in this programme, initialize the credit metrics instead of assignning them values after decleration
+// When minimizing inefficiencies in this program, initialize the credit metrics instead of assignning them values after decleration
 void Loan::simple_set_credit_metrics ()
 {
-    double normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount,
-           normalizedInterest, normalizedDuration, normalizedFinancialReserves, normalizedDefaultRiskScore, baseRate = CURRENT_METRICS.getBaseMonthlyInterestRatePercentForLoans();
+    double normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount, normalizedInterest, normalizedDuration, 
+           normalizedFinancialReserves, normalizedDefaultRiskScore, baseRate = CURRENT_METRICS.getBaseMonthlyInterestRatePercentForLoans();
     
     defaultRiskScore = calculateDefaultRisk();
     
@@ -301,12 +302,12 @@ void Loan::simple_set_credit_metrics ()
     normalizedInterest = normalizeScore(finalMonthlyInterestRate, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
     normalizedmonthlyIncome = normalizeScore(monthlyIncome, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
     normalizedLoanAmount = normalizeScore(loanAmount, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
-    normalizedDefaultRiskScore = normalizeScore(defaultRiskScore, (DEEP_SUBPRIME_RATE - baseRate), (SUPER_PRIME_RATE - baseRate));
+    normalizedDefaultRiskScore = normalizeScore(defaultRiskScore, (CURRENT_METRICS.getDeepSubPrimeRate() - baseRate), (CURRENT_METRICS.getSuperPrimeRate() - baseRate));
 
-    cout << normalizedCreditScore << endl;
-    cout << normalizedDuration << endl;
-    cout << " raw default risk score " << defaultRiskScore << endl;
-    cout << " normalized default risk score " << normalizedDefaultRiskScore << endl;
+    // cout << normalizedCreditScore << endl;
+    // cout << normalizedDuration << endl;
+    // cout << " raw default risk score " << defaultRiskScore << endl;
+    // cout << " normalized default risk score " << normalizedDefaultRiskScore << endl;
 
     lossGivenDefault = (loanAmount - financialReserves) / loanAmount; // SOURCE = WIKIPEDIA
     recoveryRate = 1 - lossGivenDefault;
@@ -315,21 +316,9 @@ void Loan::simple_set_credit_metrics ()
 
     finalAdjustedViabilityScore = adjustLoanViabiltyScore(loanViabilityScore);
 
-    cout << " This is adjusted Loan viability score: " << finalAdjustedViabilityScore << endl;
+    // cout << " This is adjusted Loan viability score: " << finalAdjustedViabilityScore << endl;
 
-    
 }
-
-
-
-// double normalizeScoreOutsideClass(double rawScore, double maxScore, double minScore)
-// {
-//     double normalizedScore, maxScaleValue = 1, minScaleValue = 0;
-
-//     normalizedScore = ((rawScore - minScore) / (maxScore - minScore)) * (maxScaleValue - minScaleValue) + (minScaleValue);
-
-//     return normalizedScore;
-// }
 
 
 
