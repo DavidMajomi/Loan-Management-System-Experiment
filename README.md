@@ -21,5 +21,6 @@ The current server based files currently has most of the functionality used in t
 # Dependencies
  1.) C++ compiler (MINGW) <br>
  2.) Make, could be downloaded from chocolatey <br>
- 3,) Python 3.8 and above <br>
+ 3.) Python 3.8 and above <br>
+ 4.) Sqlite3 database
 
