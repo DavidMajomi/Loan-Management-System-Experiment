@@ -197,7 +197,7 @@ double Loan::calculateBestCreditMetrics()
 
     loanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, BEST_DEBT_TO_INCOME_RATIO, normalizedLoanAmount, normalizedDuration, BEST_LOSS_GIVEN_DEFAULT, normalizedFinancialReserves, BEST_DEFAULT_RISK_SCORE);
 
-    cout << " Best loan viability score = " << loanViabilityScore << endl;
+    // cout << " Best loan viability score = " << loanViabilityScore << endl;
 
     return loanViabilityScore;
 }
@@ -217,7 +217,7 @@ double Loan::calculateWorstCreditMetrics ()
 
     loanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, WORST_DEBT_TO_INCOME_RATIO, normalizedLoanAmount, normalizedDuration, WORST_LOSS_GIVEN_DEFAULT, normalizedFinancialReserves, WORST_DEFAULT_RISK_SCORE);
 
-    cout << " Worst loan viability score = " << loanViabilityScore << endl;
+    // cout << " Worst loan viability score = " << loanViabilityScore << endl;
 
     return loanViabilityScore;
 }

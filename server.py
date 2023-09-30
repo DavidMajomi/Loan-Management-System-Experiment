@@ -20,6 +20,8 @@ FORMAT = 'utf-8'
 
 OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 
+DEFAULT_BASE_RATE = 2
+
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
@@ -65,12 +67,13 @@ def start():
         compile_dll_with_make()
         
         
-    cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH)
+    cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH, winmode = 0)
     
     if (change_base_rate == True):
         change_base_rate_for_server(cpp_library, this_months_prime_rate)
     else:
         del this_months_prime_rate    
+        change_base_rate_for_server(cpp_library, DEFAULT_BASE_RATE)
     
     
     server.listen()
@@ -83,7 +86,6 @@ def start():
         thread.start()
         
         print(f"Number of Connections: {threading.active_count() - 1} \n")
-
 
 
 print("Starting Server...... \n")

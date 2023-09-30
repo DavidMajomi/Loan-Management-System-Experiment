@@ -501,7 +501,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
     const char* sql = "SELECT * FROM users";
     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
-           adjustedLoanViabilityScore, lossGivenDefault;
+           adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
     sqlite3* db;
     int rc = sqlite3_open(DATABASE_NAME, &db);
 
@@ -536,7 +536,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 
             outputCsvFile << "Name,credit_score,monthly_income,financial_reserves,debt_to_income_ratio,Duration_in_months,loan_amount_requested,Monthly_interest_rate,Interest_rate_over_a_year,"
                              "loss_Given_Default,Recovery_Rate,outstanding_Monthly_Debt_Payments,";
-            outputCsvFile << "default_risk_score,Loan_Viability_Score,Adjusted_Loan_viability_Score" << endl;
+            outputCsvFile << "default_risk_score,Loan_Viability_Score,Adjusted_Loan_viability_Score,interest_rate_by_group,best_possible_rate,worst_possible_rate" << endl;
 
             while (sqlite3_step(stmt) == SQLITE_ROW) {
                 // loanId = sqlite3_column_int(stmt, 0);
@@ -555,6 +555,9 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
                 defaultRiskScore = sqlite3_column_double(stmt, 13);
                 loanViabilityScore = sqlite3_column_double(stmt, 14);
                 adjustedLoanViabilityScore = sqlite3_column_double(stmt, 15);
+                interestRateByGroup = sqlite3_column_double(stmt, 16);
+                bestPossibleRate = sqlite3_column_double(stmt, 17);
+                worstPossibleRate = sqlite3_column_double(stmt, 18);
 
                 outputCsvFile << userName << ",";
                 outputCsvFile << creditScore << ",";
@@ -570,7 +573,10 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
                 outputCsvFile << outstandingMonthlyDebtPaymentsFromLoan << ",";
                 outputCsvFile << defaultRiskScore << ",";
                 outputCsvFile << loanViabilityScore << ",";
-                outputCsvFile << adjustedLoanViabilityScore << "\n";
+                outputCsvFile << adjustedLoanViabilityScore << ",";
+                outputCsvFile << interestRateByGroup << ",";
+                outputCsvFile << bestPossibleRate << ",";
+                outputCsvFile << worstPossibleRate << "\n";
 
             }
 
