@@ -8,7 +8,8 @@ class EconomicMetrics
 {
 private:
     bool lockClass = false;
-    double federalFundsRatePercent, baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans, yearOnYearInflationRatePercent, gdp;
+    double federalFundsRatePercent, yearOnYearInflationRatePercent, gdp;
+    double baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans;
     double superPrimeRate;
     double primeRate;
     double nearPrimeRate;

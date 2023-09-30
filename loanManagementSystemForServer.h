@@ -90,8 +90,8 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
                 userAccount.setLoanDuration(durationInMonthsInteger);
                 userAccount.setLoanAmount(loanAmonutRequestedDeciaml);
                 // userAccount.set_monthly_debt_payments();
-                userAccount.setFinalMonthlyInterestRate();
                 userAccount.computeCreditData();
+                userAccount.setFinalMonthlyInterestRate();
 
                 loanAccounts.push_back(userAccount);
 
@@ -168,14 +168,15 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
     const char* sqlInsertLine;
     const char* sql = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
                       " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
-                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL)";
+                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
+                      " best_possible_rate REAL, worst_possible_rate REAL)";
     vector <string> valsToInsert;
-    string insertToSql, userName, stringFinalSqlInsertStatement, stringCreditScore, stringMonthlyIncome, stringFinancialReserves, stringDebtToIncomeRatio, stringLoanDurationInMonths, 
-           stringLoanAmount, stringMonthlyInteresRate, stringyearlyInterestRate, stringrecoveryRate, stringOutstandingMonthlyDebtPaymentsFromLoan, stringDefaultRiskScore, stringLoanViabilityScore,
-           stringAdjustedLoanViabilityScore, stringLossGivenDefault;
+    string insertToSql, userName, stringFinalSqlInsertStatement, stringCreditScore, stringMonthlyIncome, stringFinancialReserves, stringDebtToIncomeRatio, stringLoanDurationInMonths, stringLoanAmount, stringMonthlyInteresRate, 
+           stringyearlyInterestRate, stringrecoveryRate, stringOutstandingMonthlyDebtPaymentsFromLoan, stringDefaultRiskScore, stringLoanViabilityScore,
+           stringAdjustedLoanViabilityScore, stringLossGivenDefault, stringInterestRateByGroup, stringBestPossibleRate, stringWorstPossibleRate;
     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
-           adjustedLoanViabilityScore, lossGivenDefault;
+           adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
     sqlite3* db;
     int rc = sqlite3_open(DATABASE_NAME, &db);
 
@@ -227,10 +228,13 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         defaultRiskScore = loanAccountsToAdd[count].getDefaultRiskScore();
         loanViabilityScore = loanAccountsToAdd[count].getLoanViabilityScore();
         adjustedLoanViabilityScore = loanAccountsToAdd[count].getFinalAdjustedLoanViabilityScore();
+        interestRateByGroup = loanAccountsToAdd[count].getInterestRateByGroup();
+        bestPossibleRate = loanAccountsToAdd[count].getBestPossibleRate();
+        worstPossibleRate = loanAccountsToAdd[count].getWorstPossibleRate();
         
         // //cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
 
-        stringCreditScore = to_string(creditScore);
+       stringCreditScore = to_string(creditScore);
         stringMonthlyIncome = to_string(monthlyIncome);
         stringFinancialReserves = to_string(financialReserves);
         stringDebtToIncomeRatio = to_string(debtToIncomeRatio);
@@ -244,6 +248,9 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         stringDefaultRiskScore = to_string(defaultRiskScore);
         stringLoanViabilityScore = to_string(loanViabilityScore);
         stringAdjustedLoanViabilityScore = to_string(adjustedLoanViabilityScore);
+        stringInterestRateByGroup = to_string(interestRateByGroup);
+        stringBestPossibleRate = to_string(bestPossibleRate);
+        stringWorstPossibleRate = to_string(worstPossibleRate);
 
         // //cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
 
@@ -261,6 +268,9 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         valsToInsert.push_back(stringDefaultRiskScore);
         valsToInsert.push_back(stringLoanViabilityScore);
         valsToInsert.push_back(stringAdjustedLoanViabilityScore);
+        valsToInsert.push_back(stringInterestRateByGroup);
+        valsToInsert.push_back(stringBestPossibleRate);
+        valsToInsert.push_back(stringWorstPossibleRate);
 
         numMetricsToAdd = valsToInsert.size();
 
@@ -288,7 +298,10 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         // //cout << stringFinalSqlInsertStatement << endl;
 
 
-        insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) VALUES (" + stringFinalSqlInsertStatement + ")"; 
+        insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
+                      " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
+                      " adjusted_loan_viability_score, interest_rate_by_group , best_possible_rate, worst_possible_rate) VALUES (" + stringFinalSqlInsertStatement + ")"; 
+
 
 
         // //cout << insertToSql;
@@ -328,14 +341,15 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
     const char* sqlInsertLine;
     const char* sql = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
                       " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
-                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL)";
+                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
+                      " best_possible_rate REAL, worst_possible_rate REAL)";
     vector <string> valsToInsert;
     string insertToSql, userName, stringFinalSqlInsertStatement, stringCreditScore, stringMonthlyIncome, stringFinancialReserves, stringDebtToIncomeRatio, stringLoanDurationInMonths, stringLoanAmount, stringMonthlyInteresRate, 
            stringyearlyInterestRate, stringrecoveryRate, stringOutstandingMonthlyDebtPaymentsFromLoan, stringDefaultRiskScore, stringLoanViabilityScore,
-           stringAdjustedLoanViabilityScore, stringLossGivenDefault;
+           stringAdjustedLoanViabilityScore, stringLossGivenDefault, stringInterestRateByGroup, stringBestPossibleRate, stringWorstPossibleRate;
     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
-           adjustedLoanViabilityScore, lossGivenDefault;
+           adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
 
 
     numberOfAddedLoanValues = loanAccounts.size();
@@ -383,6 +397,9 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         defaultRiskScore = loanAccounts[count].getDefaultRiskScore();
         loanViabilityScore = loanAccounts[count].getLoanViabilityScore();
         adjustedLoanViabilityScore = loanAccounts[count].getFinalAdjustedLoanViabilityScore();
+        interestRateByGroup = loanAccounts[count].getInterestRateByGroup();
+        bestPossibleRate = loanAccounts[count].getBestPossibleRate();
+        worstPossibleRate = loanAccounts[count].getWorstPossibleRate();
 
         stringCreditScore = to_string(creditScore);
         stringMonthlyIncome = to_string(monthlyIncome);
@@ -398,6 +415,9 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         stringDefaultRiskScore = to_string(defaultRiskScore);
         stringLoanViabilityScore = to_string(loanViabilityScore);
         stringAdjustedLoanViabilityScore = to_string(adjustedLoanViabilityScore);
+        stringInterestRateByGroup = to_string(interestRateByGroup);
+        stringBestPossibleRate = to_string(bestPossibleRate);
+        stringWorstPossibleRate = to_string(worstPossibleRate);
 
         // //cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
 
@@ -415,6 +435,9 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         valsToInsert.push_back(stringDefaultRiskScore);
         valsToInsert.push_back(stringLoanViabilityScore);
         valsToInsert.push_back(stringAdjustedLoanViabilityScore);
+        valsToInsert.push_back(stringInterestRateByGroup);
+        valsToInsert.push_back(stringBestPossibleRate);
+        valsToInsert.push_back(stringWorstPossibleRate);
 
         numMetricsToAdd = valsToInsert.size();
 
@@ -443,7 +466,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
         insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
                       " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
-                      " adjusted_loan_viability_score) VALUES (" + stringFinalSqlInsertStatement + ")"; 
+                      " adjusted_loan_viability_score, interest_rate_by_group , best_possible_rate, worst_possible_rate) VALUES (" + stringFinalSqlInsertStatement + ")"; 
 
         // //cout << insertToSql;
 
@@ -510,7 +533,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
             }
 
             outputCsvFile << "Name,credit_score,monthly_income,financial_reserves,debt_to_income_ratio,Duration_in_months,loan_amount_requested,Monthly_interest_rate,Interest_rate_over_a_year,"
-            "loss_Given_Default,Recovery_Rate,outstanding_Monthly_Debt_Payments,";
+                             "loss_Given_Default,Recovery_Rate,outstanding_Monthly_Debt_Payments,";
             outputCsvFile << "default_risk_score,Loan_Viability_Score,Adjusted_Loan_viability_Score" << endl;
 
             while (sqlite3_step(stmt) == SQLITE_ROW) {
@@ -546,14 +569,6 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
                 outputCsvFile << defaultRiskScore << ",";
                 outputCsvFile << loanViabilityScore << ",";
                 outputCsvFile << adjustedLoanViabilityScore << "\n";
-                // outputCsvFile << loanDurationInMonths << ",";
-                // outputCsvFile << loanDurationInMonths << "\n";
-
-                
-
-                // //cout << " This is id " << loanId << endl;
-                // //cout << " This is name " << userName << endl;
-                // //cout << " This is credit score" << creditScore << endl;
 
             }
 
