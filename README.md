@@ -5,7 +5,7 @@ Currently, I intend to use the loan management cpp library as is.
 
 # Current Features
   1.) Generate data <br>
-  2.) Server functionality <br>
+  2.) Client - Server functionality <br>
   3.) Storing data in sqlite3 database <br>
   4.) Recieving user data from web app <br>
   5.) Recieving user data from command line interface <br>
