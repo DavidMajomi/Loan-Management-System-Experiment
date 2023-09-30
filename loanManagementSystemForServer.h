@@ -401,6 +401,8 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         bestPossibleRate = loanAccounts[count].getBestPossibleRate();
         worstPossibleRate = loanAccounts[count].getWorstPossibleRate();
 
+        cout << worstPossibleRate << endl;
+
         stringCreditScore = to_string(creditScore);
         stringMonthlyIncome = to_string(monthlyIncome);
         stringFinancialReserves = to_string(financialReserves);
@@ -466,7 +468,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
         insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
                       " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
-                      " adjusted_loan_viability_score, interest_rate_by_group , best_possible_rate, worst_possible_rate) VALUES (" + stringFinalSqlInsertStatement + ")"; 
+                      " adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate) VALUES (" + stringFinalSqlInsertStatement + ")"; 
 
         // //cout << insertToSql;
 
@@ -477,7 +479,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
         if (rc != SQLITE_OK) {
             // Handle error
-            //cout << " Step 4 error. 2" << endl;
+            cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
             sqlite3_close(db);
             exit (1);
         }
