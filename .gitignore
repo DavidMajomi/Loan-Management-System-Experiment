@@ -16,6 +16,9 @@ tempCodeRunnerFile.py
 # Ignore all pycache files
 *.pyc
 
+# Ignore all Banking System files
+Banking System/
+
 /sqlite3.h
 /alphaVantageApiKey.txt
 /nasdaq_data_link_api_key.txt

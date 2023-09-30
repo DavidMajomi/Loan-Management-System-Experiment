@@ -234,7 +234,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         
         // //cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
 
-       stringCreditScore = to_string(creditScore);
+        stringCreditScore = to_string(creditScore);
         stringMonthlyIncome = to_string(monthlyIncome);
         stringFinancialReserves = to_string(financialReserves);
         stringDebtToIncomeRatio = to_string(debtToIncomeRatio);
@@ -400,8 +400,6 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         interestRateByGroup = loanAccounts[count].getInterestRateByGroup();
         bestPossibleRate = loanAccounts[count].getBestPossibleRate();
         worstPossibleRate = loanAccounts[count].getWorstPossibleRate();
-
-        cout << worstPossibleRate << endl;
 
         stringCreditScore = to_string(creditScore);
         stringMonthlyIncome = to_string(monthlyIncome);

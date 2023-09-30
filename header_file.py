@@ -191,7 +191,7 @@ def display_dev_menu_for_server_client():
     dev_menu_response = int(dev_menu_response)
     
     if (dev_menu_response == 1):
-        num_data_to_generate = int(input(" How much data would you like to generate (how many users do you want to generate) note cannot generate of 20 million users at a time: "))
+        num_data_to_generate = int(input(" How much data would you like to generate (how many users do you want to generate) note cannot generate of 10000 users at a time: "))
     else:
         num_data_to_generate = None
     
@@ -358,7 +358,7 @@ def generate_data (num_data_to_generate):
     loan_data = []
     
     min_options = 0
-    max_options = 20000000
+    max_options = 10000
     
     if ((num_data_to_generate < min_options) or (num_data_to_generate > max_options)):
         print(" Data entered is in invalid format. \n")
