@@ -5,6 +5,7 @@ import ctypes
 import requests
 import random
 import sqlite3
+import datetime
 import subprocess
 from faker import Faker
 from pathlib import Path
@@ -349,7 +350,7 @@ def interact_cpp_dev_menu (dev_menu_response):
     print("output: ", output, "\n")
     print("Errors for debugging: ", errors, "\n")
 
-
+# Add functionality to generate time of application to ensure different scenarios for end of day processing to create and test payment functionality
 def generate_data (num_data_to_generate):
         
     fake = Faker()

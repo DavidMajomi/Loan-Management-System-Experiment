@@ -3,7 +3,7 @@ import ctypes
 import socket
 import threading
 from pathlib import Path
-from header_file import use_cpp_from_server, compile_dll_with_make, get_prime_rate_with_alpha_vantage_api, change_base_rate_for_server
+from header_file_for_server_and_cli import use_cpp_from_server, compile_dll_with_make, get_prime_rate_with_alpha_vantage_api, change_base_rate_for_server
 
 PATH = str(Path.cwd())
 

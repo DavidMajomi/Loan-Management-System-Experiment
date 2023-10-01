@@ -1,8 +1,8 @@
 import socket
 import json
 from colorama import Fore
-from header_file import menu_for_server_client, get_customer_data_from_cli_for_server, display_dev_menu_for_server_client, menu_to_search_for_loan_from_server
-from header_file import display_single_retrieved_data, dev_menu_response, display_multiple_retrieved_data
+from header_file_for_server_and_cli import menu_for_server_client, get_customer_data_from_cli_for_server, display_dev_menu_for_server_client, menu_to_search_for_loan_from_server
+from header_file_for_server_and_cli import display_single_retrieved_data, dev_menu_response, display_multiple_retrieved_data
 
 HEADER = 64
 PORT = 5050
