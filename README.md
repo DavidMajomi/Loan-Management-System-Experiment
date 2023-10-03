@@ -24,3 +24,9 @@ The current server based files currently has most of the functionality used in t
  3.) Python 3.8 and above <br>
  4.) Sqlite3 database
 
+# Installation
+ 1.) Install Python <br>
+ 2.) Install Mingw and add it to path <br>
+ 3.) Install make and add it to path manually, or use chocolatey to add it automatically. <br>
+ 4.) Get an alpha vantage api key for free, and store it in the file to get up to date federal funds rate and other related metrics. <br>
+
