@@ -7,7 +7,7 @@
 #include "loanManagementSystemForServer.h"
 
 // Use g++ -fPIC -shared -o loanManagementLibraryForServer.dll loanManagementLibraryForServer.cpp sqlite3.o
-
+// Upcoming Task: Add functionality for year on year inflation rate.
 using namespace std;
 
 struct UserData
@@ -24,6 +24,7 @@ struct UserData
 
 void setCurrentMetrics(double primeRate)
 {
+    CURRENT_METRICS.unlockClassForModification();
     CURRENT_METRICS.setFederalFundsRatePercent(primeRate);
     CURRENT_METRICS.lockModificationOfClass();
 }

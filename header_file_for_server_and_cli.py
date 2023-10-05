@@ -25,6 +25,8 @@ OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 CPP_EXECUTABLE_FROM_PYTHON_PATH = PATH + "\\executable from python interface.exe"  
 
 
+# NEXT TASK: Fix error in line 695, need to take a better look into the logic of searching db. This bug affects all clients cli or web based.
+
 class UserData(ctypes.Structure):
     _fields_ = [("user_name", ctypes.c_char_p),
                 ("user_credit_score", ctypes.c_short),
@@ -691,8 +693,9 @@ def use_cpp_from_server(recieved_data, cpp_library):
             temp_list_data, temp_operation_state = search_for_loan_data_without_loan_id_for_server(user_data["user_name"])
             
             operation_state_to_return.update(temp_operation_state)
-            single_retrieved_user_data_to_return.update(temp_list_data[0])
-            list_of_retrieved_user_data.extend(temp_list_data)
+            if operation_state_to_return["found_user_data"] == True:
+                single_retrieved_user_data_to_return.update(temp_list_data[0])  # Error in this line that needs to be fixed as soon as possible
+                list_of_retrieved_user_data.extend(temp_list_data)
             
     elif (menu_response == 3):
     

@@ -20,17 +20,30 @@ FORMAT = 'utf-8'
 
 OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 
+
 DEFAULT_BASE_RATE = 2
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
-def handle_client(conn, addr, cpp_library):
+def handle_client(conn, addr):
+    
     
     print(f"New Conection {addr} connected")
     
     connected = True
     
+    cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH, winmode = 0)
+    
+    change_base_rate, this_months_prime_rate = get_prime_rate_with_alpha_vantage_api()
+    
+    if (change_base_rate == True):
+        change_base_rate_for_server(cpp_library, this_months_prime_rate)
+    else:
+        del this_months_prime_rate    
+        change_base_rate_for_server(cpp_library, DEFAULT_BASE_RATE)
+        
+            
     while connected:
         msg_length = conn.recv(HEADER).decode(FORMAT)
         if msg_length:
@@ -59,22 +72,14 @@ def handle_client(conn, addr, cpp_library):
         
 
 def start():
+    first_connection_in_server_runtime = True
     print("Setting up server...")
     
-    change_base_rate, this_months_prime_rate = get_prime_rate_with_alpha_vantage_api()
+    
     
     if COMPILE_FOR_DEBUGGING is True:
         compile_dll_with_make()
         
-        
-    cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH, winmode = 0)
-    
-    if (change_base_rate == True):
-        change_base_rate_for_server(cpp_library, this_months_prime_rate)
-    else:
-        del this_months_prime_rate    
-        change_base_rate_for_server(cpp_library, DEFAULT_BASE_RATE)
-    
     
     server.listen()
     print(f"Server is listening on {SERVER}")
@@ -82,7 +87,7 @@ def start():
     
     while True:
         conn, addr = server.accept()
-        thread = threading.Thread(target = handle_client, args = (conn, addr, cpp_library))
+        thread = threading.Thread(target = handle_client, args = (conn, addr))
         thread.start()
         
         print(f"Number of Connections: {threading.active_count() - 1} \n")
@@ -90,3 +95,4 @@ def start():
 
 print("Starting Server...... \n")
 start()
+    

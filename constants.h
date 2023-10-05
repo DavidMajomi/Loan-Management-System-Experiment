@@ -2,7 +2,7 @@
 #define CONSTANTS_H_INCLUDED
 
 #include <string>
-
+// Next Task: Modify the weights to represent the removed interest rate weight
 using namespace std;
 
 // FILE NAMES
