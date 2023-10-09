@@ -11,6 +11,11 @@ from faker import Faker
 from pathlib import Path
 from colorama import Fore
 
+
+# NEXT TASK: Add a proper debugging mode to reduce the manual methods to the prograam.
+# NEXT TASK: Fix error in line 695, need to take a better look into the logic of searching db. This bug affects all clients cli or web based.
+
+
 PATH = str(Path.cwd())
 
 FORMAT = 'utf-8'
@@ -25,8 +30,6 @@ OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 CPP_EXECUTABLE_FROM_PYTHON_PATH = PATH + "\\executable from python interface.exe"  
 
 
-# NEXT TASK: Fix error in line 695, need to take a better look into the logic of searching db. This bug affects all clients cli or web based.
-
 class UserData(ctypes.Structure):
     _fields_ = [("user_name", ctypes.c_char_p),
                 ("user_credit_score", ctypes.c_short),
@@ -35,40 +38,6 @@ class UserData(ctypes.Structure):
                 ("user_debt_to_income_ratio", ctypes.c_double),
                 ("user_loan_amoumnt_requested", ctypes.c_double),
                 ("user_loan_duration", ctypes.c_int)]
-
-
-class Loan:
-    def __init__(self, loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, 
-                 outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score):
-        
-        self.loan_id = loan_id
-        self.user_name = user_name
-        self.credit_score = credit_score
-        self.monthly_income = round(monthly_income, 2)
-        self.financial_reserves = round(financial_reserves, 2)
-        self.debt_to_income_ratio = debt_to_income_ratio
-        self.loan_duration = loan_duration
-        self.requested_laon_amount = round(requested_loan_amount, 2)
-        self.monthly_interest_rate = round(monthly_interest_rates, 2)
-        self.yearly_interest_rate = round(yearly_interst_rate, 2)
-        self.loss_given_default = loss_given_default
-        self.recovery_rate = recovery_rate
-        self.outstanding_monthly_debt_payments_to_satisfy_loan = outstanding_monthly_debt_payments_to_satisfy_loan
-        self.default_risk_score = default_risk_score
-        self.loan_viability_score = loan_viability_score
-        self.adjusted_loan_viability_score = adjusted_loan_viability_score
-        
-    def display_loan_data_to_console(self):
-        print("Loan id: ", self.loan_id)
-        print("Your Fullname: ", self.user_name)
-        print("Your Credit Score: ", self.credit_score)
-        print("Your Stated Monhtly Income: $", self.monthly_income)
-        print("Your stated Financial Reserves Valuation: $", self.financial_reserves)
-        print("Your provided debt to income ratio:", self.debt_to_income_ratio)
-        print("Your requested Loan Duration is", self.loan_duration, "months")
-        print("Your requested Loan Amount: $", self.requested_laon_amount)
-        print("Your monthly interest rate:", self.monthly_interest_rate, "%")
-        print("Your Monthly Interest over a year:", self.yearly_interest_rate, "% \n")
         
         
 def validate_string_input_for_num_value (data_to_validate, max_value, min_value):

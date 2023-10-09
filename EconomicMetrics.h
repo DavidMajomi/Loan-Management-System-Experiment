@@ -1,5 +1,7 @@
-#ifndef ECONOMICMETRICS_H_INCLUDED
-#define ECONOMICMETRICS_H_INCLUDED
+// #ifndef ECONOMICMETRICS_H_INCLUDED
+// #define ECONOMICMETRICS_H_INCLUDED
+
+#pragma once
 
 #include <iostream>
 
@@ -8,6 +10,7 @@ class EconomicMetrics
 {
 private:
     bool lockClass = false;
+    double spreadForInterestRate = 3;
     double federalFundsRatePercent, yearOnYearInflationRatePercent, gdp;
     double baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans;
     double superPrimeRate, primeRate, nearPrimeRate, subPrimeRate;
@@ -19,7 +22,7 @@ public:
         if (lockClass == false)
         {
             federalFundsRatePercent = ffr;
-            baseYearlyInterestRatePercentForLoans = federalFundsRatePercent + 3;
+            baseYearlyInterestRatePercentForLoans = federalFundsRatePercent + spreadForInterestRate;
             baseMonthlyInterestRatePercentForLoans = baseYearlyInterestRatePercentForLoans / 12;
             superPrimeRate = baseYearlyInterestRatePercentForLoans;
             primeRate = superPrimeRate + 4.15;
@@ -81,18 +84,18 @@ public:
     {
         return subPrimeRate;
     }
-    double getDeepSubPrimeRate() const
-    {
+    double getSpreadForInterestRate() const{
+        return spreadForInterestRate;
+    }
+    double getDeepSubPrimeRate() const{
         return deepSubprimeRrate;
     }
-    void lockModificationOfClass()
-    {
+    void lockModificationOfClass(){
         lockClass = true;
     }
-    void unlockClassForModification()
-    {
+    void unlockClassForModification(){
         lockClass = false;
     }
 };
 
-#endif // ECONOMICMETRICS_H_INCLUDED
+// #endif // ECONOMICMETRICS_H_INCLUDED

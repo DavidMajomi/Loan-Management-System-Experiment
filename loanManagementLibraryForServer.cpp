@@ -12,15 +12,20 @@ using namespace std;
 
 struct UserData
 {
+    int duration;
     char *userName;
     int creditScore;
     double monthlyIncomeDecimal;
     double financialReservesDecimal;
     double debtToIncomeRatioDecimal;
     double loanAmonutRequestedDeciaml;
-    int duration;
 };
 
+
+// double getCurrentFFR()
+// {
+//     return CURRENT_METRICS.getFederalFundsRate();
+// }
 
 void setCurrentMetrics(double primeRate)
 {
@@ -28,6 +33,7 @@ void setCurrentMetrics(double primeRate)
     CURRENT_METRICS.setFederalFundsRatePercent(primeRate);
     CURRENT_METRICS.lockModificationOfClass();
 }
+
 
 void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <Loan>& loanAccountsToAdd)
 {
@@ -51,7 +57,10 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 extern "C" {
     void changeBaseRate(double primeRate)
     {
+        // cout << " This is entered prime rate: " << primeRate << endl;
         setCurrentMetrics(primeRate);
+
+        // cout << " Prime Rate has been Changed to " << getCurrentFFR() << endl;
     }
 
 
@@ -109,5 +118,19 @@ extern "C" {
         return errorRetrievingData;
     }
 
+
+    double getSpread()
+    {
+        // cout << " This is spread from cpp end: " << getSpreadForCurrentMetrics() << endl;
+        return CURRENT_METRICS.getSpreadForInterestRate();
+    }
+
+    double getThisMonthsPrimeRate()
+    {
+        // cout << " This is prime rate from cpp end: " << CURRENT_METRICS.getSuperPrimeRate() << endl;
+        return CURRENT_METRICS.getSuperPrimeRate();
+    }
+
+    // double 
 
 }
