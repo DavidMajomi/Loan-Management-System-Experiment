@@ -592,7 +592,6 @@ def get_prime_rate_with_alpha_vantage_api():
 def change_base_rate_for_server(cpp_library, this_months_prime_rate):
     cpp_library.changeBaseRate(this_months_prime_rate)
     
-    
 def use_cpp_from_server(recieved_data, cpp_library):
     user_data = recieved_data["customer_data"]
     recieved_instructions = recieved_data["instructions"]
@@ -640,9 +639,7 @@ def use_cpp_from_server(recieved_data, cpp_library):
         data_to_cpp = UserData(user_data['user_name'].encode(FORMAT), int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), 
                     float(user_data['user_debt_to_income_ratio']), float(user_data['user_loan_amoumnt_requested']), int(user_data['user_loan_duration']))
         
-        cpp_library.addIndividualizedDataToDb(data_to_cpp)
-        
-        operation_state_to_return["added_user_data_successfully"] = True    # Edit to add validation to the cppLibrary  function above
+        operation_state_to_return["added_user_data_successfully"] = cpp_library.addIndividualizedDataToDb(data_to_cpp)
         
     elif (menu_response == 2):
         

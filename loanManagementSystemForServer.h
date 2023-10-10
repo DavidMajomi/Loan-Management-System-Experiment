@@ -161,10 +161,11 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
 
 // Need to review the logic here as well as finding a way to put it in the class we will see how it goes
 
-void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd) 
+bool createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd) 
 {
     int numberOfAddedLoanValues, creditScore, numMetricsToAdd;
     char charFinalSqlInsertStatement;
+    bool errorStoringData = false;
     const char* sqlInsertLine;
     const char* sql = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
                       " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
@@ -187,7 +188,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
     if (rc != SQLITE_OK) {
         // Handle error
         //cout << "Step 1 error." << endl;
-        exit(1);
+        errorStoringData = true;
     }
 
 
@@ -199,7 +200,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         // Handle error preparing the statement
         //cout << "Step 2 error." << endl;
         sqlite3_close(db);
-        exit(1);
+        errorStoringData = true;
     }
     rc = sqlite3_exec(db, sql, 0, 0, 0);
 
@@ -207,7 +208,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
         // Handle error
         //cout << " Step 3 error. " << endl;
         sqlite3_close(db);
-        exit (1);
+        errorStoringData = true;
     }
 
 
@@ -315,7 +316,7 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
             // Handle error
             //cout << " Step 4 error. " << endl;
             sqlite3_close(db);
-            exit (1);
+            errorStoringData = true;
         }
 
         valsToInsert.clear();
@@ -329,14 +330,17 @@ void createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
     // //cout << "The base" << endl;
     // //cout << " New values for testing python execution." << endl;
 
+    return errorStoringData;
+
 }
 
 
-void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts) 
+bool storeGeneratedDataInDatabase(vector<Loan>& loanAccounts) 
 {
     sqlite3* db;
     int numberOfAddedLoanValues, creditScore, numMetricsToAdd;
     int rc = sqlite3_open(DATABASE_NAME, &db);
+    bool errorStoringData = false;
     char charFinalSqlInsertStatement;
     const char* sqlInsertLine;
     const char* sql = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
@@ -357,7 +361,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
     if (rc != SQLITE_OK) {
         // Handle error
         //cout << "Step 1 error. 2" << endl;
-        exit(1);
+        errorStoringData = true;
     }
 
 
@@ -369,7 +373,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         // Handle error preparing the statement
         //cout << "Step 2 error. 2" << endl;
         sqlite3_close(db);
-        exit(1);
+        errorStoringData = true;
     }
     rc = sqlite3_exec(db, sql, 0, 0, 0);
 
@@ -377,7 +381,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
         // Handle error
         //cout << " Step 3 error. 2" << endl;
         sqlite3_close(db);
-        exit (1);
+        errorStoringData = true;
     }
 
     for (int count = 0; count < numberOfAddedLoanValues; count++)
@@ -479,7 +483,7 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
             // Handle error
             cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
             sqlite3_close(db);
-            exit (1);
+            errorStoringData = true;
         }
 
         valsToInsert.clear();
@@ -488,6 +492,8 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
     sqlite3_finalize(stmt);
     sqlite3_close(db);
+
+    return errorStoringData;
 
 }
 

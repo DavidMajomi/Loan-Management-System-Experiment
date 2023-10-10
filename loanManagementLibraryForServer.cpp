@@ -64,15 +64,17 @@ extern "C" {
     }
 
 
-    void addIndividualizedDataToDb(UserData tempUserDataFromPython)
+    bool addIndividualizedDataToDb(UserData tempUserDataFromPython)
     {
+        bool fileOpeningError = false;
         vector<Loan> loanAccountsToAdd;
 
         addIndividualizedLoanDataFromPythonServer (tempUserDataFromPython, loanAccountsToAdd);
-        createDatabaseToAddUserLoanData (loanAccountsToAdd);
+        fileOpeningError = createDatabaseToAddUserLoanData (loanAccountsToAdd);
 
         // cout << " This is federalFundsRate from todays metrics: " << TODAYS_METRICS.getFederalFundsRate() << endl;
         // cout << " This is federalFundsRate from current metrics: " << CURRENT_METRICS.getFederalFundsRate() << endl;
+        return fileOpeningError;
     }
     
 
@@ -83,7 +85,7 @@ extern "C" {
         vector<Loan> loanAccounts;
 
         fileOpeningError = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
-        storeGeneratedDataInDatabase(loanAccounts);
+        fileOpeningError = storeGeneratedDataInDatabase(loanAccounts);
 
         return fileOpeningError;
     }

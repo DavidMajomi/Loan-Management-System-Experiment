@@ -2,7 +2,7 @@ import os
 import json
 import ctypes
 from pathlib import Path
-from header_file_for_testing_dll import test_changing_base_rate
+from header_file_for_testing_dll import test_changing_base_rate, test_storing_generated_data_in_db_from_csv
 
 
 
@@ -31,6 +31,9 @@ os.system("make clean")
 cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH, winmode = 0)
 
 test_changing_base_rate(cpp_library)
+test_bool = test_storing_generated_data_in_db_from_csv(cpp_library)
+
+print(f" This is result of test storing data: {test_bool}")
 print(" This is a test")
 
 

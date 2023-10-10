@@ -70,7 +70,7 @@ def generate_data (num_data_to_generate):
             writer.writerow(loan_data_header)
             writer.writerows(loan_data)
         
-        # print(" Loan data has been written successfully.")
+        print(" Loan data has been written successfully.")
 
 
 def test_changing_base_rate(cpp_library):
@@ -88,16 +88,12 @@ def test_changing_base_rate(cpp_library):
     if(this_months_prime_rate_from_cpp() == ((this_months_federal_funds_rate) + this_months_spread_from_cpp())):
         print(f" This months prime rate set successfully. This is its value: {this_months_spread_from_cpp()}")
     else:
-        
         # test = cpp_library.getThisMonthsPrimeRate
         # test.restype = ctypes.c_double
         
-        print(f" Not accurate, failed test. This is months prime rate {this_months_prime_rate_from_cpp()}")
+        print(f" Not accurate, failed test. This months prime rate is: {this_months_prime_rate_from_cpp()}")
         print(f" This is this months spread {cpp_library.getSpread()}")
-        
-    
-    
-    
+
 
 def test_adding_and_computing_for_single_user_data(customer_data, cpp_library):
     user_data = customer_data
@@ -111,12 +107,13 @@ def test_storing_all_db_values_in_csv_for_analysis(cpp_library):
 
 
 def test_storing_generated_data_in_db_from_csv(cpp_library):
+    print(" Test stroing generated data")
     required_dev_menu_response = 3
     
     generate_data(100)
     
-    error_storing_generated_data = cpp_library.readAndStoreGeneratedDataInDb(required_dev_menu_response)
-    
+    error_storing_generated_data = bool(cpp_library.readAndStoreGeneratedDataInDb(required_dev_menu_response))
+
     return error_storing_generated_data
     
 
