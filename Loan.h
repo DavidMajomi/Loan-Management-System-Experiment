@@ -1,5 +1,7 @@
-#ifndef LOAN_H_INCLUDED
-#define LOAN_H_INCLUDED
+// #ifndef LOAN_H_INCLUDED
+// #define LOAN_H_INCLUDED
+#pragma once
+
 
 #include "constants.h"
 #include "EconomicMetrics.h"
@@ -349,4 +351,4 @@ void Loan::simple_set_credit_metrics ()
 
 
 
-#endif // LOAN_H_INCLUDED
+// #endif // LOAN_H_INCLUDED

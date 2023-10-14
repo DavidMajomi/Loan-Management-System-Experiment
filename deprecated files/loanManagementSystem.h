@@ -1,5 +1,6 @@
-#ifndef LOANMANAGEMENTSYSTEM_H_INCLUDED
-#define LOANMANAGEMENTSYSTEM_H_INCLUDED
+// #ifndef LOANMANAGEMENTSYSTEM_H_INCLUDED
+// #define LOANMANAGEMENTSYSTEM_H_INCLUDED
+#pragma once
 
 #include "sqlite3.h"
 #include <iostream>
@@ -1007,4 +1008,4 @@ void storeGeneratedDataInDatabase(vector<Loan>& loanAccounts)
 
 
 
-#endif // LOANMANAGEMENTSYSTEM_H_INCLUDED
+// #endif // LOANMANAGEMENTSYSTEM_H_INCLUDED

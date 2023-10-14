@@ -13,7 +13,6 @@ from colorama import Fore
 
 
 # NEXT TASK: Add a proper debugging mode to reduce the manual methods to the prograam.
-# NEXT TASK: Fix error in line 695, need to take a better look into the logic of searching db. This bug affects all clients cli or web based.
 
 
 PATH = str(Path.cwd())
@@ -358,7 +357,10 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             operation_state_data["found_user_data"] = True
             # print("Row found:")
             # print(row, "\n")
-            (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) = row
+            (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration
+            , requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default
+            , recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score
+            , adjusted_loan_viability_score, interest_rate_by_group,best_possible_rate,worst_possible_rate) = row
             # print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
             
             retrieved_user_data = {
@@ -451,7 +453,11 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
             print("Num rows = ", num_rows)
             
             for data in rows:
-                (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) = data
+                (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration
+                , requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default
+                , recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score
+                , adjusted_loan_viability_score, interest_rate_by_group,best_possible_rate,worst_possible_rate) = data
+                # (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) = data
                 
                 retrieved_user_data = {
                     "loan_id" : loan_id,
@@ -591,7 +597,8 @@ def get_prime_rate_with_alpha_vantage_api():
     
 def change_base_rate_for_server(cpp_library, this_months_prime_rate):
     cpp_library.changeBaseRate(this_months_prime_rate)
-    
+ 
+   
 def use_cpp_from_server(recieved_data, cpp_library):
     user_data = recieved_data["customer_data"]
     recieved_instructions = recieved_data["instructions"]

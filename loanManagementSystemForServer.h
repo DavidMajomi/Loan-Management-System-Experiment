@@ -1,5 +1,7 @@
-#ifndef LOANMANAGEMENTSYSTEMFORSERVER_H_INCLUDED
-#define LOANMANAGEMENTSYSTEMFORSERVER_H_INCLUDED
+// #ifndef LOANMANAGEMENTSYSTEMFORSERVER_H_INCLUDED
+// #define LOANMANAGEMENTSYSTEMFORSERVER_H_INCLUDED
+#pragma once
+
 
 // #include "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.h"
 #include "sqlite3.h"
@@ -598,4 +600,4 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 
 }
 
-#endif // LOANMANAGEMENTSYSTEMFORSERVER_H_INCLUDED
+// #endif // LOANMANAGEMENTSYSTEMFORSERVER_H_INCLUDED
