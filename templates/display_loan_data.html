@@ -10,6 +10,7 @@
         <p>Your requested Loan Duration is: {{ retrieved_user_data['loan_duration_left'] }} months</p>
         <p>Your provided debt to income ratio: {{ retrieved_user_data['debt_to_income_ratio'] }}</p>
         <p>Your requested Loan Amount: $ {{ retrieved_user_data['requested_loan_amount'] }}</p>
+        <p>Your projected yearly interest rate: $ {{ retrieved_user_data['yearly_interst_rate'] }}</p>
         <br>
     {% endfor %}
 {% endblock %}

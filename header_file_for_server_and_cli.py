@@ -641,7 +641,7 @@ def use_cpp_from_server(recieved_data, cpp_library):
     search_menu_response = recieved_instructions["search_menu_response"]
     
     if (menu_response == 1): # Add individualized loan using data
-        print(f" Thi is user data before db {user_data['user_name']}")
+        # print(f" Thi is user data before db {user_data['user_name']}")
         
         addIndividualizedDataToDb = cpp_library.addIndividualizedDataToDb
         addIndividualizedDataToDb.restype = ctypes.c_bool
@@ -655,10 +655,6 @@ def use_cpp_from_server(recieved_data, cpp_library):
                     float(user_data['user_debt_to_income_ratio']), 
                     float(user_data['user_loan_amoumnt_requested']), 
                     int(user_data['user_loan_duration']))
-        
-        print(data_to_cpp)
-        
-        # added_user_data_successfully = addIndividualizedDataToDb(data_to_cpp)
         
         operation_state_to_return["added_user_data_successfully"] = not(addIndividualizedDataToDb(data_to_cpp))
         print(operation_state_to_return["added_user_data_successfully"])
