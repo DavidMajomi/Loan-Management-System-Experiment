@@ -98,8 +98,11 @@ def test_changing_base_rate(cpp_library):
 def test_adding_and_computing_for_single_user_data(customer_data, cpp_library):
     user_data = customer_data
     
-    data_to_cpp = UserData(user_data['user_name'].encode(FORMAT), int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), 
-        float(user_data['user_debt_to_income_ratio']), float(user_data['user_loan_amoumnt_requested']), int(user_data['user_loan_duration']))
+    user_name = user_data['user_name'].encode(FORMAT)
+    
+    data_to_cpp = UserData(user_name, int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), float(user_data['user_debt_to_income_ratio']), float(user_data['user_loan_amoumnt_requested']), int(user_data['user_loan_duration']))
+    
+    added_data_sucessfully = cpp_library.addIndividualizedDataToDb(data_to_cpp)
 
 
 def test_storing_all_db_values_in_csv_for_analysis(cpp_library):

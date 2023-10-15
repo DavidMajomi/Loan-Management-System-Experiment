@@ -72,7 +72,6 @@ def handle_client(conn, addr):
         
 
 def start():
-    first_connection_in_server_runtime = True
     print("Setting up server...")
     
     

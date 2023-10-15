@@ -3,7 +3,6 @@
 #pragma once
 
 
-// #include "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.h"
 #include "sqlite3.h"
 #include "constants.h"
 #include "Loan.h"
@@ -186,7 +185,6 @@ bool createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
     numberOfAddedLoanValues = loanAccountsToAdd.size();
 
 
-
     if (rc != SQLITE_OK) {
         // Handle error
         //cout << "Step 1 error." << endl;
@@ -329,8 +327,6 @@ bool createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd)
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
-    // //cout << "The base" << endl;
-    // //cout << " New values for testing python execution." << endl;
 
     return errorStoringData;
 

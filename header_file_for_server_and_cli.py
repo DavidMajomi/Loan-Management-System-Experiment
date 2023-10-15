@@ -641,12 +641,27 @@ def use_cpp_from_server(recieved_data, cpp_library):
     search_menu_response = recieved_instructions["search_menu_response"]
     
     if (menu_response == 1): # Add individualized loan using data
-        # print(f" Thi is user data before db {user_data['user_name']}")
+        print(f" Thi is user data before db {user_data['user_name']}")
         
-        data_to_cpp = UserData(user_data['user_name'].encode(FORMAT), int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), 
-                    float(user_data['user_debt_to_income_ratio']), float(user_data['user_loan_amoumnt_requested']), int(user_data['user_loan_duration']))
+        addIndividualizedDataToDb = cpp_library.addIndividualizedDataToDb
+        addIndividualizedDataToDb.restype = ctypes.c_bool
         
-        operation_state_to_return["added_user_data_successfully"] = cpp_library.addIndividualizedDataToDb(data_to_cpp)
+        # data_to_cpp = UserData(user_data['user_name'].encode(FORMAT), int(user_data['user_credit_score']), float(user_data['user_monthly_income']), float(user_data['user_financial_reserves']), float(user_data['user_debt_to_income_ratio']), float(user_data['user_loan_amoumnt_requested']), int(user_data['user_loan_duration']))
+        
+        data_to_cpp = UserData(str(user_data['user_name']).encode(FORMAT), 
+                    int(user_data['user_credit_score']), 
+                    float(user_data['user_monthly_income']), 
+                    float(user_data['user_financial_reserves']), 
+                    float(user_data['user_debt_to_income_ratio']), 
+                    float(user_data['user_loan_amoumnt_requested']), 
+                    int(user_data['user_loan_duration']))
+        
+        print(data_to_cpp)
+        
+        # added_user_data_successfully = addIndividualizedDataToDb(data_to_cpp)
+        
+        operation_state_to_return["added_user_data_successfully"] = not(addIndividualizedDataToDb(data_to_cpp))
+        print(operation_state_to_return["added_user_data_successfully"])
         
     elif (menu_response == 2):
         
@@ -674,7 +689,9 @@ def use_cpp_from_server(recieved_data, cpp_library):
     
         if (recieved_instructions["generate_data_for_db"] == True):
             generate_data(recieved_instructions["num_data_to_generate"])
-            operation_state_to_return["error_opening_file_to_store_generated_data"] = cpp_library.readAndStoreGeneratedDataInDb(recieved_instructions["dev_menu_response"])
+            error_opening_file_to_store_generated_data = cpp_library.readAndStoreGeneratedDataInDb(recieved_instructions["dev_menu_response"])
+            # print()
+            operation_state_to_return["error_opening_file_to_store_generated_data"] = error_opening_file_to_store_generated_data
             
         elif (dev_menu_response == 2):
             recieved_instructions["perform_data_analysis_on_all_generated_csv_data"] = True

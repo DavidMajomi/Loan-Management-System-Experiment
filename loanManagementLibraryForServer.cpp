@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <string>
 #include "loanManagementSystemForServer.h"
 
 // Use g++ -fPIC -shared -o loanManagementLibraryForServer.dll loanManagementLibraryForServer.cpp sqlite3.o
@@ -12,13 +13,13 @@ using namespace std;
 
 struct UserData
 {
-    int duration;
-    char *userName;
+    char* userName;
     int creditScore;
     double monthlyIncomeDecimal;
     double financialReservesDecimal;
     double debtToIncomeRatioDecimal;
     double loanAmonutRequestedDeciaml;
+    int duration;
 };
 
 
@@ -49,15 +50,15 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
     userAccount.computeCreditData();
     userAccount.setFinalMonthlyInterestRate();
 
-
     loanAccountsToAdd.push_back(userAccount);
+
 }
 
 
 extern "C" {
     void changeBaseRate(double primeRate)
     {
-        // cout << " This is entered prime rate: " << primeRate << endl;
+        cout << " This is entered prime rate: " << primeRate << endl;
         setCurrentMetrics(primeRate);
 
         // cout << " Prime Rate has been Changed to " << getCurrentFFR() << endl;
@@ -66,6 +67,7 @@ extern "C" {
 
     bool addIndividualizedDataToDb(UserData tempUserDataFromPython)
     {
+
         bool fileOpeningError = false;
         vector<Loan> loanAccountsToAdd;
 

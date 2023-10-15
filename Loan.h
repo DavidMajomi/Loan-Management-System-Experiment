@@ -48,6 +48,10 @@ public:
     {
 
     }
+    Loan()
+    {
+
+    }
     void setCreditScore (int creditScoreValue)
     {
         creditScore = creditScoreValue;
