@@ -11,6 +11,7 @@ Currently, I intend to use the loan management cpp library as is.
   5.) Recieving user data from command line interface <br>
   5.) Displaying user data once received from database both in cli and web app <br>
   6.) Using csv file for analysis of data in excel, possibly data analysis in python <br>
+  6.) Retrieving stored user data from web app and cli <br>
 
  # Known Future Changes
   1.) A revision of the risk assessment methods to utilise statistics, this will be added once i have finished a basic statistics library in c++ <br>
