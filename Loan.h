@@ -44,116 +44,88 @@ public:
     // static double calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, double normalizedFinancialReserves, double defaultRiskScore);
     double calculateInterestForDefaultRisk ();
     void setFinalMonthlyInterestRate ();
-    Loan(int values)
-    {
+    Loan(int values){
 
     }
-    Loan()
-    {
+    Loan(){
 
     }
-    void setCreditScore (int creditScoreValue)
-    {
+    void setCreditScore (int creditScoreValue){
         creditScore = creditScoreValue;
     }
-    void setUserName (string name)
-    {
+    void setUserName (string name){
         userName = name;
     }
-    void setLoanAmount (double amount)
-    {
+    void setLoanAmount (double amount){
         loanAmount = amount;
     }
-    void setLoanDuration(int loanDuration)
-    {
+    void setLoanDuration(int loanDuration){
         duration = loanDuration;
     }
-    void setMonthlyIncome (double income)
-    {
+    void setMonthlyIncome (double income){
         monthlyIncome = income;
     }
-    void setFinancialReserves(double financialReserveValues)
-    {
+    void setFinancialReserves(double financialReserveValues){
         financialReserves = financialReserveValues;
     }
-    void setDebtToIncomeRatio (double debtToIncomeRatioValue)
-    {
+    void setDebtToIncomeRatio (double debtToIncomeRatioValue){
         debtToIncomeRatio = debtToIncomeRatioValue; // outstanding dti prior to loan
     }
-    void computeCreditData ()
-    {
+    void computeCreditData (){
         simple_set_credit_metrics();
     }
-    string getUserName() const
-    {
+    string getUserName() const{
         return userName;
     }
-    int getCreditScore () const
-    {
+    int getCreditScore () const{
         return creditScore;
     }
-    double getMonthlyIncome () const
-    {
+    double getMonthlyIncome () const{
         return monthlyIncome;
     }
-    double getFinancialReserves () const
-    {
+    double getFinancialReserves () const{
         return financialReserves;
     }
-    double getDebtToIncomeRatio() const
-    {
+    double getDebtToIncomeRatio() const{
         return debtToIncomeRatio;
     }
-    int getDurationInMonths() const
-    {
+    int getDurationInMonths() const{
         return duration;
     }
-    double getLoanAmount() const
-    {
+    double getLoanAmount() const{
         return loanAmount;
     }
-    double getMonthlyInterestRate() const
-    {
+    double getMonthlyInterestRate() const{
         return finalMonthlyInterestRate;
     }
-    double getYearlyInterestRate () const
-    {
+    double getYearlyInterestRate () const{
         return finalMonthlyInterestRate * 12;
     }
-    double getLossGivenDefault() const
-    {
+    double getLossGivenDefault() const{
         return lossGivenDefault;
     }
-    double getRecoveryRate () const
-    {
+    double getRecoveryRate () const{
         return recoveryRate;
     }
-    double getTotalOutstandingMonthlyDebtPaymentsAfterLoan () const
-    {
+    double getTotalOutstandingMonthlyDebtPaymentsAfterLoan () const{
         return totalMonthlyDebtPaymentsAfterLoan;
     }
-    double getDefaultRiskScore () const
-    {
+    double getDefaultRiskScore () const{
         return defaultRiskScore;
     }
-    double getLoanViabilityScore () const
-    {
+    double getLoanViabilityScore () const{
         return loanViabilityScore;
     }
-    double getFinalAdjustedLoanViabilityScore() const
-    {
+    double getFinalAdjustedLoanViabilityScore() const{
         return finalAdjustedViabilityScore;
     }
-    double getInterestRateByGroup() const
-    {
+    double getInterestRateByGroup() const{
         return interestRateByGroup;
     }
-    double getBestPossibleRate() const
-    {
+    double getBestPossibleRate() const{
         return bestPossibleRate;
     }
-    double getWorstPossibleRate() const
-    {
+    double getWorstPossibleRate() const{
         return worstPossibleRate;
     }
 };
@@ -162,11 +134,11 @@ public:
 double Loan::normalizeScore(double rawScore, double maxScore, double minScore)
 {
     unsigned short int maxScaleValue = 1, minScaleValue = 0;
-    double normalizedScore;
+    // double normalizedScore;
 
-    normalizedScore = ((rawScore - minScore) / (maxScore - minScore)) * (maxScaleValue - minScaleValue) + (minScaleValue);
+    return ((rawScore - minScore) / (maxScore - minScore)) * (maxScaleValue - minScaleValue) + (minScaleValue);
 
-    return normalizedScore;
+    // return normalizedScore;
 }
 
 
@@ -174,14 +146,14 @@ double calculateLoanViabilityScore(double normalizedCreditScore, double normaliz
                                    double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, 
                                    double normalizedFinancialReserves, double defaultRiskScore)
 {
-    double loanViabilityScore;
+    // double loanViabilityScore;
 
-    loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + 
+    return (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + 
                          (debtToIncomeRatio * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT) +
                          (lossGivenDefault * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (defaultRiskScore * DEFAULT_RISK_SCORE_WEIGHT);
 
 
-    return loanViabilityScore;
+    // return loanViabilityScore;
 }
 
 
@@ -195,11 +167,6 @@ double Loan::calculateBestCreditMetrics()
     normalizedInterest = Loan::normalizeScore(BEST_FINAL_MONTHLY_INTEREST_RATE, MAX_INTEREST_RATE, MIN_INTEREST_RATE);
     normalizedmonthlyIncome = Loan::normalizeScore(MAX_MONTHLY_INCOME, MAX_MONTHLY_INCOME, MIN_MONTHLY_INCOME);
     normalizedLoanAmount = Loan::normalizeScore(MIN_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
-    // normalizedDefaultRiskScore = normalizeScore(BEST_DEFAULT_RISK_SCORE, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
-
-    // loanViabilityScore = (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + (BEST_DEBT_TO_INCOME_RATIO * DEBT_TO_INCOME_RATIO_WEIGHT)  
-    //                         + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT)+ (normalizedInterest * INTEREST_RATE_WEIGHT) 
-    //                         + (BEST_LOSS_GIVEN_DEFAULT * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (BEST_DEFAULT_RISK_SCORE * DEFAULT_RISK_SCORE_WEIGHT);
 
     loanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, BEST_DEBT_TO_INCOME_RATIO, normalizedLoanAmount, normalizedDuration, BEST_LOSS_GIVEN_DEFAULT, normalizedFinancialReserves, BEST_DEFAULT_RISK_SCORE);
 
@@ -315,9 +282,9 @@ double Loan::calculateDefaultRisk ()  // function not needed now since calc inte
     double monthlyInterestRateByCreditGroup, calculatedDefaultRisk;
 
     monthlyInterestRateByCreditGroup = calculateInterestForDefaultRisk();
-    calculatedDefaultRisk = monthlyInterestRateByCreditGroup - CURRENT_METRICS.getBaseMonthlyInterestRatePercentForLoans();
+    return (monthlyInterestRateByCreditGroup - CURRENT_METRICS.getBaseMonthlyInterestRatePercentForLoans());
 
-    return calculatedDefaultRisk;
+    // return calculatedDefaultRisk;
 }
 
 

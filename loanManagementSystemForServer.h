@@ -2,7 +2,6 @@
 // #define LOANMANAGEMENTSYSTEMFORSERVER_H_INCLUDED
 #pragma once
 
-
 #include "sqlite3.h"
 #include "constants.h"
 #include "Loan.h"
@@ -158,8 +157,6 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
     return fileOpeningError;
 
 }
-
-// Need to review the logic here as well as finding a way to put it in the class we will see how it goes
 
 
 bool storeDataInDb(vector<Loan> loanData)
@@ -324,7 +321,6 @@ bool storeDataInDb(vector<Loan> loanData)
 
     
 }
-
 
 
 bool createDatabaseToAddUserLoanData(vector<Loan>& loanAccountsToAdd) 
