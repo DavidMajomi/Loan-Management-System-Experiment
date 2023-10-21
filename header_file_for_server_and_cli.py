@@ -584,15 +584,14 @@ def get_prime_rate_with_alpha_vantage_api():
     # last_month = data["data"][0]["date"]
     last_months_federal_funds_rate = float(data["data"][0]["value"])
     
-    this_months_prime_rate = last_months_federal_funds_rate + 1
-    this_months_prime_rate = ctypes.c_double(this_months_prime_rate)
+    last_months_federal_funds_rate = ctypes.c_double(last_months_federal_funds_rate)
 
     # jsonData = json.dumps(data, indent = 2)
 
     # print(last_month)
     # print(last_months_prime_rate)
     
-    return change_base_rate, this_months_prime_rate
+    return change_base_rate, last_months_federal_funds_rate
 
     
 def change_base_rate_for_server(cpp_library, this_months_prime_rate):

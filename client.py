@@ -80,7 +80,6 @@ def get_customer_data_from_cli():
     search_menu_response = None
     num_data_to_generate = None
     
-    
     customer_data = {
         "user_name" : None,
         "user_credit_score" : None,

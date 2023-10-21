@@ -16,9 +16,14 @@ private:
     double superPrimeRate, primeRate, nearPrimeRate, subPrimeRate;
     double deepSubprimeRrate = 30.00;
 
+    bool threeMonthYieldSet = false;
+    bool tenYearYieldSet = false;
+    double threeMonthYield;
+    double tenYearYield;
+    double threeMonthAndTenYearYieldSpread;
+
 public:
-    void setFederalFundsRatePercent(double ffr)
-    {
+    void setFederalFundsRatePercent(double ffr){
         if (lockClass == false)
         {
             federalFundsRatePercent = ffr;
@@ -39,20 +44,37 @@ public:
         }
 
     }
-    double getFederalFundsRate() const
-    {
+    void setThreeMonthYield(double yieldRate){
+        threeMonthYield = yieldRate;
+        threeMonthYieldSet = true;
+
+    }
+    void setTenYearYield(double yieldRate){
+        tenYearYield = yieldRate;
+        threeMonthYieldSet = true;
+    }
+    void setThreeMonthAndTenYearYieldSpread(){
+        if (threeMonthYield && tenYearYieldSet)
+        {
+            threeMonthAndTenYearYieldSpread = tenYearYield - threeMonthYield;
+        }
+        else
+        {
+            cout << " Error, attempted to calculate three Month And Ten Year Yield Spread without setting those vlaues. " << endl;
+            exit(1);
+        }
+
+    }
+    double getFederalFundsRate() const{
         return federalFundsRatePercent;
     }
-    double getBaseYearlyInterestRatePercentForLoans() const
-    {
+    double getBaseYearlyInterestRatePercentForLoans() const{
         return baseYearlyInterestRatePercentForLoans;
     }
-    double getBaseMonthlyInterestRatePercentForLoans() const
-    {
+    double getBaseMonthlyInterestRatePercentForLoans() const{
         return baseMonthlyInterestRatePercentForLoans;
     }
-    void setYearOnYearInflationRatePercent(double rate)
-    {
+    void setYearOnYearInflationRatePercent(double rate){
         if (lockClass == false)
         {
             yearOnYearInflationRatePercent = rate;
@@ -64,24 +86,19 @@ public:
             exit(1);
         }
     }
-    double getYearOnYearInflationRatePercent() const
-    {
+    double getYearOnYearInflationRatePercent() const{
         return yearOnYearInflationRatePercent;
     }
-    double getSuperPrimeRate() const
-    {
+    double getSuperPrimeRate() const{
         return superPrimeRate;
     }
-    double getPrimeRate() const
-    {
+    double getPrimeRate() const{
         return primeRate;
     }
-    double getNearPrimeRate() const
-    {
+    double getNearPrimeRate() const{
         return nearPrimeRate;
     }
-    double getSubPrimeRate() const
-    {
+    double getSubPrimeRate() const{
         return subPrimeRate;
     }
     double getSpreadForInterestRate() const{
@@ -95,6 +112,9 @@ public:
     }
     void unlockClassForModification(){
         lockClass = false;
+    }
+    double getThreeMonthAndTenYearYieldSpread() const{
+        return threeMonthAndTenYearYieldSpread; 
     }
 };
 
