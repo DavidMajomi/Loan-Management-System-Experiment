@@ -16,6 +16,7 @@ PORT = 5050
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"
+RECOMPILE_DLL_FILE = "RECOMPILE_CPP"
 FORMAT = 'utf-8'
 
 OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
@@ -54,6 +55,8 @@ def handle_client(conn, addr):
                 conn.send(" Disconnected Successfully".encode(FORMAT))
                 connected = False
                 print("\n")
+            # elif msg == RECOMPILE_DLL_FILE
+                
             else:
                 data_to_use = json.loads(msg)
                 data_to_send_to_client = use_cpp_from_server(data_to_use, cpp_library)

@@ -9,6 +9,7 @@ PORT = 5050
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"
+RECOMPILE_DLL_FILE = "RECOMPILE_CPP"
 FORMAT = 'utf-8'
 
 
@@ -144,4 +145,5 @@ data_to_send, instructions = get_customer_data_from_cli()
 json_data = json.dumps(data_to_send)
 
 send(json_data, instructions)
+# send(RECOMPILE_DLL_FILE, instructions)
 send(DISCONNECT_MESSAGE, instructions)

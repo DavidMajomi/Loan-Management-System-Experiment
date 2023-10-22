@@ -47,7 +47,7 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
     else if (devMenuResponse == 1)
     {
         // This contains freshly generated data from python
-        inputFile.open(CSV_FILE_FOR_TEMP_GENERTED_DATA_FOR_BD);    // Data from here would be stored in database (data analysis on new generated data)
+        inputFile.open(CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_DB);    // Data from here would be stored in database (data analysis on new generated data)
     }
 
     if (inputFile.fail())
@@ -366,10 +366,13 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 
         outputCsvFile.open(CSV_FILE_FOR_STORING_ANALAYZED_DB_VALUES);
 
+        cout << " This is File path for analyzed data: " << CSV_FILE_FOR_STORING_ANALAYZED_DB_VALUES << endl;
+
         if (outputCsvFile.fail())
         {
             //cout << " Output File Opening Error. " << endl;
             errorRetrievingData = true;
+            cout << " Error opening File" << endl;
         }
         else
         {

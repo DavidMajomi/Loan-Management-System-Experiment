@@ -555,7 +555,7 @@ def dev_menu_response(instructions, operation_state):
         else:
             print(Fore.RED + " Failed to generate data.")
     elif (instructions["dev_menu_response"] == 2):
-        if not (instructions["error_opening_file_to_store_analyzed_data"]):
+        if not (operation_state["error_opening_file_to_store_analyzed_data"]):
                 print(Fore.GREEN + " Analyzed Data Successfully")
         else:
             print(Fore.RED + " Failed to analyze data.")
