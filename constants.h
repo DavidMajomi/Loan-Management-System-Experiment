@@ -47,11 +47,11 @@ const double MIN_LOAN_AMOUNT = 500;
 const double BEST_DEFAULT_RISK_SCORE = 0; 
 const double BEST_LOSS_GIVEN_DEFAULT = 0;
 const double BEST_DEBT_TO_INCOME_RATIO = 0;
-const double BEST_FINAL_MONTHLY_INTEREST_RATE = 0.58;
+// const double BEST_FINAL_MONTHLY_INTEREST_RATE = 0.58;
 
 const double WORST_DEFAULT_RISK_SCORE = 1;   // add this to loan viability formula
 const double WORST_LOSS_GIVEN_DEFAULT = 0.8;   // possible value includes 0.2, 0.1, 1 = too high
 const double WORST_DEBT_TO_INCOME_RATIO = 0.9; //
-const double WORST_FINAL_MONTHLY_INTEREST_RATE = 2;   // Check the logic behind this
+// const double WORST_FINAL_MONTHLY_INTEREST_RATE = 2;   // Check the logic behind this
 
 // #endif // CONSTANTS_H_INCLUDED
