@@ -27,6 +27,8 @@ LIBRARY_CPP_FILE_PATH_FOR_SERVER = PATH + "\\loanManagementLibraryForServer.cpp"
 OUTPUT_DLL_FILE_PATH = PATH + "\\loanManagementLibrary.dll"  
 OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 CPP_EXECUTABLE_FROM_PYTHON_PATH = PATH + "\\executable from python interface.exe"  
+CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY = PATH + "\\Folder with Generated Data\\allGeneratedLoanData.csv"
+CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_db = PATH + "\\Folder with Generated Data\\tempGeneratedLoanDataForDbStorage.csv"
 
 
 class UserData(ctypes.Structure):
@@ -238,17 +240,17 @@ def generate_data (num_data_to_generate):
                 
             loan_data.append([user_name, credit_score, user_monthly_income, financial_reserves, user_debt_to_income_ratio, loan_duration_in_months, loan_amonut_requested])
             
-        if os.path.exists("allGeneratedLoanData.csv"):
-            with open("allGeneratedLoanData.csv", "a", newline = '') as file:
+        if os.path.exists(CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY):
+            with open(CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY, "a", newline = '') as file:
                 writer = csv.writer(file)
                 writer.writerows(loan_data)    
         else:
-            with open("allGeneratedLoanData.csv", "w", newline = '') as file:
+            with open(CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY, "w", newline = '') as file:
                 writer = csv.writer(file)
                 writer.writerow(loan_data_header)
                 writer.writerows(loan_data)
         
-        with open("tempGeneratedLoanDataForDbStorage.csv", "w", newline = '') as file:  # This is used to store newly generated data to be used
+        with open(CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_db, "w", newline = '') as file:  # This is used to store newly generated data to be used
             writer = csv.writer(file)
             writer.writerow(loan_data_header)
             writer.writerows(loan_data)
@@ -562,10 +564,34 @@ def dev_menu_response(instructions, operation_state):
                 
     elif (instructions["dev_menu_response"] == 3):
         
-        if not (operation_state["error_getting_data_from_db_to_analyze"]):
+        # if (instructions["generate_data_for_db"] == True):    
+        #     if not (operation_state["error_getting_data_from_db_to_analyze"]):
+        #             print(Fore.GREEN + " Analyzed Data Successfully")7
+        #     else:
+        #         print(Fore.RED + " Failed to analyze data.")
+        if (instructions["generate_data_for_db"] == True):
+            
+            if not operation_state["error_opening_file_to_store_generated_data"]:
                 print(Fore.GREEN + " Analyzed Data Successfully")
-        else:
-            print(Fore.RED + " Failed to analyze data.")
+            else:
+                print(Fore.RED + " Failed to analyze data.")
+            
+        elif (dev_menu_response == 2):
+            # if not instructions["perform_data_analysis_on_all_generated_csv_data"]:
+            
+            if not operation_state["error_opening_file_to_store_analyzed_data"]:
+                print(Fore.GREEN + " Analyzed Database values Successfully")
+            else:
+                print(Fore.RED + " Failed to store all datatbase values in csv file for analysis.")
+                
+        elif (dev_menu_response == 3):
+            if not operation_state["error_getting_data_from_db_to_analyze"]:
+                print(Fore.GREEN + " Analyzed Database values Successfully")
+            else:
+                print(Fore.RED + " Failed to store all datatbase values in csv file for analysis.")
+                
+                
+        
     
     
 def get_prime_rate_with_alpha_vantage_api():
@@ -683,17 +709,23 @@ def use_cpp_from_server(recieved_data, cpp_library):
     elif (menu_response == 3):
     
         if (recieved_instructions["generate_data_for_db"] == True):
+            readAndStoreGeneratedDataInDb = cpp_library.readAndStoreGeneratedDataInDb
+            readAndStoreGeneratedDataInDb.restype = ctypes.c_bool
+            
             generate_data(recieved_instructions["num_data_to_generate"])
-            error_opening_file_to_store_generated_data = cpp_library.readAndStoreGeneratedDataInDb(recieved_instructions["dev_menu_response"])
-            # print()
+            
+            error_opening_file_to_store_generated_data = (readAndStoreGeneratedDataInDb(recieved_instructions["dev_menu_response"]))
+            
+            print(f" This is bool for error generating data: {error_opening_file_to_store_generated_data}")
             operation_state_to_return["error_opening_file_to_store_generated_data"] = error_opening_file_to_store_generated_data
             
         elif (dev_menu_response == 2):
-            recieved_instructions["perform_data_analysis_on_all_generated_csv_data"] = True
-            operation_state_to_return["error_opening_file_to_store_analyzed_data"] = cpp_library.readAndStoreGeneratedDataForAnalysis(recieved_instructions["dev_menu_response"])
+            # recieved_instructions["perform_data_analysis_on_all_generated_csv_data"] = True
+            operation_state_to_return["error_opening_file_to_store_analyzed_data"] = bool(cpp_library.readAndStoreGeneratedDataForAnalysis(recieved_instructions["dev_menu_response"]))
+            print(f" This is the bool value for error opening file line 720 {operation_state_to_return['error_opening_file_to_store_analyzed_data']}")
         elif (dev_menu_response == 3):
             # recieved_instructions["store_all_db_data_for_external_analysis"] = True
-            operation_state_to_return["error_getting_data_from_db_to_analyze"] = cpp_library.readAllDatabaseDataForAnalysis()
+            operation_state_to_return["error_getting_data_from_db_to_analyze"] = bool(cpp_library.readAllDatabaseDataForAnalysis())
             
             
     data_to_send_Back_to_client = {

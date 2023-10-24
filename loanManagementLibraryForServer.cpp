@@ -80,12 +80,17 @@ extern "C" {
 
     bool readAndStoreGeneratedDataInDb(unsigned short int devMenuResponse)
     {
-        bool fileOpeningError = false;
+        bool fileOpeningError = false, errorReadingData = false, errorStoringData = false;
         ifstream inputFile;
         vector<Loan> loanAccounts;
 
-        fileOpeningError = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
-        fileOpeningError = storeGeneratedDataInDatabase(loanAccounts);
+        errorReadingData = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
+        errorStoringData = storeGeneratedDataInDatabase(loanAccounts);
+
+        if (errorReadingData == true || errorStoringData == true)
+        {
+            fileOpeningError = true;
+        }
 
         return fileOpeningError;
     }
@@ -96,7 +101,7 @@ extern "C" {
         ifstream inputFile;
         ofstream outputCsvFile;
         vector<Loan> loanAccounts;
-        bool openInputFileError = false, openOutputFileError = true,  fileOpeningError = false;
+        bool openInputFileError = false, openOutputFileError = false,  fileOpeningError = false;
 
         openInputFileError = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
         openOutputFileError = outputToFile (outputCsvFile, loanAccounts);
@@ -104,7 +109,11 @@ extern "C" {
         if ((openInputFileError == true) || (openOutputFileError == true))
         {
             fileOpeningError = true;
+            cout << " Error opening file = true. " << endl;
         }
+
+        cout << " Error opening file = false. " << endl;
+
 
         return fileOpeningError;
     }

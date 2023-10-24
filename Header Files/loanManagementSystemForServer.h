@@ -52,8 +52,9 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
 
     if (inputFile.fail())
     {
-        //cout << " File opening failure. " << endl;
+        cout << " File opening failure. " << endl;
         fileOpeningError = true;
+        // exit(1);
     }
     else
     {
@@ -61,6 +62,9 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
         while (getline(inputFile, userName, ','))
         {
             values = count;
+
+            // cout << " This is the name of the customer applying to this position. " << endl;
+
 
             getline(inputFile, creditScore, ',');
             getline(inputFile, monthlyIncome, ',');
@@ -411,6 +415,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
                 interestRateByGroup = sqlite3_column_double(stmt, 16);
                 bestPossibleRate = sqlite3_column_double(stmt, 17);
                 worstPossibleRate = sqlite3_column_double(stmt, 18);
+
 
                 outputCsvFile << userName << ",";
                 outputCsvFile << creditScore << ",";
