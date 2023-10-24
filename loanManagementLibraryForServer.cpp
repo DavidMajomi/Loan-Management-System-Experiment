@@ -1,11 +1,9 @@
-// #include "C:\\Users\\David\\Documents\\Github\\Loan-Management-System-Experiment\\sqlite3.h"
-#include "sqlite3.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
 #include <algorithm>
 #include <string>
-#include "loanManagementSystemForServer.h"
+#include "Header Files/loanManagementSystemForServer.h"
 
 // Use g++ -fPIC -shared -o loanManagementLibraryForServer.dll loanManagementLibraryForServer.cpp sqlite3.o
 // Upcoming Task: Add functionality for year on year inflation rate.

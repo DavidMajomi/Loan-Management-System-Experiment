@@ -20,8 +20,8 @@ PATH = str(Path.cwd())
 FORMAT = 'utf-8'
 STAND_ALONE_CPP_EXECUTABLE = PATH + "\\just c++.exe"  
 MAIN_CPP_FILE = PATH + "\\main.cpp"
-SQLITE3_DATABASE_PATH = PATH + "\\bam_bam.db"
-SQLITE3_OBJECT_FILE_PATH = PATH + "\\sqlite3.o"
+SQLITE3_DATABASE_PATH = PATH + "\\Database files\\bam_bam.db"
+# SQLITE3_OBJECT_FILE_PATH = PATH + "\\sqlite3.o"
 LIBRARY_CPP_FILE_PATH = PATH + "\\loanManagementLibrary.cpp"
 LIBRARY_CPP_FILE_PATH_FOR_SERVER = PATH + "\\loanManagementLibraryForServer.cpp"
 OUTPUT_DLL_FILE_PATH = PATH + "\\loanManagementLibrary.dll"  
@@ -494,11 +494,11 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
         return list_of_loan_data, operation_state_to_return
     
     
-def compile_dll_for_server():
-    compile_commands = "g++ -fPIC -shared -o"
+# def compile_dll_for_server():
+#     compile_commands = "g++ -fPIC -shared -o"
     
-    complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH_FOR_SERVER + " " + SQLITE3_OBJECT_FILE_PATH
-    subprocess.run(complete_command_instruction, check=True)
+#     complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH_FOR_SERVER + " " + SQLITE3_OBJECT_FILE_PATH
+#     subprocess.run(complete_command_instruction, check=True)
     
     
 def compile_dll_with_make():
@@ -571,8 +571,8 @@ def dev_menu_response(instructions, operation_state):
 def get_prime_rate_with_alpha_vantage_api():
     change_base_rate = True
 
-    if os.path.exists("alphaVantageApiKey.txt"):
-        with open("alphaVantageApiKey.txt", "r") as file:
+    if os.path.exists(PATH + "\\API keys\\alphaVantageApiKey.txt"):
+        with open((PATH + "\\API keys\\alphaVantageApiKey.txt"), "r") as file:
             api_key = file.readline()
     else:
         change_base_rate = False
