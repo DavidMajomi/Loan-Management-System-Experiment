@@ -13,7 +13,18 @@ statisticsLibrary.o: statisticsLibrary.cpp
 testStatisticsLibrary.o: testStatisticsLibrary.cpp
 	g++ -c testStatisticsLibrary.cpp
 
+testExtern: testExtern.o externExtern.dll
+	g++ testExtern.o externExtern.dll -o  testExtern.exe
+
+testExtern.o:
+	g++ -c testExtern.cpp
+
+externExtern.dll:
+	g++ -fpic -shared -o externExtern.dll externExtern.cpp
+
 clean:
 	del "statisticsLibrary.o"
 	del "loanManagementLibraryForServer.o"
 	del "testStatisticsLibrary.o"
+	del "testExtern.o"
+	del "externExtern.o"
