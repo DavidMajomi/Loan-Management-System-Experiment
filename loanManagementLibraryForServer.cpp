@@ -109,10 +109,10 @@ extern "C" {
         if ((openInputFileError == true) || (openOutputFileError == true))
         {
             fileOpeningError = true;
-            cout << " Error opening file = true. " << endl;
+            // cout << " Error opening file = true. " << endl;
         }
 
-        cout << " Error opening file = false. " << endl;
+        // cout << " Error opening file = false. " << endl;
 
 
         return fileOpeningError;
@@ -141,7 +141,5 @@ extern "C" {
         // cout << " This is prime rate from cpp end: " << CURRENT_METRICS.getSuperPrimeRate() << endl;
         return CURRENT_METRICS.getSuperPrimeRate();
     }
-
-    // double 
 
 }

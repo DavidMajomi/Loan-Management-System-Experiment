@@ -12,7 +12,7 @@ class EconomicMetrics
 private:
     bool lockClass = false;
     double spreadForInterestRate = 3;
-    double federalFundsRatePercent, yearOnYearInflationRatePercent, gdp;
+    double federalFundsRatePercent, yearOnYearInflationRatePercent, thisYearsGdp, lastYearsGdp;
     double baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans;
     double superPrimeRate, primeRate, nearPrimeRate, subPrimeRate;
     double deepSubprimeRrate = 30.00;
@@ -66,15 +66,6 @@ public:
         }
 
     }
-    double getFederalFundsRate() const{
-        return federalFundsRatePercent;
-    }
-    double getBaseYearlyInterestRatePercentForLoans() const{
-        return baseYearlyInterestRatePercentForLoans;
-    }
-    double getBaseMonthlyInterestRatePercentForLoans() const{
-        return baseMonthlyInterestRatePercentForLoans;
-    }
     void setYearOnYearInflationRatePercent(double rate){
         if (lockClass == false)
         {
@@ -86,6 +77,15 @@ public:
             cout << " This error is in the EconomicMetrics.h file in the setYearOnYearInflationRatePercent(double rate) function. " << endl;
             exit(1);
         }
+    }
+    double getFederalFundsRate() const{
+        return federalFundsRatePercent;
+    }
+    double getBaseYearlyInterestRatePercentForLoans() const{
+        return baseYearlyInterestRatePercentForLoans;
+    }
+    double getBaseMonthlyInterestRatePercentForLoans() const{
+        return baseMonthlyInterestRatePercentForLoans;
     }
     double getYearOnYearInflationRatePercent() const{
         return yearOnYearInflationRatePercent;

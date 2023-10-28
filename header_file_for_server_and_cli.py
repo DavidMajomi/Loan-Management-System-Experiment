@@ -617,14 +617,14 @@ def get_prime_rate_with_alpha_vantage_api():
     return change_base_rate, last_months_federal_funds_rate
 
 
-def use_python_for_cpp_eceonomic_metrics(cpplibrary):
-    change_base_rate = True
+def use_python_for_cpp_eceonomic_metrics():
+    changed_base_rate = True
 
     if os.path.exists(PATH + "\\API keys\\alphaVantageApiKey.txt"):
         with open((PATH + "\\API keys\\alphaVantageApiKey.txt"), "r") as file:
             api_key = file.readline()
     else:
-        change_base_rate = False
+        changed_base_rate = False
 
     url = f'https://www.alphavantage.co/query?function=FEDERAL_FUNDS_RATE&interval=monthly&apikey={api_key}'
     returnedData = requests.get(url)
@@ -632,24 +632,25 @@ def use_python_for_cpp_eceonomic_metrics(cpplibrary):
 
     last_months_federal_funds_rate = float(data["data"][0]["value"])
     
+    print(f" This is last months federal funds rate: {last_months_federal_funds_rate}")
     last_months_federal_funds_rate = ctypes.c_double(last_months_federal_funds_rate)
 
 
     url = f'https://www.alphavantage.co/query?function=TREASURY_YIELD&interval=daily&maturity=10year&apikey={api_key}'
 
     returnedData = requests.get(url)
-    data_for_ten_year = returnedData.json()
+    data_for_ten_year_yield = returnedData.json()
 
 
-    last_months_ten_year_yield = float(data_for_ten_year["data"][0]["value"])
+    last_months_ten_year_yield = float(data_for_ten_year_yield["data"][0]["value"])
 
     url = f'https://www.alphavantage.co/query?function=TREASURY_YIELD&interval=daily&maturity=3month&apikey={api_key}'
 
 
     returnedData = requests.get(url)
-    data_for_three_month = returnedData.json()
+    data_for_three_month_yield = returnedData.json()
 
-    last_months_three_month_yield = float(data_for_three_month["data"][0]["value"])
+    last_months_three_month_yield = float(data_for_three_month_yield["data"][0]["value"])
 
 
     print(" Interval = daily")
@@ -662,8 +663,14 @@ def use_python_for_cpp_eceonomic_metrics(cpplibrary):
         print(" There is a yield curve inversion which suggests lowered investor confidence in long term economic success. There should be increased tightening on loan grants.")
     else:
         print(" This is a normal yield result suggesting normal economic activities. ")
+        
+    print(" This is barrier \n \n  \n")
+    url = f'https://www.alphavantage.co/query?function=REAL_GDP&interval=annual&apikey={api_key}'
+    returnedData = requests.get(url)
+    data = returnedData.json()
 
-    
+    print(data)
+
     
 def change_base_rate_for_server(cpp_library, this_months_prime_rate):
     cpp_library.changeBaseRate(this_months_prime_rate)

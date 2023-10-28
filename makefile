@@ -4,27 +4,17 @@ loanManagementServerLibrary: loanManagementLibraryForServer.o sqlite3.o
 loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
 	g++ -c loanManagementLibraryForServer.cpp
 
-testStatisticsLib: statisticsLibrary.o testStatisticsLibrary.o
-	g++ statisticsLibrary.cpp testStatisticsLibrary.cpp -o  outputStatistics.exe
+# testStatisticsLib: statisticsLibrary.o testStatisticsLibrary.o
+# 	g++ statisticsLibrary.cpp testStatisticsLibrary.cpp -o  outputStatistics.exe
 
-statisticsLibrary.o: statisticsLibrary.cpp
-	g++ -c statisticsLibrary.cpp
+# statisticsLibrary.o: statisticsLibrary.cpp
+# 	g++ -c statisticsLibrary.cpp
 
-testStatisticsLibrary.o: testStatisticsLibrary.cpp
-	g++ -c testStatisticsLibrary.cpp
+# testStatisticsLibrary.o: testStatisticsLibrary.cpp
+# 	g++ -c testStatisticsLibrary.cpp
 
-testExtern: testExtern.o externExtern.dll
-	g++ testExtern.o externExtern.dll -o  testExtern.exe
-
-testExtern.o:
-	g++ -c testExtern.cpp
-
-externExtern.dll:
-	g++ -fpic -shared -o externExtern.dll externExtern.cpp
 
 clean:
 	del "statisticsLibrary.o"
 	del "loanManagementLibraryForServer.o"
 	del "testStatisticsLibrary.o"
-	del "testExtern.o"
-	del "externExtern.o"
