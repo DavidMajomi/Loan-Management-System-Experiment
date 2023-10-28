@@ -20,7 +20,7 @@ Currently, I intend to use the loan management cpp library as is.
 The current server based files currently has most of the functionality used in the depricated files, however if you want to use or modify the depricated files, remove them from the depricated files folder, and place them back into the Loan Management System Experiment folder <br>
 
 # Dependencies
- 1.) C++ compiler (MINGW) <br>
+ 1.) C++ compiler (MINGW) version 11 <br>
  2.) Make, could be downloaded from chocolatey <br>
  3.) Python 3.8 and above <br>
  4.) Sqlite3 database
