@@ -25,4 +25,5 @@ Banking System/
 /Header Files/sqlite3.h
 /API keys/alphaVantageApiKey.txt
 /API keys/nasdaq_data_link_api_key.txt
+/API keys/tradingEconomicsAPiKey.txt
 /Tools still in production to be used later/cppUmlDocumenter.cpp
