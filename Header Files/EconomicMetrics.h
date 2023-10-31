@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "constants.h"
 #include <iostream>
 
 using namespace std;
@@ -116,6 +117,9 @@ public:
     }
     double getThreeMonthAndTenYearYieldSpread() const{
         return threeMonthAndTenYearYieldSpread; 
+    }
+    bool getClassModificationState() const{
+        return lockClass;
     }
 };
 

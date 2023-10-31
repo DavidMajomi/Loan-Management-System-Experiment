@@ -28,9 +28,16 @@ struct UserData
 
 void setCurrentMetrics(double primeRate)
 {
-    CURRENT_METRICS.unlockClassForModification();
-    CURRENT_METRICS.setFederalFundsRatePercent(primeRate);
-    CURRENT_METRICS.lockModificationOfClass();
+
+    if (CURRENT_METRICS.getClassModificationState() == true)
+    {
+        CURRENT_METRICS.setFederalFundsRatePercent(primeRate);
+        CURRENT_METRICS.lockModificationOfClass();
+    }
+    else
+    {
+        cout << " This class has already being locked with todays metrics, no modification allowed." << endl;
+    }
 }
 
 
@@ -52,7 +59,11 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 
 }
 
-
+/**
+ * @brief All functions within this extern are potentially non thread safe, but since they are mostly used from the dev menu, they wont run 
+ *        into thread related issues for now, however, potential fixes using mutex would be coming soon
+ * 
+ */
 extern "C" {
     void changeBaseRate(double primeRate)
     {
