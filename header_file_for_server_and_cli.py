@@ -6,7 +6,6 @@ import requests
 import random
 import sqlite3
 import datetime
-import subprocess
 from faker import Faker
 from pathlib import Path
 from colorama import Fore
