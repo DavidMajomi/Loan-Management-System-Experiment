@@ -47,13 +47,36 @@ public:
 
     }
     void setThreeMonthYield(double yieldRate){
-        threeMonthYield = yieldRate;
-        threeMonthYieldSet = true;
+        if (lockClass == false)
+        {
+            threeMonthYield = yieldRate;
+            threeMonthYieldSet = true;
 
+        }
+        else
+        {
+            cout << " Error, cannot set value to a locked class. This is done to replicate a constant. This ensures that values cannot be changed by accident when using the dll. " << endl;
+            cout << " This error is in the EconomicMetrics.h file in the setYearOnYearInflationRatePercent(double rate) function. " << endl;
+            exit(1);
+
+        }
+
+        
     }
     void setTenYearYield(double yieldRate){
-        tenYearYield = yieldRate;
-        threeMonthYieldSet = true;
+        if (lockClass == false)
+        {
+            tenYearYield = yieldRate;
+            threeMonthYieldSet = true;
+        }
+        else
+        {
+            cout << " Error, cannot set value to a locked class. This is done to replicate a constant. This ensures that values cannot be changed by accident when using the dll. " << endl;
+            cout << " This error is in the EconomicMetrics.h file in the setYearOnYearInflationRatePercent(double rate) function. " << endl;
+            exit(1);
+
+        }
+
     }
     void setThreeMonthAndTenYearYieldSpread(){
         if (threeMonthYield && tenYearYieldSet)

@@ -13,8 +13,14 @@ loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
 # testStatisticsLibrary.o: testStatisticsLibrary.cpp
 # 	g++ -c testStatisticsLibrary.cpp
 
+experimentalDLL: experimentalDLL.o
+	g++ -fpic -shared -o experimentalDLL.dll experimentalDLL.o
+
+experimentalDLL.o:
+	g++ -c experimentalDLL.cpp
 
 clean:
 	del "statisticsLibrary.o"
 	del "loanManagementLibraryForServer.o"
 	del "testStatisticsLibrary.o"
+	del "experimentalDLL.o"

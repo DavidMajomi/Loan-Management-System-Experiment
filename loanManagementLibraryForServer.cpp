@@ -153,4 +153,10 @@ extern "C" {
         return CURRENT_METRICS.getSuperPrimeRate();
     }
 
+    bool testAccess()
+    {
+        cout << " The test. " << endl;
+        return true;
+    }
+
 }
