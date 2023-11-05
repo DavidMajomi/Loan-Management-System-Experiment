@@ -13,14 +13,33 @@ loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
 # testStatisticsLibrary.o: testStatisticsLibrary.cpp
 # 	g++ -c testStatisticsLibrary.cpp
 
+testBro: experimentalDLL.dll testExport.o
+	g++ experimentalDLL.dll testExport.cpp -o  testExport.exe
+
+testExport.o:
+	g++ -c testExport.cpp
+
+
+experimentalDLL.dll: experimentalDLL.o
+	g++ -fpic -shared -o experimentalDLL.dll experimentalDLL.o
+
 experimentalDLL: experimentalDLL.o
 	g++ -fpic -shared -o experimentalDLL.dll experimentalDLL.o
 
 experimentalDLL.o:
 	g++ -c experimentalDLL.cpp
 
+# experimentalDLL: experimentalDLL.cpp
+# 	g++ -fpic -shared -o experimentalDLL.dll 
+
+
+
 clean:
 	del "statisticsLibrary.o"
 	del "loanManagementLibraryForServer.o"
 	del "testStatisticsLibrary.o"
 	del "experimentalDLL.o"
+	del "experimentalDLL.dll"
+	del "testExport.o"
+	del "testLoadinDll.exe"
+	del "testExport.exe"
