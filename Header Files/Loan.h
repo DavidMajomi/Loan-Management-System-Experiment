@@ -2,7 +2,6 @@
 // #define LOAN_H_INCLUDED
 #pragma once
 
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -142,7 +141,7 @@ double Loan::normalizeScore(double rawScore, double maxScore, double minScore)
 }
 
 
-double calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, 
+inline double calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, 
                                    double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, 
                                    double normalizedFinancialReserves, double defaultRiskScore)
 {
