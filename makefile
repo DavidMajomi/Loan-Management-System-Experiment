@@ -29,6 +29,14 @@ experimentalDLL: experimentalDLL.o
 experimentalDLL.o:
 	g++ -c experimentalDLL.cpp
 
+
+testLinktimeDebugger: externDebugger.dll
+	g++ linktimeUseDebugger.cpp externDebugger.dll -o linktimeUseDebugger.exe
+
+externDebugger.dll:
+	g++ -fpic -shared -o externDebugger.dll externalDebugger.cpp
+
+
 # experimentalDLL: experimentalDLL.cpp
 # 	g++ -fpic -shared -o experimentalDLL.dll 
 
@@ -40,6 +48,9 @@ clean:
 	del "testStatisticsLibrary.o"
 	del "experimentalDLL.o"
 	del "experimentalDLL.dll"
+	del "externDebugger.dll"
 	del "testExport.o"
 	del "testLoadinDll.exe"
 	del "testExport.exe"
+	del "runtimeConsumeDebugger.exe"
+	del "linktimeUseDebugger.exe"
