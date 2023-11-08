@@ -33,7 +33,7 @@ namespace cppExternalDebugger
 
     void initializeExternalFunctions(HINSTANCE signal)
     {
-        log = (f_funci)GetProcAddress(signal,("log"));
+        log = (f_funci)GetProcAddress(signal,("logToCLI"));
         logWithDetails = (accessFunc)GetProcAddress(signal,("logWithDetails"));
         
     }
