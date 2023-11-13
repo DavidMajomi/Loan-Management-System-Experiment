@@ -1,8 +1,10 @@
 loanManagementServerLibrary: loanManagementLibraryForServer.o sqlite3.o
-	g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
+	g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
 
 loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
-	g++ -c loanManagementLibraryForServer.cpp
+	g++ --extra-warnings -c loanManagementLibraryForServer.cpp
+	
+# g++ -Q --help=warning -c loanManagementLibraryForServer.cpp
 
 # testStatisticsLib: statisticsLibrary.o testStatisticsLibrary.o
 # 	g++ statisticsLibrary.cpp testStatisticsLibrary.cpp -o  outputStatistics.exe
