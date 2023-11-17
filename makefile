@@ -1,8 +1,12 @@
 loanManagementServerLibrary: loanManagementLibraryForServer.o sqlite3.o
 	g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
 
+loanManagementServerLibraryLinux: loanManagementLibraryForServer.o sqlite3.o
+	g++ -fpic -shared -o loanManagementServerLibrary.so loanManagementLibraryForServer.o sqlite3.o
+# g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.so loanManagementLibraryForServer.o sqlite3.o
+
 loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
-	g++ --extra-warnings -c loanManagementLibraryForServer.cpp
+	g++ -c loanManagementLibraryForServer.cpp
 	
 # g++ -Q --help=warning -c loanManagementLibraryForServer.cpp
 
@@ -56,3 +60,16 @@ clean:
 	del "testExport.exe"
 	del "runtimeConsumeDebugger.exe"
 	del "linktimeUseDebugger.exe"
+
+cleanLinux:
+	rm "statisticsLibrary.o"
+	rm "loanManagementLibraryForServer.o"
+	rm "testStatisticsLibrary.o"
+	rm "experimentalDLL.o"
+	rm "experimentalDLL.dll"
+	rm "externDebugger.dll"
+	rm "testExport.o"
+	rm "testLoadinDll.exe"
+	rm "testExport.exe"
+	rm "runtimeConsumeDebugger.exe"
+	rm "linktimeUseDebugger.exe"
