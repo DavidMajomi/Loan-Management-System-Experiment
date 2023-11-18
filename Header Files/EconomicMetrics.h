@@ -1,7 +1,7 @@
 // #ifndef ECONOMICMETRICS_H_INCLUDED
 // #define ECONOMICMETRICS_H_INCLUDED
 
-#pragma once
+// #pragma once
 
 #include "constants.h"
 #include <iostream>
@@ -11,18 +11,18 @@ using namespace std;
 class EconomicMetrics
 {
 private:
-    bool lockClass = false;
-    double spreadForInterestRate = 3;
-    double federalFundsRatePercent, yearOnYearInflationRatePercent, thisYearsGdp, lastYearsGdp;
-    double baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans;
-    double superPrimeRate, primeRate, nearPrimeRate, subPrimeRate;
-    double deepSubprimeRrate = 30.00;
+    static bool lockClass;
+    static double spreadForInterestRate;
+    static double federalFundsRatePercent, yearOnYearInflationRatePercent, thisYearsGdp, lastYearsGdp;
+    static double baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans;
+    static double superPrimeRate, primeRate, nearPrimeRate, subPrimeRate;
+    static double deepSubprimeRrate;
 
-    bool threeMonthYieldSet = false;
-    bool tenYearYieldSet = false;
-    double threeMonthYield;
-    double tenYearYield;
-    double threeMonthAndTenYearYieldSpread;
+    static bool threeMonthYieldSet;
+    static bool tenYearYieldSet;
+    static double threeMonthYield;
+    static double tenYearYield;
+    static double threeMonthAndTenYearYieldSpread;
 
 public:
     void setFederalFundsRatePercent(double ffr){
@@ -145,5 +145,19 @@ public:
         return lockClass;
     }
 };
+
+// EconomicMetrics::initializeStaticValuesForEconomicMetrics();
+
+
+bool EconomicMetrics::lockClass = false;
+double EconomicMetrics::spreadForInterestRate = 3;
+double EconomicMetrics::deepSubprimeRrate = 30;
+bool EconomicMetrics::threeMonthYieldSet = false;
+bool EconomicMetrics::tenYearYieldSet = false;
+double EconomicMetrics::federalFundsRatePercent, yearOnYearInflationRatePercent, thisYearsGdp, lastYearsGdp;
+double EconomicMetrics::baseYearlyInterestRatePercentForLoans, EconomicMetrics::baseMonthlyInterestRatePercentForLoans;
+double EconomicMetrics::superPrimeRate, EconomicMetrics::primeRate, EconomicMetrics::nearPrimeRate, EconomicMetrics::subPrimeRate;
+
+
 
 // #endif // ECONOMICMETRICS_H_INCLUDED
