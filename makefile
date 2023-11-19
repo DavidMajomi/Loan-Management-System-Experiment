@@ -1,5 +1,6 @@
 loanManagementServerLibrary: loanManagementLibraryForServer.o sqlite3.o
-	g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
+	g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
+# g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
 
 loanManagementServerLibraryLinux: loanManagementLibraryForServer.o sqlite3.o
 	g++ -fpic -shared -o loanManagementServerLibrary.so loanManagementLibraryForServer.o sqlite3.o
