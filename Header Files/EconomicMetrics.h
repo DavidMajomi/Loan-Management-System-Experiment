@@ -8,6 +8,19 @@
 
 using namespace std;
 
+struct ExternalFeedingContainerForEconomicMetrics
+{
+    double spreadForInterestRate;
+    double federalFundsRatePercent, yearOnYearInflationRatePercent, thisYearsGdp, lastYearsGdp;
+    double baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans;
+    double superPrimeRate, primeRate, nearPrimeRate, subPrimeRate;
+    double deepSubprimeRrate;
+    
+    double threeMonthYield;
+    double tenYearYield;
+    double threeMonthAndTenYearYieldSpread;
+};
+
 class EconomicMetrics
 {
 private:
@@ -157,7 +170,3 @@ bool EconomicMetrics::tenYearYieldSet = false;
 double EconomicMetrics::federalFundsRatePercent, yearOnYearInflationRatePercent, thisYearsGdp, lastYearsGdp;
 double EconomicMetrics::baseYearlyInterestRatePercentForLoans, EconomicMetrics::baseMonthlyInterestRatePercentForLoans;
 double EconomicMetrics::superPrimeRate, EconomicMetrics::primeRate, EconomicMetrics::nearPrimeRate, EconomicMetrics::subPrimeRate;
-
-
-
-// #endif // ECONOMICMETRICS_H_INCLUDED
