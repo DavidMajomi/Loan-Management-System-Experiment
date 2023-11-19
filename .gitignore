@@ -23,7 +23,9 @@ tempCodeRunnerFile.py
 Banking System/
 
 /Header Files/sqlite3.h
+/Header Files/LoanManagementDevTools.h
 /API keys/alphaVantageApiKey.txt
 /API keys/nasdaq_data_link_api_key.txt
 /API keys/tradingEconomicsAPiKey.txt
+/API keys/googleApi.txt
 /Tools still in production to be used later/cppUmlDocumenter.cpp
