@@ -5,9 +5,11 @@
 #include <string>
 #include "Header Files/loanManagementSystemForServer.h"
 
+
 // Use g++ -fPIC -shared -o loanManagementLibraryForServer.dll loanManagementLibraryForServer.cpp sqlite3.o
 // Upcoming Task: Add functionality for year on year inflation rate.
 using namespace std;
+
 
 struct UserData
 {
@@ -20,46 +22,27 @@ struct UserData
     int duration;
 };
 
+void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <Loan>& loanAccountsToAdd)
+{
+    Loan userAccount(1);
 
-// double getCurrentFFR()
-// {
-//     return CURRENT_METRICS.getFederalFundsRate();
-// }
+    userAccount.setUserName(tempUserData.userName);
+    userAccount.setCreditScore(tempUserData.creditScore);
+    userAccount.setMonthlyIncome(tempUserData.monthlyIncomeDecimal);
+    userAccount.setFinancialReserves(tempUserData.financialReservesDecimal);
+    userAccount.setDebtToIncomeRatio(tempUserData.debtToIncomeRatioDecimal);
+    userAccount.setLoanDuration(tempUserData.duration);
+    userAccount.setLoanAmount(tempUserData.loanAmonutRequestedDeciaml);
+    userAccount.computeCreditData();
+    userAccount.setFinalMonthlyInterestRate();
+
+    loanAccountsToAdd.push_back(userAccount);
+
+}
+
 
 #if _WIN64
-    void setCurrentMetrics(double primeRate)
-    {
-
-        if (CURRENT_METRICS.getClassModificationState() == true)
-        {
-            CURRENT_METRICS.setFederalFundsRatePercent(primeRate);
-            CURRENT_METRICS.lockModificationOfClass();
-        }
-        else
-        {
-            cout << " This class has already being locked with todays metrics, no modification allowed." << endl;
-        }
-    }
-
-
-    void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <Loan>& loanAccountsToAdd)
-    {
-        Loan userAccount(1);
-
-        userAccount.setUserName(tempUserData.userName);
-        userAccount.setCreditScore(tempUserData.creditScore);
-        userAccount.setMonthlyIncome(tempUserData.monthlyIncomeDecimal);
-        userAccount.setFinancialReserves(tempUserData.financialReservesDecimal);
-        userAccount.setDebtToIncomeRatio(tempUserData.debtToIncomeRatioDecimal);
-        userAccount.setLoanDuration(tempUserData.duration);
-        userAccount.setLoanAmount(tempUserData.loanAmonutRequestedDeciaml);
-        userAccount.computeCreditData();
-        userAccount.setFinalMonthlyInterestRate();
-
-        loanAccountsToAdd.push_back(userAccount);
-
-    }
-
+    
     /**
      * @brief All functions within this extern are potentially non thread safe, but since they are mostly used from the dev menu, they wont run 
      *        into thread related issues for now, however, potential fixes using mutex would be coming soon
@@ -69,9 +52,18 @@ struct UserData
         void changeBaseRate(double primeRate)
         {
             cout << " This is entered prime rate: " << primeRate << endl;
-            setCurrentMetrics(primeRate);
 
-            // cout << " Prime Rate has been Changed to " << getCurrentFFR() << endl;
+            if (CURRENT_METRICS.getClassModificationState() == false)
+            {
+                CURRENT_METRICS.setFederalFundsRatePercent(primeRate);
+                CURRENT_METRICS.lockModificationOfClass();
+            }
+            else
+            {
+                cout << " This class has already being locked with todays metrics, no modification allowed." << endl;
+            }
+
+                // cout << " Prime Rate has been Changed to " << getCurrentFFR() << endl;
         }
 
 
@@ -162,7 +154,7 @@ struct UserData
 
     }
 
-// #else
-
 
 #endif
+
+
