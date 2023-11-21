@@ -65,7 +65,6 @@ const double WORST_LOSS_GIVEN_DEFAULT = 0.8;   // possible value includes 0.2, 0
 const double WORST_DEBT_TO_INCOME_RATIO = 0.9; //
 // const double WORST_FINAL_MONTHLY_INTEREST_RATE = 2;   // Check the logic behind this
 
-// #endif // CONSTANTS_H_INCLUDED
 
 
 using namespace std;
