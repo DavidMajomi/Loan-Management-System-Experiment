@@ -38,6 +38,19 @@ private:
     static double threeMonthAndTenYearYieldSpread;
 
 public:
+    EconomicMetrics(ExternalFeedingContainerForEconomicMetrics enteredData)
+    {
+        
+    }
+    EconomicMetrics(int value)
+    {
+        
+    }
+    EconomicMetrics()
+    {
+        
+    }
+
     void setFederalFundsRatePercent(double ffr){
         if (lockClass == false)
         {
