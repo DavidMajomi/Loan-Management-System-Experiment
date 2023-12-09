@@ -6,7 +6,7 @@ from header_file_for_server_and_cli import display_single_retrieved_data, dev_me
 # from header_file_for_server_and_cliz display_single_retrieved_data, dev_menu_response, display_multiple_retrieved_data
 
 HEADER = 64
-PORT = 5050
+PORT = 5056
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"

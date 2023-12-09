@@ -6,7 +6,7 @@ from flask_client_header import disconnect_from_server, send_data_to_server
 from flask import Flask, render_template, request, flash, redirect, url_for, session
 
 HEADER = 64
-PORT = 5050
+PORT = 5056
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"

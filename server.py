@@ -12,7 +12,7 @@ COMPILE_FOR_DEBUGGING = DEBUGGING
 
 # Network related constants
 HEADER = 64
-PORT = 5050
+PORT = 5056
 SERVER = socket.gethostbyname(socket.gethostname())
 ADDR = (SERVER, PORT)
 DISCONNECT_MESSAGE = "!!!DISCONNECT"
@@ -28,10 +28,7 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
 def handle_client(conn, addr):
-    
-    
     print(f"New Conection {addr} connected")
-    
     connected = True
     
     cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH, winmode = 0)

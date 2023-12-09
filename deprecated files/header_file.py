@@ -950,6 +950,7 @@ def use_cpp_from_server(recieved_data, cpp_library):
         "list_of_retrieved_user_data" : list_of_retrieved_user_data
     }
         
+    print(data_to_send_Back_to_client, "\n")
     print(" \n Done")
     return data_to_send_Back_to_client
     

@@ -214,6 +214,11 @@ bool storeDataInDb(vector<Loan> loanData)
 
     for (int count = 0; count < numberOfAddedLoanValues; count++)
     {
+        if (count % 10000 == 0)
+        {
+            cout << " Calculated values for: " << count << " users" << endl; 
+        }
+        
         creditScore = loanData[count].getCreditScore();
         monthlyIncome = loanData[count].getMonthlyIncome() ;
         financialReserves = loanData[count].getFinancialReserves() ;
@@ -223,6 +228,13 @@ bool storeDataInDb(vector<Loan> loanData)
         monthlyInteresRate = loanData[count].getMonthlyInterestRate();
         yearlyInterestRate = loanData[count].getYearlyInterestRate();
         userName =  loanData[count].getUserName();
+
+
+        // cout << loanData[count].getUserName();
+
+
+
+        
         lossGivenDefault = loanData[count].getLossGivenDefault();
         recoveryRate = loanData[count].getRecoveryRate();
         outstandingMonthlyDebtPaymentsFromLoan = loanData[count].getTotalOutstandingMonthlyDebtPaymentsAfterLoan();

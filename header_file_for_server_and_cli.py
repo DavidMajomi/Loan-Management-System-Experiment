@@ -30,6 +30,11 @@ CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY = PATH + "\\Folder wi
 CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_db = PATH + "\\Folder with Generated Data\\tempGeneratedLoanDataForDbStorage.csv"
 
 
+
+MAX_VALUES_TO_GENERATE = 10000000000
+
+
+
 class UserData(ctypes.Structure):
     _fields_ = [("user_name", ctypes.c_char_p),
                 ("user_credit_score", ctypes.c_short),
@@ -201,16 +206,16 @@ def get_customer_data_from_cli_for_server():
 
 # Add functionality to generate time of application to ensure different scenarios for end of day processing to create and test payment functionality
 def generate_data (num_data_to_generate):
-        
+    print(" In function to generate data")
     fake = Faker()
 
     loan_data_header = ['Name', "credit score", 'monthly income', 'financial reserves', 'debt to income ratio', 'Duration in months', 'loan amount requested']
     loan_data = []
     
     min_options = 0
-    max_options = 10000
     
-    if ((num_data_to_generate < min_options) or (num_data_to_generate > max_options)):
+    
+    if ((num_data_to_generate < min_options) or (num_data_to_generate > MAX_VALUES_TO_GENERATE)):
         print(" Data entered is in invalid format. \n")
         
     else:
@@ -239,6 +244,9 @@ def generate_data (num_data_to_generate):
                 
             loan_data.append([user_name, credit_score, user_monthly_income, financial_reserves, user_debt_to_income_ratio, loan_duration_in_months, loan_amonut_requested])
             
+            if (i % 10000 == 0):
+                print(f"\n \n \n \n This is num generated data: {i} \n \n \n \ns")
+            
         if os.path.exists(CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY):
             with open(CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY, "a", newline = '') as file:
                 writer = csv.writer(file)
@@ -254,7 +262,7 @@ def generate_data (num_data_to_generate):
             writer.writerow(loan_data_header)
             writer.writerows(loan_data)
         
-        # print(" Loan data has been written successfully.")
+        print(" Loan data has been written successfully.")
 
 
 def menu_to_search_for_loan_from_server():
