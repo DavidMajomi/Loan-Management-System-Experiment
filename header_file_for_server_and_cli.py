@@ -168,7 +168,7 @@ def display_dev_menu_for_server_client():
     dev_menu_response = int(dev_menu_response)
     
     if (dev_menu_response == 1):
-        num_data_to_generate = int(input(" How much data would you like to generate (how many users do you want to generate) note cannot generate of 10000 users at a time: "))
+        num_data_to_generate = int(input(" How much data would you like to generate (how many users do you want to generate) note cannot generate more than {MAX_VALUES_TO_GENERATE} users at a time: "))
     else:
         num_data_to_generate = None
     
@@ -503,13 +503,6 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
         return list_of_loan_data, operation_state_to_return
     
     
-# def compile_dll_for_server():
-#     compile_commands = "g++ -fPIC -shared -o"
-    
-#     complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH_FOR_SERVER + " " + SQLITE3_OBJECT_FILE_PATH
-#     subprocess.run(complete_command_instruction, check=True)
-    
-    
 def compile_dll_with_make():
     os.system("make")
     os.system("make clean")
@@ -796,3 +789,12 @@ def use_cpp_from_server(recieved_data, cpp_library):
     print(" \n Done")
     return data_to_send_Back_to_client
     
+    
+####################################################    Commented out Functions    #######################################################################    
+    
+    
+# def compile_dll_for_server():
+#     compile_commands = "g++ -fPIC -shared -o"
+    
+#     complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH_FOR_SERVER + " " + SQLITE3_OBJECT_FILE_PATH
+#     subprocess.run(complete_command_instruction, check=True)

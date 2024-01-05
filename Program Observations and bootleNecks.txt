@@ -1,0 +1,18 @@
+        Some Possible Program bottle necks, or issues in performance
+1.) Duplicate vectors for storing user data in database, due to function calls
+        Fix: Pass the vectors by reference.
+
+2.) Loan Class stores details for a personal loan, but doesnt leave room for any other loan types like business loans. 
+        Fix: Make loan a personal loan class inheriting from the loan class.
+3.) Poor organization of executable code
+        Fix: 
+
+
+
+A.) Loan Management System Sever.h
+        1.) storeDataInDb function
+                I.) Lack of thread safety in the database.
+                II.) Increased time complexity due to nested for loop for string processing while preparing sqlite3 statement.
+                III.) Incresaed memory usage for storing string values of user data when they can be converted directly while added to the valsToInsert Vector.
+                IV.) The valsToInsert Vector isnt necessary because there are better ways of string processing such as direct string concatenation.
+                V.)

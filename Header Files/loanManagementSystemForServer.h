@@ -228,13 +228,7 @@ bool storeDataInDb(vector<Loan> loanData)
         monthlyInteresRate = loanData[count].getMonthlyInterestRate();
         yearlyInterestRate = loanData[count].getYearlyInterestRate();
         userName =  loanData[count].getUserName();
-
-
         // cout << loanData[count].getUserName();
-
-
-
-        
         lossGivenDefault = loanData[count].getLossGivenDefault();
         recoveryRate = loanData[count].getRecoveryRate();
         outstandingMonthlyDebtPaymentsFromLoan = loanData[count].getTotalOutstandingMonthlyDebtPaymentsAfterLoan();
@@ -244,6 +238,7 @@ bool storeDataInDb(vector<Loan> loanData)
         interestRateByGroup = loanData[count].getInterestRateByGroup();
         bestPossibleRate = loanData[count].getBestPossibleRate();
         worstPossibleRate = loanData[count].getWorstPossibleRate();
+
 
         stringCreditScore = to_string(creditScore);
         stringMonthlyIncome = to_string(monthlyIncome);

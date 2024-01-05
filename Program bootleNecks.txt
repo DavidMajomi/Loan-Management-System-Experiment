@@ -1,8 +1,0 @@
-        Some Possible Program bottle necks, or issues in performance
-1.) Duplicate vectors for storing user data in database, due to function calls
-        Fix: Pass the vectors by reference.
-
-2.) Loan Class stores details for a personal loan, but doesnt leave room for any other loan types like business loans. 
-        Fix: Make loan a personal loan class inheriting from the loan class.
-3.) Poor organization of executable code
-        Fix: 
