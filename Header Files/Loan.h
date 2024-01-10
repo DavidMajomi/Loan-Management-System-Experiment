@@ -49,13 +49,13 @@ public:
     Loan(){
 
     }
-    void setCreditScore (int creditScoreValue){
+    void setCreditScore(int creditScoreValue){
         creditScore = creditScoreValue;
     }
-    void setUserName (string name){
+    void setUserName(string name){
         userName = name;
     }
-    void setLoanAmount (double amount){
+    void setLoanAmount(double amount){
         loanAmount = amount;
     }
     void setLoanDuration(int loanDuration){

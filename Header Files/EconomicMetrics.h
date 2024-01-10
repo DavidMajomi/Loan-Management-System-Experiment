@@ -8,19 +8,6 @@
 
 using namespace std;
 
-struct ExternalFeedingContainerForEconomicMetrics
-{
-    double spreadForInterestRate;
-    double federalFundsRatePercent, yearOnYearInflationRatePercent, thisYearsGdp, lastYearsGdp;
-    double baseYearlyInterestRatePercentForLoans, baseMonthlyInterestRatePercentForLoans;
-    double superPrimeRate, primeRate, nearPrimeRate, subPrimeRate;
-    double deepSubprimeRrate;
-    
-    double threeMonthYield;
-    double tenYearYield;
-    double threeMonthAndTenYearYieldSpread;
-};
-
 class EconomicMetrics
 {
 private:
@@ -38,10 +25,6 @@ private:
     static double threeMonthAndTenYearYieldSpread;
 
 public:
-    EconomicMetrics(ExternalFeedingContainerForEconomicMetrics enteredData)
-    {
-        
-    }
     EconomicMetrics(int value)
     {
         

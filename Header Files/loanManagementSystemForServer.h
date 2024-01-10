@@ -14,7 +14,7 @@
 using namespace std;
 
 
-int convert_to_int (string valueToConvert)
+int convert_to_int(string valueToConvert)
 {
     int convertedValue = stoi(valueToConvert);
 

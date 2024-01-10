@@ -1,3 +1,0 @@
-from header_file_for_server_and_cli import use_python_for_cpp_eceonomic_metrics
-
-use_python_for_cpp_eceonomic_metrics()
