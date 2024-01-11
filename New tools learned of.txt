@@ -1,0 +1,4 @@
+1.) Figma
+2.) Flask and jinja
+3.) Makefiles and Cmake
+4.) 

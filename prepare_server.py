@@ -3,8 +3,6 @@ import csv
 import json
 import ctypes
 import requests
-import random
-import sqlite3
 import datetime
 from faker import Faker
 from pathlib import Path
@@ -21,6 +19,7 @@ CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_db = PATH + "\\Folder with Generated Data\\
 
 def get_economic_data():
     list_of_data = []
+    
     changed_base_rate = True
 
     if os.path.exists(PATH + "\\API keys\\alphaVantageApiKey.txt"):
