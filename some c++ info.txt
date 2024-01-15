@@ -1,0 +1,3 @@
+Asynchronous:
+Volatile keyword: Discouraged From use.
+Naked mutexes are dangerous and cause deadlocks, always use RAII.
