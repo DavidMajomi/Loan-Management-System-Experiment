@@ -4,6 +4,7 @@ import socket
 import threading
 from pathlib import Path
 from header_file_for_server_and_cli import use_cpp_from_server, compile_dll_with_make, get_prime_rate_with_alpha_vantage_api, change_base_rate_for_server
+from header_file_for_server_and_cli import validate_string_input_for_num_value
 
 PATH = str(Path.cwd())
 
@@ -22,24 +23,34 @@ FORMAT = 'utf-8'
 OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 
 
-DEFAULT_BASE_RATE = 2
+
+
+DEFAULT_BASE_RATE = ctypes.c_double(5.33)
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(ADDR)
 
-def handle_client(conn, addr):
+def handle_client(conn, addr, num_connections_to_server, use_api_for_economic_data):
+    changed_base_rate_successfully = True
+    
+    
     print(f"New Conection {addr} connected")
     connected = True
     
     cpp_library = ctypes.CDLL(OUTPUT_DLL_FILE_FOR_SERVER_PATH, winmode = 0)
     
-    change_base_rate, this_months_prime_rate = get_prime_rate_with_alpha_vantage_api()
-    
-    if (change_base_rate == True):
-        change_base_rate_for_server(cpp_library, this_months_prime_rate)
-    else:
-        del this_months_prime_rate    
-        change_base_rate_for_server(cpp_library, DEFAULT_BASE_RATE)
+    # Set constant economic metrics for the day which is stored throughout the project
+    if (num_connections_to_server == 1):
+        
+        if (use_api_for_economic_data is True):
+            changed_base_rate_successfully, this_months_prime_rate = get_prime_rate_with_alpha_vantage_api()
+            
+            if (changed_base_rate_successfully == True):
+                change_base_rate_for_server(cpp_library, this_months_prime_rate)
+        else:
+            pass
+            # changed_base_rate_successfully, this_months_prime_rate = get_prime_rate_with_alpha_vantage_api()
+            change_base_rate_for_server(cpp_library, DEFAULT_BASE_RATE)
         
             
     while connected:
@@ -74,19 +85,42 @@ def handle_client(conn, addr):
 def start():
     print("Setting up server...")
     
-    
-    
     if COMPILE_FOR_DEBUGGING is True:
         compile_dll_with_make()
         
+    valid_inputs = False
     
+    while(valid_inputs == False):
+        user_menu_response = input("Do you want to make api calls to get economic values Enter 1 for yes or 0 for default economic values: ")
+        print(f"This is your response: {user_menu_response}")
+        
+        max_options = 1
+        min_options = 0
+        
+        valid_inputs = validate_string_input_for_num_value(user_menu_response, max_options, min_options)
+        
+        if (valid_inputs is False):
+            print(" Data entered is in invalid format. \n")
+        
+    use_api_for_economic_data = bool(int(user_menu_response))
+    
+    print(f"This is a use api for economic data: {use_api_for_economic_data}")
+    
+    if (use_api_for_economic_data == True):
+        print("You have chosen to use api for economic data")
+    else:
+        print("You have chosen to use default values for economic data")
+        
+        
     server.listen()
     print(f"Server is listening on {SERVER}")
     
-    
+    num_connections_to_server = 0
     while True:
+        num_connections_to_server = num_connections_to_server + 1
+        
         conn, addr = server.accept()
-        thread = threading.Thread(target = handle_client, args = (conn, addr))
+        thread = threading.Thread(target = handle_client, args = (conn, addr, num_connections_to_server, use_api_for_economic_data))
         thread.start()
         
         print(f"Number of Connections: {threading.active_count() - 1} \n")

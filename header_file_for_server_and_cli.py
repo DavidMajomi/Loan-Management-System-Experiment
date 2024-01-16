@@ -168,7 +168,7 @@ def display_dev_menu_for_server_client():
     dev_menu_response = int(dev_menu_response)
     
     if (dev_menu_response == 1):
-        num_data_to_generate = int(input(" How much data would you like to generate (how many users do you want to generate) note cannot generate more than {MAX_VALUES_TO_GENERATE} users at a time: "))
+        num_data_to_generate = int(input(f" How much data would you like to generate (how many users do you want to generate) note cannot generate more than, {MAX_VALUES_TO_GENERATE} users at a time: "))
     else:
         num_data_to_generate = None
     
@@ -245,7 +245,7 @@ def generate_data (num_data_to_generate):
             loan_data.append([user_name, credit_score, user_monthly_income, financial_reserves, user_debt_to_income_ratio, loan_duration_in_months, loan_amonut_requested])
             
             if (i % 10000 == 0):
-                print(f"\n \n \n \n This is num generated data: {i} \n \n \n \ns")
+                print(f"\n \n \n \n This is num generated data: {i} \n \n")
             
         if os.path.exists(CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY):
             with open(CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY, "a", newline = '') as file:
@@ -669,7 +669,9 @@ def use_python_for_cpp_eceonomic_metrics():
     returnedData = requests.get(url)
     data = returnedData.json()
 
-    print(data)
+    # print(data)
+    
+    return changed_base_rate, last_months_federal_funds_rate
 
     
 def change_base_rate_for_server(cpp_library, this_months_prime_rate):
@@ -788,6 +790,8 @@ def use_cpp_from_server(recieved_data, cpp_library):
         
     print(" \n Done")
     return data_to_send_Back_to_client
+    
+    
     
     
 ####################################################    Commented out Functions    #######################################################################    
