@@ -172,7 +172,7 @@ bool storeDataInDb(vector<Loan> loanData)
     const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
 
     sqlite3* db;
-    int numberOfAddedLoanValues, creditScore, numMetricsToAdd;
+    int numberOfAddedLoanValues, creditScore, numMetricsToAdd, numberOFInsertions;
     int rc = sqlite3_open(DATABASE_NAME, &db);
     bool errorStoringData = false;
     char charFinalSqlInsertStatement;
@@ -181,8 +181,8 @@ bool storeDataInDb(vector<Loan> loanData)
                       " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
                       " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
                       " best_possible_rate REAL, worst_possible_rate REAL)";
-    vector <string> valsToInsert;
-    string insertToSql, userName, stringFinalSqlInsertStatement;
+    vector <string> allInsertStatements;
+    string insertToSql, userName, stringFinalSqlInsertStatement, completedSqlStatement;
     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
            adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
@@ -257,23 +257,34 @@ bool storeDataInDb(vector<Loan> loanData)
 
         insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
                       " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
-                      " adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate) VALUES (" + stringFinalSqlInsertStatement + ")"; 
+                      " adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate) VALUES (" + stringFinalSqlInsertStatement + ");"; 
 
         // cout << insertToSql;
 
-        sqlInsertLine = insertToSql.c_str();
-        sql = sqlInsertLine;
+        allInsertStatements.push_back(insertToSql);
 
-        rc = sqlite3_exec(db, sql, 0, 0, 0);
+    }
 
-        if (rc != SQLITE_OK) {
-            // Handle error
-            cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
-            sqlite3_close(db);
-            errorStoringData = true;
-        }
+    numberOFInsertions = allInsertStatements.size();
 
-        valsToInsert.clear();
+    for(int count = 0; count < numberOFInsertions; count++)
+    {
+        completedSqlStatement = completedSqlStatement + allInsertStatements[count];
+    }
+
+
+    cout << " This is completed statement: " << endl << completedSqlStatement << endl;
+
+    sqlInsertLine = completedSqlStatement.c_str();
+    sql = sqlInsertLine;
+
+    rc = sqlite3_exec(db, sql, 0, 0, 0);
+
+    if (rc != SQLITE_OK) {
+        // Handle error
+        cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
+        sqlite3_close(db);
+        errorStoringData = true;
     }
 
 
