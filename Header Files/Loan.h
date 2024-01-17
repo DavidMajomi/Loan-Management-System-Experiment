@@ -1,5 +1,3 @@
-// #ifndef LOAN_H_INCLUDED
-// #define LOAN_H_INCLUDED
 #pragma once
 
 #include <iostream>
@@ -12,7 +10,7 @@
 using namespace std;
 
 EconomicMetrics CURRENT_METRICS;    // This class stores financial metrics recieved from external program using the dll file. Its vales are the
-                                    // first to be mdifies before performing any operations.
+                                    // first to be modified before performing any operations.
 class Loan
 {
 private:
@@ -133,11 +131,8 @@ public:
 double Loan::normalizeScore(double rawScore, double maxScore, double minScore)
 {
     unsigned short int maxScaleValue = 1, minScaleValue = 0;
-    // double normalizedScore;
 
     return ((rawScore - minScore) / (maxScore - minScore)) * (maxScaleValue - minScaleValue) + (minScaleValue);
-
-    // return normalizedScore;
 }
 
 
@@ -145,14 +140,9 @@ inline double calculateLoanViabilityScore(double normalizedCreditScore, double n
                                    double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, 
                                    double normalizedFinancialReserves, double defaultRiskScore)
 {
-    // double loanViabilityScore;
-
     return (normalizedCreditScore * CREDIT_SCORE_WEIGHT) + (normalizedmonthlyIncome * MONTHLY_INCOME_WEIGHT) + 
-                         (debtToIncomeRatio * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT) +
-                         (lossGivenDefault * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (defaultRiskScore * DEFAULT_RISK_SCORE_WEIGHT);
-
-
-    // return loanViabilityScore;
+            (debtToIncomeRatio * DEBT_TO_INCOME_RATIO_WEIGHT)  + (normalizedLoanAmount * LOAN_AMOUNT_WEIGHT) + (normalizedDuration * LOAN_DURATION_WEIGHT) +
+            (lossGivenDefault * LOSS_GIVEN_DEFAULT_WEIGHT) + (normalizedFinancialReserves * FINANCIAL_RESERVES_WEIGHT) + (defaultRiskScore * DEFAULT_RISK_SCORE_WEIGHT);
 }
 
 
@@ -196,6 +186,7 @@ double Loan::calculateWorstCreditMetrics ()
     return loanViabilityScore;
 }
 
+
 /**
  * @brief Funtion: It sets a base inteest rate by group used in calculating default risk sourced form CFPB's Market report, as well as Forbe's
  * Average Personal Loan Interest Rates By Credit Score "https://www.forbes.com/advisor/personal-loans/personal-loan-rates/". 
@@ -232,6 +223,7 @@ double Loan::calculateInterestForDefaultRisk ()
     return interestRateByGroup / 12;
 }
 
+
 /**
  * @brief Funtion: Sets the interest rate based on the adjusted loan viability score. It uses a basic linear model to calculate the interest rate
  * 
@@ -255,6 +247,7 @@ void Loan::setFinalMonthlyInterestRate ()
     finalMonthlyInterestRate = baseRate / 12;
 
 }
+
 
 /**
  * @brief Function: It adjusts the given loan viability score to a sclae between the max scale value and the min scale value.
@@ -321,6 +314,3 @@ void Loan::simple_set_credit_metrics ()
 
 }
 
-
-
-// #endif // LOAN_H_INCLUDED

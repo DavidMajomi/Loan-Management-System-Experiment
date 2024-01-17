@@ -22,6 +22,7 @@ struct UserData
     int duration;
 };
 
+
 void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <Loan>& loanAccountsToAdd)
 {
     Loan userAccount(1);
@@ -140,11 +141,13 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             return CURRENT_METRICS.getSpreadForInterestRate();
         }
 
+
         double getThisMonthsPrimeRate()
         {
             // cout << " This is prime rate from cpp end: " << CURRENT_METRICS.getSuperPrimeRate() << endl;
             return CURRENT_METRICS.getSuperPrimeRate();
         }
+
 
         bool testAccess()
         {
