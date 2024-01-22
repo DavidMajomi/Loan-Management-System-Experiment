@@ -587,9 +587,6 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 }
 
 
-
-<<<<<<< Updated upstream
-=======
 bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 {
 
@@ -614,7 +611,7 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 
     numberOfAddedLoanValues = loanData.size();
 
-    if (rc != SQLITE_OK) {
+    if(rc != SQLITE_OK) {
         // Handle error
         //cout << "Step 1 error. 2" << endl;
         errorStoringData = true;
@@ -718,10 +715,6 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 
     return errorStoringData;
 }
-
-
->>>>>>> Stashed changes
-
 
 
 // bool storeDataInDb(vector<Loan> loanData)
