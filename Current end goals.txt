@@ -1,0 +1,10 @@
+Must be able to make loan decisions.
+Perform basic end of day processing such as updating time left for loan completion.
+Commplete the sqlite3 insertion speed updates.
+Simple command line interface to replace all cout statemnts, Ensure logging is done with a .o file.
+Tracking time across multiple iterations => File Storage of date of number
+Reporting System file output
+
+Long term:
+Demand / Dynamic pricing
+Reporting System api side stuff
