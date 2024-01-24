@@ -1,0 +1,1 @@
+1.) Money would be separated into separate integers to store the Integers and decimals rather than a single double value.
