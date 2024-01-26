@@ -322,6 +322,7 @@ bool storeDataInDb(vector<Loan> loanData)
     const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
 
     double currentLVS;
+    double matrixBasedALVS;
 
     double initialLVSOne = loanData[0].getLoanViabilityScore(), initialALVSOne = loanData[0].getFinalAdjustedLoanViabilityScore();
     double initialLVSTwo = loanData[1].getLoanViabilityScore(), initialALVSTwo = loanData[1].getFinalAdjustedLoanViabilityScore();
@@ -400,13 +401,27 @@ bool storeDataInDb(vector<Loan> loanData)
         bestPossibleRate = loanData[count].getBestPossibleRate();
         worstPossibleRate = loanData[count].getWorstPossibleRate();
 
-        if(count >= 1 < 10)
+        if(count >= 1)
         {
-            
             currentLVS = loanData[count].getLoanViabilityScore();
+            matrixBasedALVS = calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS);
+                
 
-            cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = ";
-            cout << calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS) << endl;
+            if(count < 10)
+            {
+                currentLVS = loanData[count].getLoanViabilityScore();
+                
+
+                cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = ";
+                cout << calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS) << endl;
+
+            }
+
+            if(matrixBasedALVS != adjustedLoanViabilityScore)
+            {
+                cout << "Error where ALVS != matrixBasedALVS" << endl;
+            }
+
 
         }
 
@@ -715,6 +730,7 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 
     return errorStoringData;
 }
+<<<<<<< HEAD
 
 bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 {
@@ -1025,3 +1041,5 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 // }
 
 
+=======
+>>>>>>> Explore-better-code-safety
