@@ -322,6 +322,7 @@ bool storeDataInDb(vector<Loan> loanData)
     const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
 
     double currentLVS;
+    double matrixBasedALVS;
 
     double initialLVSOne = loanData[0].getLoanViabilityScore(), initialALVSOne = loanData[0].getFinalAdjustedLoanViabilityScore();
     double initialLVSTwo = loanData[1].getLoanViabilityScore(), initialALVSTwo = loanData[1].getFinalAdjustedLoanViabilityScore();
@@ -400,13 +401,27 @@ bool storeDataInDb(vector<Loan> loanData)
         bestPossibleRate = loanData[count].getBestPossibleRate();
         worstPossibleRate = loanData[count].getWorstPossibleRate();
 
-        if(count >= 1 < 10)
+        if(count >= 1)
         {
-            
             currentLVS = loanData[count].getLoanViabilityScore();
+            matrixBasedALVS = calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS);
+                
 
-            cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = ";
-            cout << calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS) << endl;
+            if(count < 10)
+            {
+                currentLVS = loanData[count].getLoanViabilityScore();
+                
+
+                cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = ";
+                cout << calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS) << endl;
+
+            }
+
+            if(matrixBasedALVS != adjustedLoanViabilityScore)
+            {
+                cout << "Error where ALVS != matrixBasedALVS" << endl;
+            }
+
 
         }
 
@@ -715,183 +730,3 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 
     return errorStoringData;
 }
-
-
-// bool storeDataInDb(vector<Loan> loanData)
-// {
-//     sqlite3* db;
-//     int numberOfAddedLoanValues, creditScore, numMetricsToAdd;
-//     int rc = sqlite3_open(DATABASE_NAME, &db);
-//     bool errorStoringData = false;
-//     char charFinalSqlInsertStatement;
-//     const char* sqlInsertLine;
-//     const char* sql = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
-//                       " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
-//                       " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
-//                       " best_possible_rate REAL, worst_possible_rate REAL)";
-//     vector <string> valsToInsert;
-//     string insertToSql, userName, stringFinalSqlInsertStatement, stringCreditScore, stringMonthlyIncome, stringFinancialReserves, stringDebtToIncomeRatio, stringLoanDurationInMonths, stringLoanAmount, stringMonthlyInteresRate, 
-//            stringyearlyInterestRate, stringrecoveryRate, stringOutstandingMonthlyDebtPaymentsFromLoan, stringDefaultRiskScore, stringLoanViabilityScore,
-//            stringAdjustedLoanViabilityScore, stringLossGivenDefault, stringInterestRateByGroup, stringBestPossibleRate, stringWorstPossibleRate;
-//     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
-//            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
-//            adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
-
-
-//     numberOfAddedLoanValues = loanData.size();
-
-//     if (rc != SQLITE_OK) {
-//         // Handle error
-//         //cout << "Step 1 error. 2" << endl;
-//         errorStoringData = true;
-//     }
-
-
-//     sqlite3_stmt* stmt;
-    
-//     rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-
-//     if (rc != SQLITE_OK) {
-//         // Handle error preparing the statement
-//         //cout << "Step 2 error. 2" << endl;
-//         sqlite3_close(db);
-//         errorStoringData = true;
-//     }
-//     rc = sqlite3_exec(db, sql, 0, 0, 0);
-
-//     if (rc != SQLITE_OK) {
-//         // Handle error
-//         //cout << " Step 3 error. 2" << endl;
-//         sqlite3_close(db);
-//         errorStoringData = true;
-//     }
-
-//     for (int count = 0; count < numberOfAddedLoanValues; count++)
-//     {
-//         if (count % 10000 == 0)
-//         {
-//             cout << " Calculated values for: " << count << " users" << endl; 
-//         }
-        
-//         creditScore = loanData[count].getCreditScore();
-//         monthlyIncome = loanData[count].getMonthlyIncome() ;
-//         financialReserves = loanData[count].getFinancialReserves() ;
-//         debtToIncomeRatio = loanData[count].getDebtToIncomeRatio() ;
-//         loanDurationInMonths = loanData[count].getDurationInMonths() ;
-//         loanAmount = loanData[count].getLoanAmount();
-//         monthlyInteresRate = loanData[count].getMonthlyInterestRate();
-//         yearlyInterestRate = loanData[count].getYearlyInterestRate();
-//         userName =  loanData[count].getUserName();
-//         // cout << loanData[count].getUserName();
-//         lossGivenDefault = loanData[count].getLossGivenDefault();
-//         recoveryRate = loanData[count].getRecoveryRate();
-//         outstandingMonthlyDebtPaymentsFromLoan = loanData[count].getTotalOutstandingMonthlyDebtPaymentsAfterLoan();
-//         defaultRiskScore = loanData[count].getDefaultRiskScore();
-//         loanViabilityScore = loanData[count].getLoanViabilityScore();
-//         adjustedLoanViabilityScore = loanData[count].getFinalAdjustedLoanViabilityScore();
-//         interestRateByGroup = loanData[count].getInterestRateByGroup();
-//         bestPossibleRate = loanData[count].getBestPossibleRate();
-//         worstPossibleRate = loanData[count].getWorstPossibleRate();
-
-
-//         // stringCreditScore = to_string(creditScore);
-//         // stringMonthlyIncome = to_string(monthlyIncome);
-//         // stringFinancialReserves = to_string(financialReserves);
-//         // stringDebtToIncomeRatio = to_string(debtToIncomeRatio);
-//         // stringLoanDurationInMonths = to_string(loanDurationInMonths);
-//         // stringLoanAmount = to_string(loanAmount);
-//         // stringMonthlyInteresRate = to_string(monthlyInteresRate);
-//         // stringyearlyInterestRate = to_string(yearlyInterestRate);
-//         // stringLossGivenDefault = to_string(lossGivenDefault);
-//         // stringrecoveryRate = to_string(recoveryRate);
-//         // stringOutstandingMonthlyDebtPaymentsFromLoan = to_string(outstandingMonthlyDebtPaymentsFromLoan);
-//         // stringDefaultRiskScore = to_string(defaultRiskScore);
-//         // stringLoanViabilityScore = to_string(loanViabilityScore);
-//         // stringAdjustedLoanViabilityScore = to_string(adjustedLoanViabilityScore);
-//         // stringInterestRateByGroup = to_string(interestRateByGroup);
-//         // stringBestPossibleRate = to_string(bestPossibleRate);
-//         // stringWorstPossibleRate = to_string(worstPossibleRate);
-
-//         // // //cout << outstandingMonthlyDebtPaymentsFromLoan << endl;
-
-//         // valsToInsert.push_back(stringCreditScore);
-//         // valsToInsert.push_back(stringMonthlyIncome);
-//         // valsToInsert.push_back(stringFinancialReserves);
-//         // valsToInsert.push_back(stringDebtToIncomeRatio);
-//         // valsToInsert.push_back(stringLoanDurationInMonths);
-//         // valsToInsert.push_back(stringLoanAmount);
-//         // valsToInsert.push_back(stringMonthlyInteresRate);
-//         // valsToInsert.push_back(stringyearlyInterestRate);
-//         // valsToInsert.push_back(stringLossGivenDefault);
-//         // valsToInsert.push_back(stringrecoveryRate);
-//         // valsToInsert.push_back(stringOutstandingMonthlyDebtPaymentsFromLoan);
-//         // valsToInsert.push_back(stringDefaultRiskScore);
-//         // valsToInsert.push_back(stringLoanViabilityScore);
-//         // valsToInsert.push_back(stringAdjustedLoanViabilityScore);
-//         // valsToInsert.push_back(stringInterestRateByGroup);
-//         // valsToInsert.push_back(stringBestPossibleRate);
-//         // valsToInsert.push_back(stringWorstPossibleRate);
-
-//         numMetricsToAdd = valsToInsert.size();
-
-//         // //cout << " after pushback" << endl;
-
-//         stringFinalSqlInsertStatement = "'" + userName + "',";
-//         stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + to_string(creditScore) + "," + to_string(monthlyIncome) + "," + to_string(financialReserves) + "," + to_string(debtToIncomeRatio) + "," 
-//                                         + to_string(loanDurationInMonths) + "," +  to_string(loanAmount) + "," + to_string(monthlyInteresRate) + "," + to_string(yearlyInterestRate) + "," + to_string(lossGivenDefault) + "," 
-//                                         + to_string(recoveryRate) + "," + to_string(outstandingMonthlyDebtPaymentsFromLoan) + "," +  to_string(defaultRiskScore) + "," + to_string(loanViabilityScore) + "," 
-//                                         + to_string(adjustedLoanViabilityScore) + "," + to_string(interestRateByGroup) + "," + to_string(bestPossibleRate) + ","
-//                                         + to_string(worstPossibleRate);
-
-
-
-//         // //cout << " This is userNmae after string addition: " << stringFinalSqlInsertStatement << endl;
-
-//         // for (int count = 0; count < numMetricsToAdd; count++)
-//         // {
-
-//         //     if (count <= (numMetricsToAdd - 2))
-//         //     {
-
-//         //         stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + valsToInsert[count] + ",";
-//         //     }
-//         //     else
-//         //     {
-//         //         stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + valsToInsert[count];
-//         //     }
-//         // }
-        
-//         //cout << endl;
-//         cout << stringFinalSqlInsertStatement << endl;
-
-//         insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
-//                       " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
-//                       " adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate) VALUES (" + stringFinalSqlInsertStatement + ")"; 
-
-//         cout << insertToSql;
-
-//         sqlInsertLine = insertToSql.c_str();
-//         sql = sqlInsertLine;
-
-//         rc = sqlite3_exec(db, sql, 0, 0, 0);
-
-//         if (rc != SQLITE_OK) {
-//             // Handle error
-//             cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
-//             sqlite3_close(db);
-//             errorStoringData = true;
-//         }
-
-//         valsToInsert.clear();
-//     }
-
-
-//     sqlite3_finalize(stmt);
-//     sqlite3_close(db);
-
-//     return errorStoringData;
-
-    
-// }
-
-

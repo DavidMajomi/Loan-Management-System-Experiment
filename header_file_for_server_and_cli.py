@@ -10,7 +10,6 @@ from faker import Faker
 from pathlib import Path
 from colorama import Fore
 
-
 # NEXT TASK: Add a proper debugging mode to reduce the manual methods to the prograam.
 
 
@@ -30,10 +29,7 @@ CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY = PATH + "\\Folder wi
 CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_db = PATH + "\\Folder with Generated Data\\tempGeneratedLoanDataForDbStorage.csv"
 
 
-
 MAX_VALUES_TO_GENERATE = 10000000000
-
-
 
 class UserData(ctypes.Structure):
     _fields_ = [("user_name", ctypes.c_char_p),
