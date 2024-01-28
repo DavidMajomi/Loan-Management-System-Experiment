@@ -417,10 +417,10 @@ bool storeDataInDb(vector<Loan> loanData)
 
             }
 
-            if(matrixBasedALVS != adjustedLoanViabilityScore)
-            {
-                cout << "Error where ALVS != matrixBasedALVS" << endl;
-            }
+            // if(matrixBasedALVS != adjustedLoanViabilityScore)
+            // {
+            //     cout << "Error where ALVS != matrixBasedALVS" << endl;
+            // }
 
 
         }
