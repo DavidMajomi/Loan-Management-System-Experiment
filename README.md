@@ -33,4 +33,5 @@ The current server based files currently has most of the functionality used in t
  2.) Install Mingw and add it to path <br>
  3.) Install make and add it to path manually, or use chocolatey to add it automatically. <br>
  4.) Get an alpha vantage api key for free, and store it in the file to get up to date federal funds rate and other related metrics. <br>
+ 5.) Add the sqlite3 header file into the header files folder <br>
 
