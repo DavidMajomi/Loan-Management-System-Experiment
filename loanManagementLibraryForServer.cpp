@@ -44,8 +44,8 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 
 #if _WIN64
     
-    /**
-     * @brief All functions within this extern are potentially non thread safe, but since they are mostly used from the dev menu, they wont run 
+    /*
+     * All functions within this extern are potentially non thread safe, but since they are mostly used from the dev menu, they wont run 
      *        into thread related issues for now, however, potential fixes using mutex would be coming soon
      * 
      */
