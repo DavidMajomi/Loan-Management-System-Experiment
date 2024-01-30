@@ -602,6 +602,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 }
 
 
+// Use time.h here to track insertion speeds to track which method of insertion is better between this and sqlite3 transactions
 bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 {
 
