@@ -14,28 +14,30 @@ using namespace std;
 struct UserData
 {
     char* userName;
-    int creditScore;
+    int creditScoreInteger;
     double monthlyIncomeDecimal;
     double financialReservesDecimal;
     double debtToIncomeRatioDecimal;
     double loanAmonutRequestedDeciaml;
-    int duration;
+    int durationInMonthsInteger;
 };
 
 
 void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <Loan>& loanAccountsToAdd)
 {
-    Loan userAccount(1);
+    // Loan userAccount(1);
 
-    userAccount.setUserName(tempUserData.userName);
-    userAccount.setCreditScore(tempUserData.creditScore);
-    userAccount.setMonthlyIncome(tempUserData.monthlyIncomeDecimal);
-    userAccount.setFinancialReserves(tempUserData.financialReservesDecimal);
-    userAccount.setDebtToIncomeRatio(tempUserData.debtToIncomeRatioDecimal);
-    userAccount.setLoanDuration(tempUserData.duration);
-    userAccount.setLoanAmount(tempUserData.loanAmonutRequestedDeciaml);
-    userAccount.computeCreditData();
-    userAccount.setFinalMonthlyInterestRate();
+    // userAccount.setUserName(tempUserData.userName);
+    // userAccount.setCreditScore(tempUserData.creditScore);
+    // userAccount.setMonthlyIncome(tempUserData.monthlyIncomeDecimal);s
+    // userAccount.setFinancialReserves(tempUserData.financialReservesDecimal);
+    // userAccount.setDebtToIncomeRatio(tempUserData.debtToIncomeRatioDecimal);
+    // userAccount.setLoanDuration(tempUserData.durationInMonthsInteger);
+    // userAccount.setLoanAmount(tempUserData.loanAmonutRequestedDeciaml);
+    // userAccount.computeCreditData();
+    // userAccount.setFinalMonthlyInterestRate();
+
+    Loan userAccount(tempUserData.userName, tempUserData.creditScoreInteger, tempUserData.monthlyIncomeDecimal, tempUserData.financialReservesDecimal, tempUserData.debtToIncomeRatioDecimal, tempUserData.durationInMonthsInteger, tempUserData.loanAmonutRequestedDeciaml);
 
     loanAccountsToAdd.push_back(userAccount);
 

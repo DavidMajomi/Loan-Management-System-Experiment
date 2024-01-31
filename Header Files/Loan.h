@@ -47,6 +47,20 @@ public:
     Loan(){
 
     }
+    Loan(string newUserName, int creditScoreInteger, double monthlyIncomeDecimal, double financialReservesDecimal, double debtToIncomeRatioDecimal, int durationInMonthsInteger, double loanAmonutRequestedDeciaml)
+    {
+        this->userName = newUserName;
+        creditScore = (creditScoreInteger);
+        monthlyIncome = (monthlyIncomeDecimal);
+        financialReserves = (financialReservesDecimal);
+        debtToIncomeRatio = (debtToIncomeRatioDecimal);
+        duration = (durationInMonthsInteger);
+        loanAmount = loanAmonutRequestedDeciaml;
+        // userAccount.set_monthly_debt_payments();
+        simple_set_credit_metrics();
+        setFinalMonthlyInterestRate();
+
+    }
     void setCreditScore(int creditScoreValue){
         creditScore = creditScoreValue;
     }

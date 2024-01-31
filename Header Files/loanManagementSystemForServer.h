@@ -7,6 +7,7 @@
 #include <iostream>
 #include <algorithm>
 #include "Loan.h"
+#include "time.h"
 #include "sqlite3.h"
 #include "constants.h"
 
@@ -214,7 +215,7 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
             if (count > 0)
             {
                 values = count - 1;
-                Loan userAccount(values);
+                // Loan userAccount(values);
 
                 creditScoreInteger = convert_to_int(creditScore);
                 monthlyIncomeDecimal = convert_to_double(monthlyIncome);
@@ -223,16 +224,19 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
                 durationInMonthsInteger = convert_to_int(durationInMonths);
                 loanAmonutRequestedDeciaml = convert_to_double(loanAmountRequested);
 
-                userAccount.setUserName(userName);
-                userAccount.setCreditScore(creditScoreInteger);
-                userAccount.setMonthlyIncome(monthlyIncomeDecimal);
-                userAccount.setFinancialReserves(financialReservesDecimal);
-                userAccount.setDebtToIncomeRatio(debtToIncomeRatioDecimal);
-                userAccount.setLoanDuration(durationInMonthsInteger);
-                userAccount.setLoanAmount(loanAmonutRequestedDeciaml);
-                // userAccount.set_monthly_debt_payments();
-                userAccount.computeCreditData();
-                userAccount.setFinalMonthlyInterestRate();
+                Loan userAccount(userName, creditScoreInteger, monthlyIncomeDecimal, financialReservesDecimal, debtToIncomeRatioDecimal, durationInMonthsInteger, loanAmonutRequestedDeciaml);
+
+
+                // userAccount.setUserName(userName);
+                // userAccount.setCreditScore(creditScoreInteger);
+                // userAccount.setMonthlyIncome(monthlyIncomeDecimal);
+                // userAccount.setFinancialReserves(financialReservesDecimal);
+                // userAccount.setDebtToIncomeRatio(debtToIncomeRatioDecimal);
+                // userAccount.setLoanDuration(durationInMonthsInteger);
+                // userAccount.setLoanAmount(loanAmonutRequestedDeciaml);
+                // // userAccount.set_monthly_debt_payments();
+                // userAccount.computeCreditData();
+                // userAccount.setFinalMonthlyInterestRate();
 
                 loanAccounts.push_back(userAccount);
 
@@ -376,11 +380,6 @@ bool storeDataInDb(vector<Loan> loanData)
 
     for (int count = 0; count < numberOfAddedLoanValues; count++)
     {
-        if (count % 10000 == 0)
-        {
-            cout << " Added values for: " << count << " users to database." << endl; 
-        }
-        
         creditScore = loanData[count].getCreditScore();
         monthlyIncome = loanData[count].getMonthlyIncome() ;
         financialReserves = loanData[count].getFinancialReserves() ;
@@ -417,10 +416,10 @@ bool storeDataInDb(vector<Loan> loanData)
 
             }
 
-            if(matrixBasedALVS != adjustedLoanViabilityScore)
-            {
-                cout << "Error where ALVS != matrixBasedALVS" << endl;
-            }
+            // if(matrixBasedALVS != adjustedLoanViabilityScore && count < 10)
+            // {
+            //     cout << "Error where ALVS != matrixBasedALVS" << endl;
+            // }
 
 
         }
@@ -731,136 +730,4 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 
     return errorStoringData;
 }
-
-
-bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
-{
-
-    const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
-
-    sqlite3* db;
-    int numberOfAddedLoanValues, creditScore, numMetricsToAdd, numberOFInsertions;
-    int rc = sqlite3_open(DATABASE_NAME, &db);
-    bool errorStoringData = false;
-    char charFinalSqlInsertStatement;
-    const char* sqlInsertLine;
-    const char* sql = "BEGIN TRANSACTION; CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
-                      " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
-                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
-                      " best_possible_rate REAL, worst_possible_rate REAL)";
-    vector <string> allInsertStatements;
-    string insertToSql, userName, stringFinalSqlInsertStatement, completedSqlStatement;
-    double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
-           yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
-           adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
-
-
-    numberOfAddedLoanValues = loanData.size();
-
-    if (rc != SQLITE_OK) {
-        // Handle error
-        //cout << "Step 1 error. 2" << endl;
-        errorStoringData = true;
-    }
-
-
-    sqlite3_stmt* stmt;
-    
-    rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
-
-    if (rc != SQLITE_OK) {
-        // Handle error preparing the statement
-        //cout << "Step 2 error. 2" << endl;
-        sqlite3_close(db);
-        errorStoringData = true;
-    }
-    rc = sqlite3_exec(db, sql, 0, 0, 0);
-
-    if (rc != SQLITE_OK) {
-        // Handle error
-        //cout << " Step 3 error. 2" << endl;
-        sqlite3_close(db);
-        errorStoringData = true;
-    }
-
-
-    for (int count = 0; count < numberOfAddedLoanValues; count++)
-    {
-        if (count % 10000 == 0)
-        {
-            cout << " Added values for: " << count << " users to database." << endl; 
-        }
-        
-        creditScore = loanData[count].getCreditScore();
-        monthlyIncome = loanData[count].getMonthlyIncome() ;
-        financialReserves = loanData[count].getFinancialReserves() ;
-        debtToIncomeRatio = loanData[count].getDebtToIncomeRatio() ;
-        loanDurationInMonths = loanData[count].getDurationInMonths() ;
-        loanAmount = loanData[count].getLoanAmount();
-        monthlyInteresRate = loanData[count].getMonthlyInterestRate();
-        yearlyInterestRate = loanData[count].getYearlyInterestRate();
-        userName =  loanData[count].getUserName();
-        // cout << loanData[count].getUserName();
-        lossGivenDefault = loanData[count].getLossGivenDefault();
-        recoveryRate = loanData[count].getRecoveryRate();
-        outstandingMonthlyDebtPaymentsFromLoan = loanData[count].getTotalOutstandingMonthlyDebtPaymentsAfterLoan();
-        defaultRiskScore = loanData[count].getDefaultRiskScore();
-        loanViabilityScore = loanData[count].getLoanViabilityScore();
-        adjustedLoanViabilityScore = loanData[count].getFinalAdjustedLoanViabilityScore();
-        interestRateByGroup = loanData[count].getInterestRateByGroup();
-        bestPossibleRate = loanData[count].getBestPossibleRate();
-        worstPossibleRate = loanData[count].getWorstPossibleRate();
-
-
-        stringFinalSqlInsertStatement = "'" + userName + "',";
-        stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + to_string(creditScore) + "," + to_string(monthlyIncome) + "," + to_string(financialReserves) + "," + to_string(debtToIncomeRatio) + "," 
-                                        + to_string(loanDurationInMonths) + "," +  to_string(loanAmount) + "," + to_string(monthlyInteresRate) + "," + to_string(yearlyInterestRate) + "," + to_string(lossGivenDefault) + "," 
-                                        + to_string(recoveryRate) + "," + to_string(outstandingMonthlyDebtPaymentsFromLoan) + "," +  to_string(defaultRiskScore) + "," + to_string(loanViabilityScore) + "," 
-                                        + to_string(adjustedLoanViabilityScore) + "," + to_string(interestRateByGroup) + "," + to_string(bestPossibleRate) + ","
-                                        + to_string(worstPossibleRate);
-
-
-        // cout << stringFinalSqlInsertStatement << endl;
-
-        insertToSql = "INSERT INTO users (name , credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
-                      " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
-                      " adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate) VALUES (" + stringFinalSqlInsertStatement + ");"; 
-
-        // cout << insertToSql;
-
-        allInsertStatements.push_back(insertToSql);
-
-    }
-
-    numberOFInsertions = allInsertStatements.size();
-
-    for(int count = 0; count < numberOFInsertions; count++)
-    {
-        completedSqlStatement = completedSqlStatement + allInsertStatements[count];
-    }
-
-
-    completedSqlStatement = completedSqlStatement + "COMMIT;";
-    cout << " This is completed statement: " << endl << completedSqlStatement << endl;
-
-    sqlInsertLine = completedSqlStatement.c_str();
-    sql = sqlInsertLine;
-
-    rc = sqlite3_exec(db, sql, 0, 0, 0);
-
-    if (rc != SQLITE_OK) {
-        // Handle error
-        cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
-        sqlite3_close(db);
-        errorStoringData = true;
-    }
-
-
-    sqlite3_finalize(stmt);
-    sqlite3_close(db);
-
-    return errorStoringData;
-}
-
-
 
