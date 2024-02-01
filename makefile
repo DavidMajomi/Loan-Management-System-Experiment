@@ -1,4 +1,4 @@
-loanManagementServerLibrary: loanManagementLibraryForServer.o sqlite3.o
+loanManagementServerLibrary.dll: loanManagementLibraryForServer.o sqlite3.o
 	g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
 # g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
 
@@ -19,6 +19,14 @@ loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
 
 # testStatisticsLibrary.o: testStatisticsLibrary.cpp
 # 	g++ -c testStatisticsLibrary.cpp
+
+testServer: testServer.o
+# g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
+	g++ loanManagementServerLibrary.dll testserver.o -o testServer
+
+testServer.o: testServer.cpp
+	g++ -c testServer.cpp
+
 
 testBro: experimentalDLL.dll testExport.o
 	g++ experimentalDLL.dll testExport.cpp -o  testExport.exe
@@ -51,7 +59,7 @@ externDebugger.dll:
 
 clean:
 	del "statisticsLibrary.o"
-	del "loanManagementLibraryForServer.o"
+# del "loanManagementLibraryForServer.o"
 	del "testStatisticsLibrary.o"
 	del "experimentalDLL.o"
 	del "experimentalDLL.dll"
