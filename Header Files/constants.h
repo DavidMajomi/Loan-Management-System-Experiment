@@ -55,3 +55,6 @@ const double LOSS_GIVEN_DEFAULT_WEIGHT = -0.15;   // Potential Losses when consi
 const double DEFAULT_RISK_SCORE_WEIGHT = -0.10;   // Risk accrued for higher returns, foregoing more secure investment options.
 const double DEBT_TO_INCOME_RATIO_WEIGHT = -0.15;   // Works as a measure of the customer's ability to shoulder debt weight
 
+
+const unsigned short int NUM_MONTHS_IN_YEAR = 12;
+

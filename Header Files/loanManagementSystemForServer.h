@@ -226,18 +226,6 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
 
                 Loan userAccount(userName, creditScoreInteger, monthlyIncomeDecimal, financialReservesDecimal, debtToIncomeRatioDecimal, durationInMonthsInteger, loanAmonutRequestedDeciaml);
 
-
-                // userAccount.setUserName(userName);
-                // userAccount.setCreditScore(creditScoreInteger);
-                // userAccount.setMonthlyIncome(monthlyIncomeDecimal);
-                // userAccount.setFinancialReserves(financialReservesDecimal);
-                // userAccount.setDebtToIncomeRatio(debtToIncomeRatioDecimal);
-                // userAccount.setLoanDuration(durationInMonthsInteger);
-                // userAccount.setLoanAmount(loanAmonutRequestedDeciaml);
-                // // userAccount.set_monthly_debt_payments();
-                // userAccount.computeCreditData();
-                // userAccount.setFinalMonthlyInterestRate();
-
                 loanAccounts.push_back(userAccount);
 
             }
@@ -343,7 +331,7 @@ bool storeDataInDb(vector<Loan> loanData)
                       " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
                       " best_possible_rate REAL, worst_possible_rate REAL)";
     vector <string> allInsertStatements;
-    string insertToSql, userName, stringFinalSqlInsertStatement, completedSqlStatement;
+    string insertToSql, userName, timeOfApplication, stringFinalSqlInsertStatement, completedSqlStatement;
     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
            adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
@@ -353,7 +341,7 @@ bool storeDataInDb(vector<Loan> loanData)
 
     if (rc != SQLITE_OK) {
         // Handle error
-        //cout << "Step 1 error. 2" << endl;
+        cout << "Step 1 error. 2" << endl;
         errorStoringData = true;
     }
 
@@ -364,7 +352,7 @@ bool storeDataInDb(vector<Loan> loanData)
 
     if (rc != SQLITE_OK) {
         // Handle error preparing the statement
-        //cout << "Step 2 error. 2" << endl;
+        cout << "Step 2 error. 2" << endl;
         sqlite3_close(db);
         errorStoringData = true;
     }
@@ -372,7 +360,7 @@ bool storeDataInDb(vector<Loan> loanData)
 
     if (rc != SQLITE_OK) {
         // Handle error
-        //cout << " Step 3 error. 2" << endl;
+        cout << " Step 3 error. 2" << endl;
         sqlite3_close(db);
         errorStoringData = true;
     }
@@ -399,6 +387,8 @@ bool storeDataInDb(vector<Loan> loanData)
         interestRateByGroup = loanData[count].getInterestRateByGroup();
         bestPossibleRate = loanData[count].getBestPossibleRate();
         worstPossibleRate = loanData[count].getWorstPossibleRate();
+        timeOfApplication = loanData[count].getTimeOfApplication(); 
+        // cout << loanData[count].getTimeOfApplication() << endl;
 
         if(count >= 1)
         {

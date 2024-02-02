@@ -15,7 +15,7 @@ class Loan
 {
 private:
     unsigned short int creditScore, duration;
-    string userName;
+    string userName, timeOfApplication;
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
            outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, loanViabilityScore,
            finalAdjustedViabilityScore, interestRateByGroup, bestPossibleRate = CURRENT_METRICS.getSuperPrimeRate(), worstPossibleRate = CURRENT_METRICS.getDeepSubPrimeRate();
@@ -41,14 +41,12 @@ public:
     // static double calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, double normalizedFinancialReserves, double defaultRiskScore);
     double calculateInterestForDefaultRisk ();
     void setFinalMonthlyInterestRate ();
-    Loan(int values){
-
-    }
-    Loan(){
-
-    }
     Loan(string newUserName, int creditScoreInteger, double monthlyIncomeDecimal, double financialReservesDecimal, double debtToIncomeRatioDecimal, int durationInMonthsInteger, double loanAmonutRequestedDeciaml)
     {
+        time_t rawtime;
+        time(&rawtime);
+        timeOfApplication = ctime(&rawtime);
+        
         this->userName = newUserName;
         creditScore = (creditScoreInteger);
         monthlyIncome = (monthlyIncomeDecimal);
@@ -60,30 +58,6 @@ public:
         simple_set_credit_metrics();
         setFinalMonthlyInterestRate();
 
-    }
-    void setCreditScore(int creditScoreValue){
-        creditScore = creditScoreValue;
-    }
-    void setUserName(string name){
-        userName = name;
-    }
-    void setLoanAmount(double amount){
-        loanAmount = amount;
-    }
-    void setLoanDuration(int loanDuration){
-        duration = loanDuration;
-    }
-    void setMonthlyIncome (double income){
-        monthlyIncome = income;
-    }
-    void setFinancialReserves(double financialReserveValues){
-        financialReserves = financialReserveValues;
-    }
-    void setDebtToIncomeRatio (double debtToIncomeRatioValue){
-        debtToIncomeRatio = debtToIncomeRatioValue; // outstanding dti prior to loan
-    }
-    void computeCreditData (){
-        simple_set_credit_metrics();
     }
     string getUserName() const{
         return userName;
@@ -138,6 +112,9 @@ public:
     }
     double getWorstPossibleRate() const{
         return worstPossibleRate;
+    }
+    string getTimeOfApplication() const{
+        return timeOfApplication;
     }
 };
 

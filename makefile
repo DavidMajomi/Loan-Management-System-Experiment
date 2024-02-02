@@ -59,7 +59,7 @@ externDebugger.dll:
 
 clean:
 	del "statisticsLibrary.o"
-# del "loanManagementLibraryForServer.o"
+	del "loanManagementLibraryForServer.o"
 	del "testStatisticsLibrary.o"
 	del "experimentalDLL.o"
 	del "experimentalDLL.dll"
