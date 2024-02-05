@@ -312,6 +312,9 @@ bool storeDataInDb(vector<Loan> loanData)
 {
 
     const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
+    clock_t time;
+
+    time = clock();
 
     double currentLVS;
     double matrixBasedALVS;
@@ -461,6 +464,14 @@ bool storeDataInDb(vector<Loan> loanData)
     sqlite3_finalize(stmt);
     sqlite3_close(db);
 
+    time = clock() - time;
+
+    int timeInt = int(time);
+
+    double timeInSeconds = double(time) / 1000;
+
+    cout << "time taken = " <<  timeInt << " millisecond(s), which is equal to " << timeInSeconds << " seconds" << endl;
+
     return errorStoringData;
 }
 
@@ -596,6 +607,9 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 {
 
     const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
+    clock_t time;
+
+    time = clock();
 
     sqlite3* db;
     int numberOfAddedLoanValues, creditScore, numMetricsToAdd, numberOFInsertions;
@@ -645,10 +659,6 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 
     for (int count = 0; count < numberOfAddedLoanValues; count++)
     {
-        if (count % 10000 == 0)
-        {
-            cout << " Added values for: " << count << " users to database." << endl; 
-        }
         
         creditScore = loanData[count].getCreditScore();
         monthlyIncome = loanData[count].getMonthlyIncome() ;
@@ -717,6 +727,14 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 
     sqlite3_finalize(stmt);
     sqlite3_close(db);
+
+    time = clock() - time;
+
+    int timeInt = int(time);
+
+    double timeInSeconds = double(time) / 1000;
+
+    cout << "time taken for transaction = " <<  timeInt << " millisecond(s), which is equal to " << timeInSeconds << " seconds" << endl;
 
     return errorStoringData;
 }
