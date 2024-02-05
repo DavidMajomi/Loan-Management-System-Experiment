@@ -91,6 +91,24 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
         }
 
 
+        bool readAndStoreGeneratedDataInDbWithTransaction(unsigned short int devMenuResponse)
+        {
+            bool fileOpeningError = false, errorReadingData = false, errorStoringData = false;
+            ifstream inputFile;
+            vector<Loan> loanAccounts;
+
+            errorReadingData = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
+            errorStoringData = storeDataInDbUsingSingleTransaction(loanAccounts);
+
+            if (errorReadingData == true || errorStoringData == true)
+            {
+                fileOpeningError = true;
+            }
+
+            return fileOpeningError;
+        }
+
+
         bool readAndStoreGeneratedDataForAnalysis(unsigned short int devMenuResponse)
         {
             ifstream inputFile;
