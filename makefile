@@ -9,17 +9,7 @@ loanManagementServerLibraryLinux: loanManagementLibraryForServer.o sqlite3.o
 loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
 	g++ -c loanManagementLibraryForServer.cpp
 	
-# g++ -Q --help=warning -c loanManagementLibraryForServer.cpp
-
-# testStatisticsLib: statisticsLibrary.o testStatisticsLibrary.o
-# 	g++ statisticsLibrary.cpp testStatisticsLibrary.cpp -o  outputStatistics.exe
-
-# statisticsLibrary.o: statisticsLibrary.cpp
-# 	g++ -c statisticsLibrary.cpp
-
-# testStatisticsLibrary.o: testStatisticsLibrary.cpp
-# 	g++ -c testStatisticsLibrary.cpp
-
+# 
 testServer: testServer.o
 # g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
 	g++ loanManagementServerLibrary.dll testserver.o -o testServer
@@ -82,3 +72,15 @@ cleanLinux:
 	rm "testExport.exe"
 	rm "runtimeConsumeDebugger.exe"
 	rm "linktimeUseDebugger.exe"
+
+
+g++ -Q --help=warning -c loanManagementLibraryForServer.cpp
+
+# testStatisticsLib: statisticsLibrary.o testStatisticsLibrary.o
+# 	g++ statisticsLibrary.cpp testStatisticsLibrary.cpp -o  outputStatistics.exe
+
+# statisticsLibrary.o: statisticsLibrary.cpp
+# 	g++ -c statisticsLibrary.cpp
+
+# testStatisticsLibrary.o: testStatisticsLibrary.cpp
+# 	g++ -c testStatisticsLibrary.cpp
