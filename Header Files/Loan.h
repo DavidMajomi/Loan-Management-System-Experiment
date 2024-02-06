@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "matrixCalculator.h"
 #include "constants.h"
 #include "EconomicMetrics.h"
 
