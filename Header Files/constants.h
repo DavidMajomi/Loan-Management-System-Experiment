@@ -47,12 +47,12 @@ const unsigned short int MAX_MONTHLY_INCOME = 12000;
 
 // Weights of Different Factors
 const double LOAN_AMOUNT_WEIGHT = 0.12;          // Works as a measure of possible profitability to some extent, but needs to be reduced
-const double CREDIT_SCORE_WEIGHT = 0.20;          // Most important metric, it shows credit worthiness, while minimizing risk
+const double CREDIT_SCORE_WEIGHT = 0.30;          // Most important metric, it shows credit worthiness, while minimizing risk
 const double LOAN_DURATION_WEIGHT = 0.06;        // Duration of the loan, NEED TO ADJUST THIS WEIGHT DRASTICALLY
 const double MONTHLY_INCOME_WEIGHT = 0.06;        // Not as important, because DTI covers this, however, valuable to weigh customer value, POSSIBLE FORMULA IN THE FUTURE
 const double FINANCIAL_RESERVES_WEIGHT = 0.08;   // All liquidable financial assets weight
 const double LOSS_GIVEN_DEFAULT_WEIGHT = -0.15;   // Potential Losses when considering Financial Reserves
-const double DEFAULT_RISK_SCORE_WEIGHT = -0.10;   // Risk accrued for higher returns, foregoing more secure investment options.
+const double DEFAULT_RISK_SCORE_WEIGHT = -0.08;   // Risk accrued for higher returns, foregoing more secure investment options.
 const double DEBT_TO_INCOME_RATIO_WEIGHT = -0.15;   // Works as a measure of the customer's ability to shoulder debt weight
 
 
