@@ -60,13 +60,10 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
     }
     else
     {
-
+        // This while loop runs until end of stream or end of line.
         while (getline(inputFile, userName, ','))
         {
             values = count;
-
-            // cout << " This is the name of the customer applying to this position. " << endl;
-
 
             getline(inputFile, creditScore, ',');
             getline(inputFile, monthlyIncome, ',');
