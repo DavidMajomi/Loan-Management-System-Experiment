@@ -125,6 +125,9 @@ public:
     double getCalculatedBestPossibleAdjustedLoanViabilityScore() const{
         return calculatedBestPossibleAdjustedLoanViabilityScore;
     }
+    double getCalculatedWorstPossibleAdjustedLoanViabilityScore() const{
+        return calculatedWorstPossibleAdjustedLoanViabilityScore;
+    }
 };
 
 
@@ -306,6 +309,9 @@ void Loan::simple_set_credit_metrics ()
     finalLoanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, debtToIncomeRatio, normalizedLoanAmount, normalizedDuration, lossGivenDefault, normalizedFinancialReserves, normalizedDefaultRiskScore);
 
     finalAdjustedViabilityScore = adjustLoanViabiltyScore(finalLoanViabilityScore);
+
+    calculatedBestPossibleAdjustedLoanViabilityScore = adjustLoanViabiltyScore(calculatedBestPossibleLoanViabilityScore);
+    calculatedWorstPossibleAdjustedLoanViabilityScore =  adjustLoanViabiltyScore(calculatedWorstPossibleLoanViabilityScore);
 
 }
 
