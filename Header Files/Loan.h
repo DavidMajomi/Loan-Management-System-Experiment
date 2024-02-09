@@ -20,7 +20,7 @@ private:
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
            outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, finalLoanViabilityScore,
            finalAdjustedViabilityScore, interestRateByGroup, bestPossibleRate = CURRENT_METRICS.getSuperPrimeRate(), worstPossibleRate = CURRENT_METRICS.getDeepSubPrimeRate(),
-           calculatedBestPossibleLoanViabilityScore, calculatedWorstPossibleLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore;
+           calculatedBestPossibleLoanViabilityScore, calculatedWorstPossibleLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore, calculatedWorstPossibleAdjustedLoanViabilityScore;
 
 
     static double normalizeScore(double rawScore, double maxScore, double minScore);

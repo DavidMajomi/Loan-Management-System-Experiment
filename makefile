@@ -74,7 +74,7 @@ cleanLinux:
 	rm "linktimeUseDebugger.exe"
 
 
-g++ -Q --help=warning -c loanManagementLibraryForServer.cpp
+# g++ -Q --help=warning -c loanManagementLibraryForServer.cpp
 
 # testStatisticsLib: statisticsLibrary.o testStatisticsLibrary.o
 # 	g++ statisticsLibrary.cpp testStatisticsLibrary.cpp -o  outputStatistics.exe
