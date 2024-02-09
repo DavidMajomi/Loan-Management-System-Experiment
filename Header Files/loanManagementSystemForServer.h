@@ -268,6 +268,14 @@ bool storeDataInDb(vector<Loan> loanData)
                 cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = ";
                 cout << calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS) << endl;
 
+                // cout << endl << endl;
+
+                // cout << " Best possible lvs = " << loanData[count].getCalculatedBestPossibleLoanViabilityScore() << " worst possinble lvs = " << loanData[count].getCalculatedWorstPossibleLoanViabilityScore();
+                // cout << " Best possible alvs = " << loanData[count].getCalculatedBestPossibleAdjustedLoanViabilityScore() << " worst possinble alvs = " << loanData[count].getCalculatedWorstPossibleAdjustedLoanViabilityScore();
+                // cout << endl;
+
+
+
             }
 
             // if(matrixBasedALVS != adjustedLoanViabilityScore && count < 10)
