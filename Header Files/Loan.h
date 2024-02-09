@@ -18,29 +18,29 @@ private:
     unsigned short int creditScore, duration;
     string userName, timeOfApplication;
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
-           outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, loanViabilityScore,
-           finalAdjustedViabilityScore, interestRateByGroup, bestPossibleRate = CURRENT_METRICS.getSuperPrimeRate(), worstPossibleRate = CURRENT_METRICS.getDeepSubPrimeRate();
+           outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, finalLoanViabilityScore,
+           finalAdjustedViabilityScore, interestRateByGroup, bestPossibleRate = CURRENT_METRICS.getSuperPrimeRate(), worstPossibleRate = CURRENT_METRICS.getDeepSubPrimeRate(),
+           calculatedBestPossibleLoanViabilityScore, calculatedWorstPossibleLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore;
 
 
     static double normalizeScore(double rawScore, double maxScore, double minScore);
 
     double calculateDefaultRisk ();  // function not needed now since calc interest rate is not complete
+
+    double calculateWorstCreditMetrics();
+    
+    double calculateBestCreditMetrics();
+
+    double calculateInterestForDefaultRisk ();
     
     void simple_set_credit_metrics();
 
-    void set_monthly_debt_payments ()
-    {
-        monthlyDebtPaymentsFromLoan = loanAmount / duration;
-        outstandingMonthlyDebtPaymentsPriorToLoan = monthlyIncome * debtToIncomeRatio;
-        totalMonthlyDebtPaymentsAfterLoan = outstandingMonthlyDebtPaymentsPriorToLoan + monthlyDebtPaymentsFromLoan;
-    }
-
 public:
     double adjustLoanViabiltyScore (double rawLoanViabilityScore);
-    static double calculateWorstCreditMetrics();
-    static double calculateBestCreditMetrics();
+    // static double calculateWorstCreditMetrics();
+    // static double calculateBestCreditMetrics();
     // static double calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, double normalizedFinancialReserves, double defaultRiskScore);
-    double calculateInterestForDefaultRisk ();
+    
     void setFinalMonthlyInterestRate ();
     Loan(string newUserName, int creditScoreInteger, double monthlyIncomeDecimal, double financialReservesDecimal, double debtToIncomeRatioDecimal, int durationInMonthsInteger, double loanAmonutRequestedDeciaml)
     {
@@ -55,7 +55,6 @@ public:
         debtToIncomeRatio = (debtToIncomeRatioDecimal);
         duration = (durationInMonthsInteger);
         loanAmount = loanAmonutRequestedDeciaml;
-        // userAccount.set_monthly_debt_payments();
         simple_set_credit_metrics();
         setFinalMonthlyInterestRate();
 
@@ -100,7 +99,7 @@ public:
         return defaultRiskScore;
     }
     double getLoanViabilityScore () const{
-        return loanViabilityScore;
+        return finalLoanViabilityScore;
     }
     double getFinalAdjustedLoanViabilityScore() const{
         return finalAdjustedViabilityScore;
@@ -116,6 +115,15 @@ public:
     }
     string getTimeOfApplication() const{
         return timeOfApplication;
+    }
+    double getCalculatedBestPossibleLoanViabilityScore() const{
+        return calculatedBestPossibleLoanViabilityScore;
+    }
+    double getCalculatedWorstPossibleLoanViabilityScore() const{
+        return calculatedWorstPossibleLoanViabilityScore;
+    }
+    double getCalculatedBestPossibleAdjustedLoanViabilityScore() const{
+        return calculatedBestPossibleAdjustedLoanViabilityScore;
     }
 };
 
@@ -150,6 +158,9 @@ double Loan::calculateBestCreditMetrics()
 
     loanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, BEST_DEBT_TO_INCOME_RATIO, normalizedLoanAmount, normalizedDuration, BEST_LOSS_GIVEN_DEFAULT, normalizedFinancialReserves, BEST_DEFAULT_RISK_SCORE);
 
+    calculatedBestPossibleLoanViabilityScore  = loanViabilityScore;
+    // calculatedBestPossibleAdjustedLoanViabilityScore = normalizeScore(calculatedBestPossibleLoanViabilityScore, calculatedBestPossibleLoanViabilityScore, worstLoanViabilityScore);
+
     return loanViabilityScore;
 }
 
@@ -166,6 +177,8 @@ double Loan::calculateWorstCreditMetrics ()
     normalizedLoanAmount = Loan::normalizeScore(MAX_LOAN_AMOUNT, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
 
     loanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, WORST_DEBT_TO_INCOME_RATIO, normalizedLoanAmount, normalizedDuration, WORST_LOSS_GIVEN_DEFAULT, normalizedFinancialReserves, WORST_DEFAULT_RISK_SCORE);
+
+    calculatedWorstPossibleLoanViabilityScore = loanViabilityScore;
 
     return loanViabilityScore;
 }
@@ -217,7 +230,9 @@ void Loan::setFinalMonthlyInterestRate ()
     double baseRate, mathematicalSlope = ((CURRENT_METRICS.getDeepSubPrimeRate() - CURRENT_METRICS.getSuperPrimeRate()) / (-100));
     // double baseRate, mathematicalSlope = ((DEEP_SUBPRIME_RATE - CURRENT_METRICS.getBaseYearlyInterestRatePercentForLoans()) / (-100));
 
-    set_monthly_debt_payments();
+    monthlyDebtPaymentsFromLoan = loanAmount / duration;
+    outstandingMonthlyDebtPaymentsPriorToLoan = monthlyIncome * debtToIncomeRatio;
+    totalMonthlyDebtPaymentsAfterLoan = outstandingMonthlyDebtPaymentsPriorToLoan + monthlyDebtPaymentsFromLoan;
 
 
     // Think of this as a linear model represented by the equation y = slope(m) * finalAdjustedViabilityScore (x) + getDeepSubPrimeRate (b)
@@ -288,9 +303,9 @@ void Loan::simple_set_credit_metrics ()
     lossGivenDefault = (loanAmount - financialReserves) / loanAmount; // SOURCE = WIKIPEDIA
     recoveryRate = 1 - lossGivenDefault;
 
-    loanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, debtToIncomeRatio, normalizedLoanAmount, normalizedDuration, lossGivenDefault, normalizedFinancialReserves, normalizedDefaultRiskScore);
+    finalLoanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, debtToIncomeRatio, normalizedLoanAmount, normalizedDuration, lossGivenDefault, normalizedFinancialReserves, normalizedDefaultRiskScore);
 
-    finalAdjustedViabilityScore = adjustLoanViabiltyScore(loanViabilityScore);
+    finalAdjustedViabilityScore = adjustLoanViabiltyScore(finalLoanViabilityScore);
 
 }
 
