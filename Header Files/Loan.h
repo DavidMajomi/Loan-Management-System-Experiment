@@ -17,10 +17,12 @@ class Loan
 private:
     unsigned short int creditScore, duration;
     string userName, timeOfApplication;
+
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
            outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, finalLoanViabilityScore,
-           finalAdjustedViabilityScore, interestRateByGroup, bestPossibleRate = CURRENT_METRICS.getSuperPrimeRate(), worstPossibleRate = CURRENT_METRICS.getDeepSubPrimeRate(),
-           calculatedBestPossibleLoanViabilityScore, calculatedWorstPossibleLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore, calculatedWorstPossibleAdjustedLoanViabilityScore;
+           finalAdjustedLoanViabilityScore, interestRateByGroup, bestPossibleRate = CURRENT_METRICS.getSuperPrimeRate(), worstPossibleRate = CURRENT_METRICS.getDeepSubPrimeRate(),
+           calculatedBestPossibleLoanViabilityScore, calculatedWorstPossibleLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore, 
+           calculatedWorstPossibleAdjustedLoanViabilityScore, matrixBasedAdjustedLoanViabilityScore;
 
 
     static double normalizeScore(double rawScore, double maxScore, double minScore);
@@ -57,7 +59,6 @@ public:
         loanAmount = loanAmonutRequestedDeciaml;
         simple_set_credit_metrics();
         setFinalMonthlyInterestRate();
-
     }
     string getUserName() const{
         return userName;
@@ -102,7 +103,7 @@ public:
         return finalLoanViabilityScore;
     }
     double getFinalAdjustedLoanViabilityScore() const{
-        return finalAdjustedViabilityScore;
+        return finalAdjustedLoanViabilityScore;
     }
     double getInterestRateByGroup() const{
         return interestRateByGroup;
@@ -127,6 +128,9 @@ public:
     }
     double getCalculatedWorstPossibleAdjustedLoanViabilityScore() const{
         return calculatedWorstPossibleAdjustedLoanViabilityScore;
+    }
+    double getMatrixBasedAdjustedLoanViabilityScore() const{
+        return matrixBasedAdjustedLoanViabilityScore;
     }
 };
 
@@ -238,8 +242,8 @@ void Loan::setFinalMonthlyInterestRate ()
     totalMonthlyDebtPaymentsAfterLoan = outstandingMonthlyDebtPaymentsPriorToLoan + monthlyDebtPaymentsFromLoan;
 
 
-    // Think of this as a linear model represented by the equation y = slope(m) * finalAdjustedViabilityScore (x) + getDeepSubPrimeRate (b)
-    baseRate = (mathematicalSlope * finalAdjustedViabilityScore) + CURRENT_METRICS.getDeepSubPrimeRate();
+    // Think of this as a linear model represented by the equation y = slope(m) * finalAdjustedLoanViabilityScore (x) + getDeepSubPrimeRate (b)
+    baseRate = (mathematicalSlope * finalAdjustedLoanViabilityScore) + CURRENT_METRICS.getDeepSubPrimeRate();
 
     if (baseRate < CURRENT_METRICS.getSuperPrimeRate())
     {
@@ -288,7 +292,7 @@ void Loan::simple_set_credit_metrics ()
 {
     double normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount, normalizedInterest, normalizedDuration, 
            normalizedFinancialReserves, normalizedDefaultRiskScore, baseRate = CURRENT_METRICS.getBaseMonthlyInterestRatePercentForLoans();
-    
+
     defaultRiskScore = calculateDefaultRisk();
     
     normalizedCreditScore =  normalizeScore(creditScore, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
@@ -308,10 +312,13 @@ void Loan::simple_set_credit_metrics ()
 
     finalLoanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, debtToIncomeRatio, normalizedLoanAmount, normalizedDuration, lossGivenDefault, normalizedFinancialReserves, normalizedDefaultRiskScore);
 
-    finalAdjustedViabilityScore = adjustLoanViabiltyScore(finalLoanViabilityScore);
+    finalAdjustedLoanViabilityScore = adjustLoanViabiltyScore(finalLoanViabilityScore);
 
     calculatedBestPossibleAdjustedLoanViabilityScore = adjustLoanViabiltyScore(calculatedBestPossibleLoanViabilityScore);
     calculatedWorstPossibleAdjustedLoanViabilityScore =  adjustLoanViabiltyScore(calculatedWorstPossibleLoanViabilityScore);
+
+    matrixBasedAdjustedLoanViabilityScore = matrixCalculator::calculateMatrixBasedALVS(calculatedWorstPossibleLoanViabilityScore, 1, calculatedWorstPossibleAdjustedLoanViabilityScore,
+                                                                                         calculatedBestPossibleLoanViabilityScore, 1, calculatedBestPossibleAdjustedLoanViabilityScore, finalLoanViabilityScore);
 
 }
 

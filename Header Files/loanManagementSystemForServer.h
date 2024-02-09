@@ -106,10 +106,6 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
 {
     int numLoanAccounts;
     bool fileOpeningError = false;
-    double currentLVS;
-
-    double initialLVSOne = loanAccounts[0].getLoanViabilityScore(), initialALVSOne = loanAccounts[0].getFinalAdjustedLoanViabilityScore();
-    double initialLVSTwo = loanAccounts[1].getLoanViabilityScore(), initialALVSTwo = loanAccounts[1].getFinalAdjustedLoanViabilityScore();
 
     outputCsvFile.open(OUTPUT_CSV_FILE_FOR_PROCESSED_DATA);
 
@@ -146,14 +142,9 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
             outputCsvFile << loanAccounts[count].getLoanViabilityScore() << ",";
             outputCsvFile << loanAccounts[count].getFinalAdjustedLoanViabilityScore() << "\n";
 
-            if(count >= 1 && count < 10)
+            if(count >= 0 && count < 10)
             {
-                
-                currentLVS = loanAccounts[count].getLoanViabilityScore();
-                double matrixBasedALVS = calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS);
-
-                cout << " ALVS = " << loanAccounts[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = ";
-                cout << matrixBasedALVS << endl;
+                cout << " ALVS = " << loanAccounts[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = " << loanAccounts[count].getMatrixBasedAdjustedLoanViabilityScore();
 
             }
 
@@ -163,9 +154,7 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
         outputCsvFile.close();
     }
 
-
     return fileOpeningError;
-
 }
 
 
@@ -181,7 +170,7 @@ bool storeDataInDb(vector<Loan> loanData)
     double matrixBasedALVS;
 
     double initialLVSOne = loanData[0].getLoanViabilityScore(), initialALVSOne = loanData[0].getFinalAdjustedLoanViabilityScore();
-    double initialLVSTwo = loanData[1].getLoanViabilityScore(), initialALVSTwo = loanData[1].getFinalAdjustedLoanViabilityScore();
+    double initialLVSTwo = loanData[0].getCalculatedBestPossibleLoanViabilityScore(), initialALVSTwo = loanData[0].getCalculatedBestPossibleAdjustedLoanViabilityScore();
 
 
     sqlite3* db;
@@ -257,25 +246,14 @@ bool storeDataInDb(vector<Loan> loanData)
         if(count >= 1)
         {
             currentLVS = loanData[count].getLoanViabilityScore();
-            matrixBasedALVS = calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS);
-                
 
             if(count < 10)
             {
                 currentLVS = loanData[count].getLoanViabilityScore();
-                
 
-                cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = ";
-                cout << calculateMatrixBasedALVS(initialLVSOne, 1, initialALVSOne, initialLVSTwo, 1, initialALVSTwo, currentLVS) << endl;
-
-                // cout << endl << endl;
-
-                // cout << " Best possible lvs = " << loanData[count].getCalculatedBestPossibleLoanViabilityScore() << " worst possinble lvs = " << loanData[count].getCalculatedWorstPossibleLoanViabilityScore();
-                // cout << " Best possible alvs = " << loanData[count].getCalculatedBestPossibleAdjustedLoanViabilityScore() << " worst possinble alvs = " << loanData[count].getCalculatedWorstPossibleAdjustedLoanViabilityScore();
-                // cout << endl;
-
-
-
+                cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = " << loanData[count].getMatrixBasedAdjustedLoanViabilityScore();
+                cout << endl;
+  
             }
 
             // if(matrixBasedALVS != adjustedLoanViabilityScore && count < 10)
