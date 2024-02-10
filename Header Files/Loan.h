@@ -16,7 +16,7 @@ class Loan
 {
 private:
     unsigned short int creditScore, duration;
-    string userName, timeOfApplication;
+    string userName, timeOfApplication, sqlInsertFormat, stringSqlInsertData;
 
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
            outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, finalLoanViabilityScore,
@@ -36,6 +36,28 @@ private:
     double calculateInterestForDefaultRisk ();
     
     void simple_set_credit_metrics();
+
+    void setSqlRelatedData()
+    {
+        string stringFinalSqlInsertStatement;
+
+        sqlInsertFormat = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, time_of_application TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
+                      " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
+                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, matrix_based_adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
+                      " best_possible_rate REAL, worst_possible_rate REAL, final_loan_grade TEXT)";
+
+        stringFinalSqlInsertStatement = "'" + userName + "'," + "'" + timeOfApplication + "',";
+        stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + to_string(creditScore) + "," + to_string(monthlyIncome) + "," + to_string(financialReserves) + "," + to_string(debtToIncomeRatio) + "," 
+        + to_string(duration) + "," +  to_string(loanAmount) + "," + to_string(finalMonthlyInterestRate) + "," + to_string(getYearlyInterestRate()) + "," + to_string(lossGivenDefault) + "," 
+        + to_string(recoveryRate) + "," + to_string(outstandingMonthlyDebtPaymentsPriorToLoan) + "," +  to_string(defaultRiskScore) + "," + to_string(finalLoanViabilityScore) + "," 
+        + to_string(finalAdjustedLoanViabilityScore) + "," +  to_string(matrixBasedAdjustedLoanViabilityScore) + "," + to_string(interestRateByGroup) + "," + to_string(bestPossibleRate) + ","
+        + to_string(worstPossibleRate) + "," + "''";
+
+        stringSqlInsertData = "INSERT INTO users (name , time_of_application, credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
+                      " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
+                      " adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate, final_loan_grade) VALUES (" + stringFinalSqlInsertStatement + ");"; 
+
+    }
 
 public:
     double adjustLoanViabiltyScore (double rawLoanViabilityScore);
@@ -59,6 +81,7 @@ public:
         loanAmount = loanAmonutRequestedDeciaml;
         simple_set_credit_metrics();
         setFinalMonthlyInterestRate();
+        setSqlRelatedData();
     }
     string getUserName() const{
         return userName;
@@ -132,6 +155,12 @@ public:
     double getMatrixBasedAdjustedLoanViabilityScore() const{
         return matrixBasedAdjustedLoanViabilityScore;
     }
+    string getSqlInsertFormat() const{
+        return sqlInsertFormat;
+    }
+    string getInsertStatementWithData() const{
+        return stringSqlInsertData;
+    }
 };
 
 
@@ -166,7 +195,6 @@ double Loan::calculateBestCreditMetrics()
     loanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, BEST_DEBT_TO_INCOME_RATIO, normalizedLoanAmount, normalizedDuration, BEST_LOSS_GIVEN_DEFAULT, normalizedFinancialReserves, BEST_DEFAULT_RISK_SCORE);
 
     calculatedBestPossibleLoanViabilityScore  = loanViabilityScore;
-    // calculatedBestPossibleAdjustedLoanViabilityScore = normalizeScore(calculatedBestPossibleLoanViabilityScore, calculatedBestPossibleLoanViabilityScore, worstLoanViabilityScore);
 
     return loanViabilityScore;
 }
