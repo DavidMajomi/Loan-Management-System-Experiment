@@ -144,7 +144,7 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
 
             if(count >= 0 && count < 10)
             {
-                cout << " ALVS = " << loanAccounts[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = " << loanAccounts[count].getMatrixBasedAdjustedLoanViabilityScore();
+                cout << " ALVS = " << loanAccounts[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = " << loanAccounts[count].getMatrixBasedAdjustedLoanViabilityScore() << endl;
 
             }
 
@@ -160,14 +160,10 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
 
 bool storeDataInDb(vector<Loan> loanData)
 {
-
     const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
     clock_t time;
 
     time = clock();
-
-    double currentLVS;
-    double matrixBasedALVS;
 
     sqlite3* db;
     int numberOfAddedLoanValues, creditScore, numMetricsToAdd, numberOFInsertions;
@@ -240,22 +236,12 @@ bool storeDataInDb(vector<Loan> loanData)
 
         if(count >= 1)
         {
-            currentLVS = loanData[count].getLoanViabilityScore();
-
             if(count < 10)
             {
-                currentLVS = loanData[count].getLoanViabilityScore();
-
-                // cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = " << loanData[count].getMatrixBasedAdjustedLoanViabilityScore();
+                cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = " << loanData[count].getMatrixBasedAdjustedLoanViabilityScore();
                 cout << endl;
   
             }
-
-            // if(matrixBasedALVS != adjustedLoanViabilityScore && count < 10)
-            // {
-            //     cout << "Error where ALVS != matrixBasedALVS" << endl;
-            // }
-
 
         }
 
@@ -332,7 +318,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
     const char* sql = "SELECT * FROM users";
     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
-           adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
+           adjustedLoanViabilityScore, matrixBasedAdjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
     sqlite3* db;
     int rc = sqlite3_open(DATABASE_NAME, &db);
 
@@ -370,28 +356,29 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 
             outputCsvFile << "Name,credit_score,monthly_income,financial_reserves,debt_to_income_ratio,Duration_in_months,loan_amount_requested,Monthly_interest_rate,Interest_rate_over_a_year,"
                              "loss_Given_Default,Recovery_Rate,outstanding_Monthly_Debt_Payments,";
-            outputCsvFile << "default_risk_score,Loan_Viability_Score,Adjusted_Loan_viability_Score,interest_rate_by_group,best_possible_rate,worst_possible_rate" << endl;
+            outputCsvFile << "default_risk_score,Loan_Viability_Score,Adjusted_Loan_viability_Score,matrix_based_adjusted_loan_viability_score,interest_rate_by_group,best_possible_rate,worst_possible_rate" << endl;
 
             while (sqlite3_step(stmt) == SQLITE_ROW) {
                 // loanId = sqlite3_column_int(stmt, 0);
                 const unsigned char* userName = sqlite3_column_text(stmt, 1);
-                creditScore = sqlite3_column_int(stmt, 2);
-                monthlyIncome = sqlite3_column_double(stmt, 3);
-                financialReserves = sqlite3_column_double(stmt, 4);
-                debtToIncomeRatio = sqlite3_column_double(stmt, 5);
-                loanDurationInMonths = sqlite3_column_double(stmt, 6);
-                loanAmount = sqlite3_column_double(stmt, 7);
-                monthlyInteresRate = sqlite3_column_double(stmt, 8);
-                yearlyInterestRate = sqlite3_column_double(stmt, 9);
-                lossGivenDefault = sqlite3_column_double(stmt, 10);
-                recoveryRate = sqlite3_column_double(stmt, 11);
-                outstandingMonthlyDebtPaymentsFromLoan = sqlite3_column_double(stmt, 12);
-                defaultRiskScore = sqlite3_column_double(stmt, 13);
-                loanViabilityScore = sqlite3_column_double(stmt, 14);
-                adjustedLoanViabilityScore = sqlite3_column_double(stmt, 15);
-                interestRateByGroup = sqlite3_column_double(stmt, 16);
-                bestPossibleRate = sqlite3_column_double(stmt, 17);
-                worstPossibleRate = sqlite3_column_double(stmt, 18);
+                creditScore = sqlite3_column_int(stmt, 3);
+                monthlyIncome = sqlite3_column_double(stmt, 4);
+                financialReserves = sqlite3_column_double(stmt, 5);
+                debtToIncomeRatio = sqlite3_column_double(stmt, 6);
+                loanDurationInMonths = sqlite3_column_double(stmt, 7);
+                loanAmount = sqlite3_column_double(stmt, 8);
+                monthlyInteresRate = sqlite3_column_double(stmt, 9);
+                yearlyInterestRate = sqlite3_column_double(stmt, 10);
+                lossGivenDefault = sqlite3_column_double(stmt, 11);
+                recoveryRate = sqlite3_column_double(stmt, 12);
+                outstandingMonthlyDebtPaymentsFromLoan = sqlite3_column_double(stmt, 13);
+                defaultRiskScore = sqlite3_column_double(stmt, 14);
+                loanViabilityScore = sqlite3_column_double(stmt, 15);
+                adjustedLoanViabilityScore = sqlite3_column_double(stmt, 16);
+                matrixBasedAdjustedLoanViabilityScore = sqlite3_column_double(stmt, 17);
+                interestRateByGroup = sqlite3_column_double(stmt, 18);
+                bestPossibleRate = sqlite3_column_double(stmt, 19);
+                worstPossibleRate = sqlite3_column_double(stmt, 20);
 
 
                 outputCsvFile << userName << ",";
@@ -409,6 +396,7 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
                 outputCsvFile << defaultRiskScore << ",";
                 outputCsvFile << loanViabilityScore << ",";
                 outputCsvFile << adjustedLoanViabilityScore << ",";
+                outputCsvFile << matrixBasedAdjustedLoanViabilityScore << ",";
                 outputCsvFile << interestRateByGroup << ",";
                 outputCsvFile << bestPossibleRate << ",";
                 outputCsvFile << worstPossibleRate << "\n";
