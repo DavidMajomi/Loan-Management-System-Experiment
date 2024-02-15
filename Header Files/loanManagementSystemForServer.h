@@ -35,7 +35,7 @@ double convert_to_double (string valueToConvert)
 
 bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsigned short int devMenuResponse)
 {
-    int count = 0, values, creditScoreInteger, durationInMonthsInteger;
+    int count = 0, creditScoreInteger, durationInMonthsInteger;
     bool fileOpeningError = false;
     double monthlyIncomeDecimal, financialReservesDecimal, debtToIncomeRatioDecimal, loanAmonutRequestedDeciaml;
     string userName, creditScore, monthlyIncome, financialReserves, debtToIncomeRatio, durationInMonths, loanAmountRequested;
@@ -63,7 +63,6 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
         // This while loop runs until end of stream or end of line.
         while (getline(inputFile, userName, ','))
         {
-            values = count;
 
             getline(inputFile, creditScore, ',');
             getline(inputFile, monthlyIncome, ',');
@@ -75,9 +74,6 @@ bool readGeneratedData (ifstream& inputFile, vector <Loan>& loanAccounts, unsign
 
             if (count > 0)
             {
-                values = count - 1;
-                // Loan userAccount(values);
-
                 creditScoreInteger = convert_to_int(creditScore);
                 monthlyIncomeDecimal = convert_to_double(monthlyIncome);
                 financialReservesDecimal = convert_to_double(financialReserves);
