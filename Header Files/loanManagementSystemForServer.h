@@ -417,7 +417,6 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
 // Use time.h here to track insertion speeds to track which method of insertion is better between this and sqlite3 transactions
 bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
 {
-
     const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
     clock_t time;
 
@@ -436,6 +435,7 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
     double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
            adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
+    sqlite3_stmt* stmt;
 
 
     numberOfAddedLoanValues = loanData.size();
@@ -447,7 +447,7 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
     }
 
 
-    sqlite3_stmt* stmt;
+    
     
     rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
 

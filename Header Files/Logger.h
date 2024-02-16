@@ -3,7 +3,9 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
+using std::cout;
+using std::endl;
+using std::string;
 
 class Logger
 {
@@ -15,12 +17,23 @@ public:
 
     }
     void output(string line);
-    void operator << (string line);
 
-    void outputWithMoreDetails(string function, string variableName, string variableType,string lineNumber, string variableValue, string comments);
+    template <typename T>
+    void operator << (T line);
+
+    template <typename T, typename...  Args>
+    void display(T value, Args... args);
+
+    void display();
+    
+    template <typename T>
+    void outputWithMoreDetails(string function, T variable, string variableName, string lineNumber, string comments);
 
     void switchScreenDisplay(){
         startScreenDisplay = !(startScreenDisplay);
+    }
+    bool getLoggingState() const{
+        return startScreenDisplay;
     }
 };
 
@@ -33,25 +46,60 @@ void Logger::output(string line)
     }
 }
 
-void Logger::outputWithMoreDetails(string function, string variableName, string variableType,string lineNumber, string variableValue, string comments)
+
+template <typename T>
+void Logger::outputWithMoreDetails(string function, T variable, string variableName, string lineNumber, string comments)
 {
     if(startScreenDisplay)
     {
+         string todaysDate;
+
+        time_t rawtime;
+
+        time (&rawtime);
+
+        todaysDate = ctime (&rawtime);
+
+        cout << "Date: " << todaysDate;
         cout << "Function Name: " << function << endl;
         cout << "Line Number: " << lineNumber << endl;
         cout << "Variable Name: " << variableName << endl;
-        cout << "Variable type: " << variableType << endl;
-        cout << "Variable Value: " << variableValue << endl;
+        cout << "Variable type: " << typeid(variable).name() << endl;
+        cout << "Variable Value: " << variable << endl;
         cout << "Comments: " << comments << endl;
         cout << endl;
     }
 }
 
 
-void Logger::operator << (string line)
+template <typename T>
+void Logger::operator << (T line)
+{
+    
+    if(startScreenDisplay)
+    {
+        cout << line << endl;
+    }   
+}
+
+
+void Logger::display()
 {
     if(startScreenDisplay)
     {
-        cout << line << endl << endl;
+        cout << endl;
     }
+}
+
+
+template <typename T, typename...  Args>
+void Logger::display(T value, Args... args)
+{
+    if(startScreenDisplay)
+    {
+        cout << value << " ";
+
+        Logger::display(args...);    
+    }
+    
 }
