@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "Header Files/Logger.h"
 #include "Header Files/loanManagementSystemForServer.h"
 
 
@@ -67,8 +68,9 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             addIndividualizedLoanDataFromPythonServer (tempUserDataFromPython, loanAccountsToAdd);
             fileOpeningError = createDatabaseToAddUserLoanData (loanAccountsToAdd);
 
-            // cout << " This is federalFundsRate from todays metrics: " << TODAYS_METRICS.getFederalFundsRate() << endl;
-            // cout << " This is federalFundsRate from current metrics: " << CURRENT_METRICS.getFederalFundsRate() << endl;
+            // DISPLAY.display(" This is federalFundsRate from todays metrics: ",  TODAYS_METRICS.getFederalFundsRate());
+            // DISPLAY.display(" This is federalFundsRate from current metrics: ", CURRENT_METRICS.getFederalFundsRate());
+
             return fileOpeningError;
         }
         
@@ -125,9 +127,6 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
                 // cout << " Error opening file = true. " << endl;
             }
 
-            // cout << " Error opening file = false. " << endl;
-
-
             return fileOpeningError;
         }
 
@@ -161,6 +160,12 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
         {
             cout << " The test. " << endl;
             return true;
+        }
+
+
+        void switchLogger()
+        {
+            DISPLAY.switchScreenDisplay();
         }
 
     }

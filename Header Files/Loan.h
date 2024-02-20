@@ -296,9 +296,9 @@ double Loan::adjustLoanViabiltyScore (double rawLoanViabilityScore)
 
     bestLoanViabilityScore = calculateBestCreditMetrics();
     worstLoanViabilityScore = calculateWorstCreditMetrics();
-    // cout << " This is best lvs " << bestLoanViabilityScore << endl;
-    // cout << " This is worst lvs " << worstLoanViabilityScore << endl;
-    // cout << " This is raw lvs " << rawLoanViabilityScore << endl;
+    DISPLAY << " This is best lvs " + to_string( bestLoanViabilityScore);
+    DISPLAY << " This is worst lvs " + to_string(worstLoanViabilityScore);
+    DISPLAY << " This is raw lvs " + to_string(rawLoanViabilityScore);
     adjustedViabilityScore = (((rawLoanViabilityScore - worstLoanViabilityScore) / (bestLoanViabilityScore - worstLoanViabilityScore)) * (maxScaleValue - minScaleValue)) + (minScaleValue);
 
     return adjustedViabilityScore;
@@ -330,10 +330,10 @@ void Loan::simple_set_credit_metrics ()
     normalizedLoanAmount = normalizeScore(loanAmount, MAX_LOAN_AMOUNT, MIN_LOAN_AMOUNT);
     normalizedDefaultRiskScore = normalizeScore(defaultRiskScore, (CURRENT_METRICS.getDeepSubPrimeRate() - baseRate), (CURRENT_METRICS.getSuperPrimeRate() - baseRate));
 
-    // cout << normalizedCreditScore << endl;
-    // cout << normalizedDuration << endl;
-    // cout << " raw default risk score " << defaultRiskScore << endl;
-    // cout << " normalized default risk score " << normalizedDefaultRiskScore << endl;
+    // DISPLAY << normalizedCreditScore << ENDLINE;
+    // DISPLAY << normalizedDuration << ENDLINE;
+    DISPLAY << " raw default risk score " + to_string(defaultRiskScore);
+    DISPLAY << " normalized default risk score " + to_string(normalizedDefaultRiskScore);
 
     lossGivenDefault = (loanAmount - financialReserves) / loanAmount; // SOURCE = WIKIPEDIA
     recoveryRate = 1 - lossGivenDefault;
