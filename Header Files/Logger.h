@@ -19,18 +19,26 @@ public:
     void output(string line);
 
     template <typename T>
-    void operator << (T line);
+    Logger& operator << (T line);
 
     template <typename T, typename...  Args>
     void display(T value, Args... args);
 
     void display();
+
+    void endline();
     
     template <typename T>
     void outputWithMoreDetails(string function, T variable, string variableName, string lineNumber, string comments);
 
     void switchScreenDisplay(){
         startScreenDisplay = !(startScreenDisplay);
+    }
+    void startLogging(){
+        startScreenDisplay = true;
+    }
+    void stopLogging(){
+        startScreenDisplay = false;
     }
     bool getLoggingState() const{
         return startScreenDisplay;
@@ -52,7 +60,7 @@ void Logger::outputWithMoreDetails(string function, T variable, string variableN
 {
     if(startScreenDisplay)
     {
-         string todaysDate;
+        string todaysDate;
 
         time_t rawtime;
 
@@ -73,22 +81,21 @@ void Logger::outputWithMoreDetails(string function, T variable, string variableN
 
 
 template <typename T>
-void Logger::operator << (T line)
+Logger& Logger::operator << (T line)
 {
     
     if(startScreenDisplay)
     {
-        cout << line << endl;
-    }   
+        cout << line;
+    }
+
+    return *this;
 }
 
 
 void Logger::display()
 {
-    if(startScreenDisplay)
-    {
-        cout << endl;
-    }
+    cout << endl;
 }
 
 
@@ -98,8 +105,12 @@ void Logger::display(T value, Args... args)
     if(startScreenDisplay)
     {
         cout << value << " ";
-
         Logger::display(args...);    
     }
     
+}
+
+void endline()
+{
+    cout << endl;
 }
