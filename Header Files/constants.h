@@ -1,7 +1,12 @@
 #pragma once
 
 #include <string>
+#include "Logger.h"
 #include <filesystem>// cpp 17 reference https://en.cppreference.com/w/cpp/filesystem/current_paths
+
+
+Logger DISPLAY;
+const char ENDLINE = '\n';
 
 
 namespace fs = std::filesystem;
