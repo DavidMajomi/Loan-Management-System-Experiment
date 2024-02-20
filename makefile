@@ -47,7 +47,7 @@ externDebugger.dll:
 
 
 
-clean:
+.PHONY clean:
 	del "statisticsLibrary.o"
 	del "loanManagementLibraryForServer.o"
 	del "testStatisticsLibrary.o"
