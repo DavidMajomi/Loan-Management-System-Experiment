@@ -17,8 +17,8 @@ Reporting System api side stuff
     A.) Use a basic if statement based on how the adjusted loan viability score relates as a percentage to the best possible adjusted loan viability scores.
     B.) Note that this should not be done in the loan class construction, rather by a new processing unit that reads the database and updates the following:
         I.) Updates the time left to satisfy current loan.
-        II.) Makes Loan decisions based on ALVS
+        II.) Makes Loan decisions based on ALVS.
         III.) Basic Loan quality Reporting which will be limited to simple metrics of average numeric scores of all applicants of the day, it is easy to do this
             with sqlite3.
-3.) Store data for a matrix algebra based adjusted loan viability score within the loan class, using a private method to call the matrix solving function.
+3.) Store data for a matrix algebra based adjusted loan viability score within the loan class, using a private method to call the matrix solving function.          COMPLETED
 4.) Benchmark insertion speed differences between regular insertions and sqlite3 transactions.          COMPLETED

@@ -479,7 +479,7 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
         monthlyInteresRate = loanData[count].getMonthlyInterestRate();
         yearlyInterestRate = loanData[count].getYearlyInterestRate();
         userName =  loanData[count].getUserName();
-        // cout << loanData[count].getUserName();
+        // DISPLAY << loanData[count].getUserName();
         lossGivenDefault = loanData[count].getLossGivenDefault();
         recoveryRate = loanData[count].getRecoveryRate();
         outstandingMonthlyDebtPaymentsFromLoan = loanData[count].getTotalOutstandingMonthlyDebtPaymentsAfterLoan();
