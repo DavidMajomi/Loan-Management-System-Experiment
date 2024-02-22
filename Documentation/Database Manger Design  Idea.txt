@@ -1,0 +1,15 @@
+Main idea:
+    A simple Database Manager that works as simple function calls to obfuscate the sqlite statements.
+
+Idea:
+1.) Data retreival for table data requires
+    A.) The select statement as a const char *
+    B.) Database path const char *
+    C.) Could return vector of tuples or 2 dimensional vector, why not both.
+    D.) Built - in exception handling.
+    E.) Database mutexes and others must be handled by calling function.
+2.) Data insertion requires:
+    A.) const char * of all data to insert. Could have a string alternative using polymorphism
+    B.) bool insert with transaction or not.
+    C.) const char * database isnert format (the header)
+    D.) Database path const char *
