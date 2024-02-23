@@ -1,6 +1,84 @@
 Main idea:
-    A simple Database Manager that works as simple function calls to obfuscate the sqlite statements.
+    ############################## Database Manager ##############################    
+    A simple database manager that helps perform all database tasks relating to the
+loan management system by being a wrapper to the database abstraction.
 
+Sample database Manager functions incude:
+
+addReport(string format, string data);
+
+getUserdata(int userLoanID); return vector (userData, bool successful or not)
+
+getUserdata(string userName); return vector (userData, bool successful or not)
+
+changeDateToNextInstallment(loanId, decrementBy); return vector (bool successful or not)
+
+addNewReportRow(string rowName, string dataType e.g REAL,bool primary key or not); return vector (bool successful or not)
+
+moveLoanToDefaultDb(int loanId); return vector (bool successful or not)
+
+moveLoanToCompletedDb(int loanId); return vector (bool successful or not)
+
+moveLoanToDbWithAllInformation(loanId); return vector (bool successful or not)
+    This holds all information regarding all data and is updated when any database is updated. each new user is entered into this db
+    immediately after data is entered into the mainn database.
+
+    Why:
+        This database exists to try to create a more natural dataset that can help with the learning experience of data sorting and cleaning.
+
+        Arguments For and Against:
+            Against: If this is the only reason why not just keep that information in the main db then shuffle the outputs to have the same effect.
+
+################################################ DATABASES ################################################
+
+Databses that will be managed:
+1.) Main databse with initial appiclation:
+    Contains the following:
+    1.) User name
+    2.) User loan id
+    3.) User time of appiclation
+    4.) User Credit Scores
+    5.) Monthly Income
+    6.) User Financial Reserves
+    7.) Debt to income ratio
+    8.) Loan Duration (months)
+    9.) Duration to next installment (days)
+    10.) Requested Loan Amount
+    11.) Monthly Interest rate
+    12.) yearly Interest rate
+    13.) Loss Given default
+    14.) recovery rate
+    15.) outstanding monthly payments from loan
+    16.) outstanding monthly payments prior to loan
+    17.) Amount to be payed at next installment including Interest
+    19.) Default risk score
+    20.) Loan viability Score
+    21.) Adjusted loan viability score
+    22.) matrix based adjusted loan viability score
+    23.) interest rate by group
+    24.) best possible yearly interest rate
+    25.) Worst possible yearly interest rate
+    26.) final loan grade
+    27.) Potential profit from loan
+    
+
+2.) Reports Database
+    1.) Time of report
+    2.) For all values such as credit score, monthly income etc store the following:
+        1.) Mode
+        2.) standard deviation
+        3.) Mean
+    3.) Highest loanId with related user data such as credit score
+    4.) Lowest loanId with related user data
+
+
+
+
+
+
+    ############################## Database Abstraction ##############################
+    A simple Database Abstraction that works as simple function calls to obfuscate the sqlite statements.
+    Could potentially be a class with related methods allowing for more tweaking of features.
 Idea:
 1.) Data retreival for table data requires
     A.) The select statement as a const char *
