@@ -112,17 +112,3 @@ double getStandardDeviation(vector<double> dataSet)
 
     return standardDeviation;
 }
-
-
-// template <typename T>  vector<T> duplicate(vector<T> vectorToDuplicate)
-// {
-//     vector<T> newVector;
-
-//     for (int count = 0; count < vectorToDuplicate.size(); count++)
-//     {
-//         newVector.push_back(vectorToDuplicate[count]);
-//     }
-
-//     return newVector;
-
-// }
