@@ -362,10 +362,10 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             operation_state_data["found_user_data"] = True
             # print("Row found:")
             # print(row, "\n")
-            (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration
+            (loan_id, user_name, time_of_application,credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration
             , requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default
             , recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score
-            , adjusted_loan_viability_score, interest_rate_by_group,best_possible_rate,worst_possible_rate) = row
+            , adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score,interest_rate_by_group,best_possible_rate,worst_possible_rate, final_loan_grade) = row
             # print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
             
             retrieved_user_data = {
@@ -458,10 +458,10 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
             print("Num rows = ", num_rows)
             
             for data in rows:
-                (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration
+                (loan_id, user_name, time_of_application,credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration
                 , requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default
                 , recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score
-                , adjusted_loan_viability_score, interest_rate_by_group,best_possible_rate,worst_possible_rate) = data
+                , adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score,interest_rate_by_group,best_possible_rate,worst_possible_rate, final_loan_grade) = data
                 # (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) = data
                 
                 retrieved_user_data = {
@@ -478,8 +478,11 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                     
                 }
                 
-                list_of_loan_data.append(retrieved_user_data)
-            
+                retrieved_user_data_copy = retrieved_user_data.copy()
+                
+                list_of_loan_data.append(retrieved_user_data_copy)
+                print(list_of_loan_data) 
+ 
         else:
             operation_state_to_return["successful_search"] = True
             operation_state_to_return["found_user_data"] = False
@@ -495,7 +498,8 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
         # Close the cursor and the connection
         cursor.close()
         conn.close()
-        
+       
+        print(" List of loan data: ",list_of_loan_data) 
         return list_of_loan_data, operation_state_to_return
     
     
@@ -753,6 +757,8 @@ def use_cpp_from_server(recieved_data, cpp_library):
             
             operation_state_to_return.update(temp_operation_state)
             if operation_state_to_return["found_user_data"] == True:
+                
+                print(temp_list_data[0])
                 single_retrieved_user_data_to_return.update(temp_list_data[0])  # Error in this line that needs to be fixed as soon as possible
                 list_of_retrieved_user_data.extend(temp_list_data)
             
