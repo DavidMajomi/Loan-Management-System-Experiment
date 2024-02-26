@@ -2,10 +2,11 @@
 
 using std::to_string;
 
-Logger display;
-
 int main()
 {
+    
+    Logger display;
+
     const char ENDLINE = '\n';
     int value = 8080;
     bool test = false;
