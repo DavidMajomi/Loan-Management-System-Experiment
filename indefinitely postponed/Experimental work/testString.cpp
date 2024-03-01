@@ -13,12 +13,14 @@ void test(T shaking)
     value = shaking;
 
     cout << shaking << endl;
-    cout << value + dt;
+    // cout << value + dt;
 }
 
 int main()
 {
     string valueString = " teyeu";
+    string typeValue = (typeid(valueString).name());
+
     const char * addedValue = " added";
     char * charPointer = " added char pointer";
     string completedValue = valueString + addedValue + charPointer;
@@ -32,7 +34,14 @@ int main()
     cout <<  completedValue;
     cout << endl << endl;
 
+    cout << (valueString);
     test("bamij");
+    cout << typeid(typeid(string).name()).name();
+
+    if(typeValue == typeid(string).name())
+    {
+        cout << " Value Match" << endl;
+    }
     
     return 0;
 }
