@@ -136,22 +136,22 @@ namespace databaseAbstraction
 
 
     template <typename T>
-    bool storeDataInDbUsingSingleTransaction(const char * databaseFullPath, string sqlInsertFormat, string sqlInsertTableNames, vector<vector <pair <T, string>>> matrixData)
+    double storeDataInDbUsingSingleTransaction(const char * databaseFullPath, string sqlInsertFormat, string sqlInsertTableNames, vector<vector <pair <T, string>>> matrixData)
     {
         clock_t time;
 
         time = clock();
 
         sqlite3* db;
-        int creditScore, numMetricsToAdd, numberOFInsertions;
+        int numberOFInsertions;
         int rc = sqlite3_open(databaseFullPath, &db);
-        bool errorStoringData = false;
         char charFinalSqlInsertStatement;
+        double timeDouble;
         const char* sqlInsertLine;
         string stringSql = "BEGIN TRANSACTION; " + sqlInsertFormat;
         const char* sql = stringSql.c_str();
         vector <string> allInsertStatements;
-        string insertToSql, userName, stringFinalSqlInsertStatement, completedSqlStatement;
+        string insertToSql, stringFinalSqlInsertStatement, completedSqlStatement;
         sqlite3_stmt* stmt;
 
         if (rc != SQLITE_OK)
@@ -169,9 +169,8 @@ namespace databaseAbstraction
             rc = sqlite3_exec(db, sql, 0, 0, 0);
 
             if (rc != SQLITE_OK) {
-                cout << " there is an error" << endl;
                 sqlite3_close(db);
-                errorStoringData = true;
+                throw " FAILURE EXECUTING ONE - STEP QUERY EXECUTION INTERFACE";
             }
 
             int numRowsToAdd = matrixData.size();
@@ -181,7 +180,6 @@ namespace databaseAbstraction
 
                 for(int delta = 0; delta < matrixData[count].size(); delta++)
                 {
-                    bool convertToString = true;
                     
                     if(((matrixData[count][delta].second)) == typeid(string).name())
                     {
@@ -204,7 +202,6 @@ namespace databaseAbstraction
                         rowDataString = rowDataString + ",";
                     }
 
-
                 }
 
                 insertToSql = sqlInsertTableNames + " VALUES (" + rowDataString + ");";
@@ -222,8 +219,6 @@ namespace databaseAbstraction
 
 
             completedSqlStatement = completedSqlStatement + "COMMIT;";
-            // cout << " This is sql insert format " << endl << sqlInsertFormat << endl << endl;
-            // cout << " This is completed statement: " << endl << completedSqlStatement << endl;
 
             sqlInsertLine = completedSqlStatement.c_str();
             sql = sqlInsertLine;
@@ -232,9 +227,8 @@ namespace databaseAbstraction
             rc = sqlite3_exec(db, sql, 0, 0, 0);
 
             if (rc != SQLITE_OK) {
-                cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
+                throw " FAILURE EXECUTING ONE - STEP QUERY EXECUTION INTERFACE";
                 sqlite3_close(db);
-                errorStoringData = true;
             }
 
 
@@ -243,13 +237,11 @@ namespace databaseAbstraction
 
             time = clock() - time;
 
-            int timeInt = int(time);
-
-            double timeInSeconds = double(time) / 1000;
-
-            cout << "time taken for transaction = " <<  timeInt << " millisecond(s), which is equal to " << timeInSeconds << " seconds" << endl;
+            timeDouble = (double)(time);
+            
         }
 
-        return errorStoringData;
+        return timeDouble;
+
     }
 }
