@@ -1,14 +1,18 @@
 #pragma once
 
 #include <string>
+#include <ctype.h>
 #include <vector>
 #include <algorithm>
+#include <typeinfo>
+#include <utility>
 #include "sqlite3.h"
 
-using namespace std;
 
 namespace databaseAbstraction
 {
+    using namespace std;
+
     vector <vector<string>> retrieveAllUserDataFromDatabaseForMatrix(const char * databaseFullPath, string tableName) 
     {
         string fullStatement = "SELECT * FROM " + tableName;
@@ -85,5 +89,167 @@ namespace databaseAbstraction
 
     }
 
-   
+
+    bool validateStringIsDigit(string value)
+    {
+        bool validNumber = true;
+        for(int count = 0; count < value.size(); count++)
+        {
+            if(!(isdigit(value[count]) == true))
+            {
+                value = false;
+            }
+        }
+
+        return validNumber;
+    }
+
+
+    template <typename T>
+    bool isValidNumber(T value)
+    {
+        bool isNumber = false;
+        
+        if(((value)) == typeid(int).name())
+        {
+            isNumber = true;           
+        }
+        else if(((value)) == typeid(float).name())
+        {
+            isNumber = true;           
+        }
+        if(((value)) == typeid(double).name())
+        {
+            isNumber = true;           
+        }
+        else if(((value)) == typeid(unsigned int).name())
+        {
+            isNumber = true;           
+        }
+        else if(((value)) == typeid(long int).name())
+        {
+            isNumber = true;           
+        }
+
+        return isNumber;
+    }
+
+
+    template <typename T>
+    bool storeDataInDbUsingSingleTransaction(const char * databaseFullPath, string sqlInsertFormat, string sqlInsertTableNames, vector<vector <pair <T, string>>> matrixData)
+    {
+        clock_t time;
+
+        time = clock();
+
+        sqlite3* db;
+        int creditScore, numMetricsToAdd, numberOFInsertions;
+        int rc = sqlite3_open(databaseFullPath, &db);
+        bool errorStoringData = false;
+        char charFinalSqlInsertStatement;
+        const char* sqlInsertLine;
+        string stringSql = "BEGIN TRANSACTION; " + sqlInsertFormat;
+        const char* sql = stringSql.c_str();
+        vector <string> allInsertStatements;
+        string insertToSql, userName, stringFinalSqlInsertStatement, completedSqlStatement;
+        sqlite3_stmt* stmt;
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw " FAILURE COMPILING SQL STATEMENT";
+            }
+            rc = sqlite3_exec(db, sql, 0, 0, 0);
+
+            if (rc != SQLITE_OK) {
+                cout << " there is an error" << endl;
+                sqlite3_close(db);
+                errorStoringData = true;
+            }
+
+            int numRowsToAdd = matrixData.size();
+            for (int count = 0; count < numRowsToAdd; count++)
+            {
+                string rowDataString;
+
+                for(int delta = 0; delta < matrixData[count].size(); delta++)
+                {
+                    bool convertToString = true;
+                    
+                    if(((matrixData[count][delta].second)) == typeid(string).name())
+                    {
+                        rowDataString = rowDataString + "'" + (matrixData[count][delta].first) + "'";
+
+                    }
+                    else if(((isValidNumber((matrixData[count][delta].second))) == true))
+                    {
+                        string val = (string)(matrixData[count][delta].first);
+                        rowDataString = rowDataString + (val);
+                    }
+                    else     
+                    {
+                        throw "DATA TYPE TO INSERT NOT SUPPORTED, CANNOT ADD VALUE TO DATABASE";
+                    }
+
+
+                    if((delta <= ( matrixData[count].size() - 2)))
+                    {
+                        rowDataString = rowDataString + ",";
+                    }
+
+
+                }
+
+                insertToSql = sqlInsertTableNames + " VALUES (" + rowDataString + ");";
+               // cout << insertToSql;
+
+                allInsertStatements.push_back(insertToSql);
+            }
+
+            numberOFInsertions = allInsertStatements.size();
+
+            for(int count = 0; count < numberOFInsertions; count++)
+            {
+                completedSqlStatement = completedSqlStatement + allInsertStatements[count];
+            }
+
+
+            completedSqlStatement = completedSqlStatement + "COMMIT;";
+            // cout << " This is sql insert format " << endl << sqlInsertFormat << endl << endl;
+            // cout << " This is completed statement: " << endl << completedSqlStatement << endl;
+
+            sqlInsertLine = completedSqlStatement.c_str();
+            sql = sqlInsertLine;
+
+            // cout << endl << sql <<endl;
+            rc = sqlite3_exec(db, sql, 0, 0, 0);
+
+            if (rc != SQLITE_OK) {
+                cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
+                sqlite3_close(db);
+                errorStoringData = true;
+            }
+
+
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+
+            time = clock() - time;
+
+            int timeInt = int(time);
+
+            double timeInSeconds = double(time) / 1000;
+
+            cout << "time taken for transaction = " <<  timeInt << " millisecond(s), which is equal to " << timeInSeconds << " seconds" << endl;
+        }
+
+        return errorStoringData;
+    }
 }
