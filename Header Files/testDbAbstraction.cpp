@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <iostream>
 #include <algorithm>
 #include <filesystem>// cpp 17 reference https://en.cppreference.com/w/cpp/filesystem/current_paths
 #include "databaseAbstraction.h"
