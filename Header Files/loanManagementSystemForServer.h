@@ -491,12 +491,12 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
         worstPossibleRate = loanData[count].getWorstPossibleRate();
 
 
-        stringFinalSqlInsertStatement = "'" + userName + "',";
-        stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + to_string(creditScore) + "," + to_string(monthlyIncome) + "," + to_string(financialReserves) + "," + to_string(debtToIncomeRatio) + "," 
-                                        + to_string(loanDurationInMonths) + "," +  to_string(loanAmount) + "," + to_string(monthlyInteresRate) + "," + to_string(yearlyInterestRate) + "," + to_string(lossGivenDefault) + "," 
-                                        + to_string(recoveryRate) + "," + to_string(outstandingMonthlyDebtPaymentsFromLoan) + "," +  to_string(defaultRiskScore) + "," + to_string(loanViabilityScore) + "," 
-                                        + to_string(adjustedLoanViabilityScore) + "," + to_string(interestRateByGroup) + "," + to_string(bestPossibleRate) + ","
-                                        + to_string(worstPossibleRate);
+        // stringFinalSqlInsertStatement = "'" + userName + "',";
+        // stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + to_string(creditScore) + "," + to_string(monthlyIncome) + "," + to_string(financialReserves) + "," + to_string(debtToIncomeRatio) + "," 
+        //                                 + to_string(loanDurationInMonths) + "," +  to_string(loanAmount) + "," + to_string(monthlyInteresRate) + "," + to_string(yearlyInterestRate) + "," + to_string(lossGivenDefault) + "," 
+        //                                 + to_string(recoveryRate) + "," + to_string(outstandingMonthlyDebtPaymentsFromLoan) + "," +  to_string(defaultRiskScore) + "," + to_string(loanViabilityScore) + "," 
+        //                                 + to_string(adjustedLoanViabilityScore) + "," + to_string(interestRateByGroup) + "," + to_string(bestPossibleRate) + ","
+        //                                 + to_string(worstPossibleRate);
 
         // cout << stringFinalSqlInsertStatement << endl;
 
