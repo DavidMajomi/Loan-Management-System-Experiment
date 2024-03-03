@@ -252,12 +252,34 @@ void deleteValue()
 
 }
 
+
+void addColumn()
+{
+    try
+    {
+        double value = databaseAbstraction::addNewColumn(DATABASE_NAME, "users", "baggage", "'TEXT'");
+    }
+    catch(const char * error)
+    {
+        cout << error << endl;
+    }
+
+}
+
+void deleteColumn()
+{
+    double value = databaseAbstraction::deleteColumn(DATABASE_NAME, "users", "baggage");
+}
+
+
 int main()
 {
     getData();
     addData<string>();
     update();
     deleteValue();
+    addColumn();
+    deleteColumn();
     
     return 0;
 }
