@@ -31,6 +31,7 @@ void printMatrixValues(vector<vector <T>> dBDataMatrix)
     }
 }
 
+
 void getData()
 {
     vector <vector<string>> dBDataMatrix;
@@ -215,11 +216,97 @@ void addData()
 }
 
 
+void update()
+{
+    cout << " in update " << endl;
+    try
+    {
+        double value = databaseAbstraction::update(DATABASE_NAME, "users", "financial_reserves", "200000000", "Loan_id", 22);
+        // cout << " Timetaken to insert: " << value << endl;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * error)
+    {
+        cout << "ERROR: "; 
+        cout << error << endl;
+    }
+
+    
+    cout << "done update " << endl;
+}
+
+
+void deleteValue()
+{
+    try
+    {
+        double value = databaseAbstraction::deleteRow(DATABASE_NAME, "users", "name", "Loan_id", 20);
+    }
+    catch(const char * error)
+    {
+        cout << error << endl;
+    }
+
+}
+
+
+void addColumn()
+{
+    try
+    {
+        double value = databaseAbstraction::addNewColumn(DATABASE_NAME, "users", "baggage", "'TEXT'");
+    }
+    catch(const char * error)
+    {
+        cout << error << endl;
+    }
+
+}
+
+
+void deleteColumn()
+{
+    double value = databaseAbstraction::deleteColumn(DATABASE_NAME, "users", "baggage");
+}
+
+
+void retreiveData()
+{
+
+    vector <vector<string>> dBDataMatrix;
+    try
+    {
+        dBDataMatrix = databaseAbstraction::retreiveDataWithMatchingValue(DATABASE_NAME, "users", "Loan_id", "12");
+        printMatrixValues(dBDataMatrix);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(string exception)
+    {
+        cout << " Error exception caught: " << endl;
+        cout << " Exception value: " << exception << endl;
+    }
+    catch(const char * exception)
+    {
+        cout << " Error exception caught: " << endl;
+        cout << " Exception value: " << exception << endl;
+    }
+}
 
 int main()
 {
-    getData();
-    addData<string>();
+    // getData();
+    // addData<string>();
+    // update();
+    // deleteValue();
+    retreiveData();
+    // addColumn();
+    // deleteColumn();
     
     return 0;
 }
