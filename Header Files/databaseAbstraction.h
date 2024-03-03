@@ -148,6 +148,7 @@ namespace databaseAbstraction
         char charFinalSqlInsertStatement;
         double timeDouble;
         const char* sqlInsertLine;
+        char * sqliteErrorMessage;
         string stringSql = "BEGIN TRANSACTION; " + sqlInsertFormat;
         const char* sql = stringSql.c_str();
         vector <string> allInsertStatements;
@@ -166,11 +167,11 @@ namespace databaseAbstraction
                 sqlite3_close(db);
                 throw " FAILURE COMPILING SQL STATEMENT";
             }
-            rc = sqlite3_exec(db, sql, 0, 0, 0);
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
 
             if (rc != SQLITE_OK) {
                 sqlite3_close(db);
-                throw " FAILURE EXECUTING ONE - STEP QUERY EXECUTION INTERFACE";
+                throw sqliteErrorMessage;
             }
 
             int numRowsToAdd = matrixData.size();
@@ -224,10 +225,10 @@ namespace databaseAbstraction
             sql = sqlInsertLine;
 
             // cout << endl << sql <<endl;
-            rc = sqlite3_exec(db, sql, 0, 0, 0);
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
 
             if (rc != SQLITE_OK) {
-                throw " FAILURE EXECUTING ONE - STEP QUERY EXECUTION INTERFACE";
+                throw sqliteErrorMessage;
                 sqlite3_close(db);
             }
 
@@ -244,4 +245,48 @@ namespace databaseAbstraction
         return timeDouble;
 
     }
+
+
+    double update(const char * databaseFullPath, string tableName, string columnName, string newColumnValue, string primaryKey, int keyValue)
+    {
+        clock_t time;
+
+        time = clock();
+
+        sqlite3* db;
+        int numberOFInsertions;
+        int rc = sqlite3_open(databaseFullPath, &db);
+        double timeDouble;
+        char * sqliteErrorMessage;
+        string stringSql = "UPDATE " + tableName + " set " + columnName + " = '" + newColumnValue + "' WHERE " + primaryKey + "=" + to_string(keyValue) + "; ";
+        const char* sql = stringSql.c_str();
+        sqlite3_stmt* stmt;
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw sqliteErrorMessage;
+            }
+
+            sqlite3_close(db);
+
+            time = clock() - time;
+
+            timeDouble = (double)(time);
+        }
+
+
+        return timeDouble;
+    }
+
+
+
+    
 }
