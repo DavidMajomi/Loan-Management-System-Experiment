@@ -288,5 +288,46 @@ namespace databaseAbstraction
 
 
 
+    double deleteValue(const char * databaseFullPath, string tableName, string columnName, string primaryKey, int keyValue)
+    {
+        clock_t time;
+
+        time = clock();
+
+        sqlite3* db;
+        int numberOFInsertions;
+        int rc = sqlite3_open(databaseFullPath, &db);
+        double timeDouble;
+        char * sqliteErrorMessage;
+        string stringSql = "UPDATE from" + tableName + " WHERE " + primaryKey + "=" + to_string(keyValue) + "; ";
+        const char* sql = stringSql.c_str();
+        sqlite3_stmt* stmt;
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw sqliteErrorMessage;
+            }
+
+            sqlite3_close(db);
+
+            time = clock() - time;
+
+            timeDouble = (double)(time);
+        }
+
+
+        return timeDouble;
+    }
+
+
+
     
 }
