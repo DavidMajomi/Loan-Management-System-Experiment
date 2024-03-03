@@ -31,6 +31,7 @@ void printMatrixValues(vector<vector <T>> dBDataMatrix)
     }
 }
 
+
 void getData()
 {
     vector <vector<string>> dBDataMatrix;
@@ -216,10 +217,33 @@ void addData()
 
 
 
+void update()
+{
+    cout << " in update " << endl;
+    try
+    {
+        double value = databaseAbstraction::update(DATABASE_NAME, "users", "financial_reserves", "200000000", "Loan_id", 17);
+        cout << " Timetaken to insert: " << value << endl;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * error)
+    {
+        cout << "ERROR: "; 
+        cout << error << endl;
+    }
+
+    
+    cout << "done update " << endl;
+}
+
 int main()
 {
     getData();
     addData<string>();
+    update();
     
     return 0;
 }
