@@ -89,6 +89,79 @@ namespace databaseAbstraction
     }
 
 
+    vector <vector<string>> retreiveDataWithMatchingValue(const char * databaseFullPath, string tableName, string id, string idValue) 
+    {
+        string fullStatement = "SELECT * FROM " + tableName + " where " + id + "=" + idValue + ";";
+        const char * sql = fullStatement.c_str();
+        sqlite3* db;
+        int rc = sqlite3_open(databaseFullPath, &db);
+        vector<vector<string>> dBDataMatrix;
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+
+            sqlite3_stmt* stmt;
+            
+            rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+
+            if (rc != SQLITE_OK) {
+                throw " FAILURE COMPILING SQL STATEMENT";
+                sqlite3_close(db);
+            }
+
+            int row = 0;
+            vector <string> temp;
+            // dBDataMatrix.resize(sqlite3_column_count(stmt));
+            while (sqlite3_step(stmt) == SQLITE_ROW) {
+                for(int count = 0; count < sqlite3_column_count(stmt); count++)     // Populate temp with row values in preparation to pushback to data matrix
+                {
+                    string tempString;
+                    if(sqlite3_column_type(stmt, count) == SQLITE_INTEGER)
+                    {
+                        temp.push_back(to_string(sqlite3_column_int(stmt, count)));
+
+                    }
+                    else if(sqlite3_column_type(stmt, count) == SQLITE_TEXT)
+                    {
+                        tempString.assign((const char *)(sqlite3_column_text(stmt, count)));
+                        temp.push_back(tempString);
+                    }
+                    else if(sqlite3_column_type(stmt, count) == SQLITE_FLOAT)
+                    {
+                        temp.push_back(to_string(sqlite3_column_double(stmt, count)));
+                    }
+                    // else if(sqlite3_column_type(stmt, count) == SQLITE_BLOB)
+                    // {
+                            // temp.push_back(to_string(sqlite3_column_blob(stmt, count)));
+                    // }
+                    else
+                    {
+                        throw " ERROR SEARCHING DATABASE, VALUE OUTSIDE OF CURRENT RETRIEVEABLE SQLITE DATATYPES";
+                    }
+                        
+                }
+
+                // dBDataMatrix.resize(row + 1);
+                dBDataMatrix.push_back(temp);
+                temp.clear();
+                
+            }
+
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+        }
+
+
+        return dBDataMatrix;
+
+    }
+
+
+
     bool validateStringIsDigit(string value)
     {
         bool validNumber = true;

@@ -266,20 +266,47 @@ void addColumn()
 
 }
 
+
 void deleteColumn()
 {
     double value = databaseAbstraction::deleteColumn(DATABASE_NAME, "users", "baggage");
 }
 
 
+void retreiveData()
+{
+
+    vector <vector<string>> dBDataMatrix;
+    try
+    {
+        dBDataMatrix = databaseAbstraction::retreiveDataWithMatchingValue(DATABASE_NAME, "users", "Loan_id", "12");
+        printMatrixValues(dBDataMatrix);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(string exception)
+    {
+        cout << " Error exception caught: " << endl;
+        cout << " Exception value: " << exception << endl;
+    }
+    catch(const char * exception)
+    {
+        cout << " Error exception caught: " << endl;
+        cout << " Exception value: " << exception << endl;
+    }
+}
+
 int main()
 {
-    getData();
-    addData<string>();
-    update();
-    deleteValue();
-    addColumn();
-    deleteColumn();
+    // getData();
+    // addData<string>();
+    // update();
+    // deleteValue();
+    retreiveData();
+    // addColumn();
+    // deleteColumn();
     
     return 0;
 }
