@@ -288,7 +288,7 @@ namespace databaseAbstraction
 
 
 
-    double deleteValue(const char * databaseFullPath, string tableName, string columnName, string primaryKey, int keyValue)
+    double deleteRow(const char * databaseFullPath, string tableName, string columnName, string primaryKey, int keyValue)
     {
         clock_t time;
 
@@ -299,7 +299,7 @@ namespace databaseAbstraction
         int rc = sqlite3_open(databaseFullPath, &db);
         double timeDouble;
         char * sqliteErrorMessage;
-        string stringSql = "UPDATE from" + tableName + " WHERE " + primaryKey + "=" + to_string(keyValue) + "; ";
+        string stringSql = "DELETE from " + tableName + " WHERE " + primaryKey + "=" + to_string(keyValue) + "; ";
         const char* sql = stringSql.c_str();
         sqlite3_stmt* stmt;
 
