@@ -216,14 +216,13 @@ void addData()
 }
 
 
-
 void update()
 {
     cout << " in update " << endl;
     try
     {
-        double value = databaseAbstraction::update(DATABASE_NAME, "users", "financial_reserves", "200000000", "Loan_id", 17);
-        cout << " Timetaken to insert: " << value << endl;
+        double value = databaseAbstraction::update(DATABASE_NAME, "users", "financial_reserves", "200000000", "Loan_id", 22);
+        // cout << " Timetaken to insert: " << value << endl;
     }
     catch(const std::exception& e)
     {
@@ -239,11 +238,26 @@ void update()
     cout << "done update " << endl;
 }
 
+
+void deleteValue()
+{
+    try
+    {
+        double value = databaseAbstraction::deleteRow(DATABASE_NAME, "users", "name", "Loan_id", 20);
+    }
+    catch(const char * error)
+    {
+        cout << error << endl;
+    }
+
+}
+
 int main()
 {
     getData();
     addData<string>();
     update();
+    deleteValue();
     
     return 0;
 }
