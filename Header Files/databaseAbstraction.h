@@ -286,7 +286,6 @@ namespace databaseAbstraction
     }
 
 
-
     double deleteRow(const char * databaseFullPath, string tableName, string columnName, string primaryKey, int keyValue)
     {
         clock_t time;
@@ -326,6 +325,85 @@ namespace databaseAbstraction
         return timeDouble;
     }
 
+
+    double addNewColumn(const char * databaseFullPath, string tableName, string columnName, string sqliteDataType)
+    {
+        clock_t time;
+
+        time = clock();
+
+        sqlite3* db;
+        int numberOFInsertions;
+        int rc = sqlite3_open(databaseFullPath, &db);
+        double timeDouble;
+        char * sqliteErrorMessage;
+        string stringSql = "ALTER TABLE " + tableName + " ADD COLUMN " + columnName + " " + sqliteDataType + "; ";
+        const char* sql = stringSql.c_str();
+        sqlite3_stmt* stmt;
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw sqliteErrorMessage;
+            }
+
+            sqlite3_close(db);
+
+            time = clock() - time;
+
+            timeDouble = (double)(time);
+        }
+
+
+        return timeDouble;
+    }
+
+
+    double deleteColumn(const char * databaseFullPath, string tableName, string columnName)
+    {
+        clock_t time;
+
+        time = clock();
+
+        sqlite3* db;
+        int numberOFInsertions;
+        int rc = sqlite3_open(databaseFullPath, &db);
+        double timeDouble;
+        char * sqliteErrorMessage;
+        string stringSql = "ALTER TABLE " + tableName + " DROP COLUMN " + columnName + "; ";
+        const char* sql = stringSql.c_str();
+        sqlite3_stmt* stmt;
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw sqliteErrorMessage;
+            }
+
+            sqlite3_close(db);
+
+            time = clock() - time;
+
+            timeDouble = (double)(time);
+        }
+
+
+        return timeDouble;
+    }
 
 
     
