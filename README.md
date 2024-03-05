@@ -15,6 +15,9 @@ Currently, I intend to use the loan management cpp library as is.
   7.) Experimented with and successfully used Linear / Matrix algebra to simplify and optimize multiple function calls to a simple linear equation with high Accuracy <br>
   8.) Improved database insert speed. <br>
 
+# Extending Features
+- Sqlite3 C++ database abstraction <br>
+
  # Known Future Changes
   1.) A revision of the risk assessment methods to utilise statistics, this will be added once i have finished a basic statistics library in c++ <br>
   2.) Currently looking at possibilities of making the program more linux friendly. <br>
