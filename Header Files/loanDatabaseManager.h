@@ -86,14 +86,22 @@ namespace databaseManager
     }
 
 
-
-
-
     string retreiveUserNameMatchingLoanId(int loanId)
     {
         vector<vector<string>> dbValues = databaseAbstraction::retreiveDataWithMatchingValue(DATABASE_NAME, "users", "Loan_id", to_string(loanId));
         
         return (dbValues[0][NAME_POSITION]);
     }
+
+    
+    bool addLoanUser(Loan userData)
+    {
+        string insertFormat = userData.getSqlInsertFormat();
+        string statementWithData = userData.getInsertStatementWithData();
+        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, "users", statementWithData);
+
+        return true;
+    }
+    
     
 }
