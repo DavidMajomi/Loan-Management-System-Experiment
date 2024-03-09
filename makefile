@@ -1,21 +1,17 @@
+sqliteOfile = sqlite3.o
+testingFolder = $(CURDIR)/'Test Files'
+
 loanManagementServerLibrary.dll: loanManagementLibraryForServer.o sqlite3.o
-	g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
+	g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o $(sqliteOfile)
 # g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
 
-loanManagementServerLibraryLinux: loanManagementLibraryForServer.o sqlite3.o
-	g++ -fpic -shared -o loanManagementServerLibrary.so loanManagementLibraryForServer.o sqlite3.o
+loanManagementServerLibraryLinux: loanManagementLibraryForServer.o $(sqliteOfile)
+	g++ -fpic -shared -o loanManagementServerLibrary.so loanManagementLibraryForServer.o $(sqliteOfile)
 # g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.so loanManagementLibraryForServer.o sqlite3.o
 
 loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
 	g++ -c loanManagementLibraryForServer.cpp
 	
-# 
-testServer: testServer.o
-# g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
-	g++ loanManagementServerLibrary.dll testserver.o -o testServer
-
-testServer.o: testServer.cpp
-	g++ -c testServer.cpp
 
 
 testBro: experimentalDLL.dll testExport.o
@@ -44,6 +40,30 @@ externDebugger.dll:
 
 # experimentalDLL: experimentalDLL.cpp
 # 	g++ -fpic -shared -o experimentalDLL.dll 
+
+runtests:
+	make testLoanDbManager
+	make testDbAbstraction
+	make testLogger
+	make testServer
+	
+	$(testingFolder)/Executables/testServer.exe
+	$(testingFolder)/Executables/testLoanDbManager.exe
+	$(testingFolder)/Executables/testLogger.exe
+	$(testingFolder)/Executables/testDbAbstraction.exe
+
+
+testLoanDbManager:
+	g++ $(testingFolder)/testLoanDatabaseManager.cpp $(sqliteOfile) -o $(testingFolder)/Executables/testLoanDbManager.exe
+
+testDbAbstraction:
+	g++ $(testingFolder)/testDbAbstraction.cpp $(sqliteOfile) -o $(testingFolder)/Executables/testDbAbstraction.exe
+
+testLogger:
+	g++ $(testingFolder)/testLogger.cpp $(sqliteOfile) -o $(testingFolder)/Executables/testLogger.exe
+
+testServer:
+	g++ loanManagementServerLibrary.dll $(testingFolder)/testServer.cpp $(sqliteOfile) -o $(testingFolder)/Executables/testServer.exe
 
 
 
