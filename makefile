@@ -1,4 +1,4 @@
-sqliteOfile = sqlite3.o
+sqliteOfile = $(CURDIR)/'sqlite3 Executables'/sqlite3.o
 testingFolder = $(CURDIR)/'Test Files'
 
 loanManagementServerLibrary.dll: loanManagementLibraryForServer.o sqlite3.o
