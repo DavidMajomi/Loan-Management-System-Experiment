@@ -27,7 +27,7 @@ The current server based files currently has most of the functionality used in t
 
 # Dependencies
  1.) C++ compiler (MINGW) version 11 <br>
- 2.) Make, could be downloaded from chocolatey <br>
+ 2.) Make, which could be downloaded from chocolatey <br>
  3.) Python 3.8 and above <br>
  4.) Sqlite3 database <br>
  5.) Included logger for logging while debugging. <br>
@@ -36,6 +36,6 @@ The current server based files currently has most of the functionality used in t
  1.) Install Python <br>
  2.) Install Mingw and add it to path <br>
  3.) Install make and add it to path manually, or use chocolatey to add it automatically. <br>
- 4.) Get an alpha vantage api key for free, and store it in the file to get up to date federal funds rate and other related metrics. <br>
- 5.) Add the sqlite3 header file into the header files folder <br>
+ 4.) Get an alpha vantage api key for free, and store it in the file to get up to date federal funds rate and other related metrics. Do note there is an option to use default rate values wihout requiring API keys <br>
+ 5.) Add the sqlite3 header file into the header files folder, or unzip the similarly named zipped file. <br>
 
