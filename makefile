@@ -1,13 +1,16 @@
 sqliteOfile = $(CURDIR)/'sqlite3 Executables'/sqlite3.o
 testingFolder = $(CURDIR)/'Test Files'
 
-loanManagementServerLibrary.dll: loanManagementLibraryForServer.o sqlite3.o
+loanManagementServerLibrary.dll: loanManagementLibraryForServer.o 
 	g++ -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o $(sqliteOfile)
 # g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.dll loanManagementLibraryForServer.o sqlite3.o
 
 loanManagementServerLibraryLinux: loanManagementLibraryForServer.o $(sqliteOfile)
 	g++ -fpic -shared -o loanManagementServerLibrary.so loanManagementLibraryForServer.o $(sqliteOfile)
 # g++ -Q --help=warning -fpic -shared -o loanManagementServerLibrary.so loanManagementLibraryForServer.o sqlite3.o
+
+testLoanManagementServerLibrary.dll: loanManagementLibraryForServer.o 
+	g++ -fpic -shared -o $(testingFolder)/Executables/loanManagementServerLibrary.dll loanManagementLibraryForServer.o $(sqliteOfile)
 
 loanManagementLibraryForServer.o: loanManagementLibraryForServer.cpp
 	g++ -c loanManagementLibraryForServer.cpp
@@ -51,20 +54,36 @@ runtests:
 	$(testingFolder)/Executables/testLoanDbManager.exe
 	$(testingFolder)/Executables/testLogger.exe
 	$(testingFolder)/Executables/testDbAbstraction.exe
+# make runTestDbAbstraction
 
+runTestDbAbstraction:
+	make testDbAbstraction
+	$(testingFolder)/Executables/testDbAbstraction.exe
+	
+testLoanDbManager: testLoanDatabaseManager.o
+	g++ $(testingFolder)/Executables/testLoanDatabaseManager.o $(sqliteOfile) -o $(testingFolder)/Executables/testLoanDbManager.exe
 
-testLoanDbManager:
-	g++ $(testingFolder)/testLoanDatabaseManager.cpp $(sqliteOfile) -o $(testingFolder)/Executables/testLoanDbManager.exe
+testLoanDatabaseManager.o:
+	g++ -c $(testingFolder)/testLoanDatabaseManager.cpp -o $(testingFolder)/Executables/testLoanDatabaseManager.o
+	
+testDbAbstraction: testDbAbstraction.o
+	g++ $(testingFolder)/Executables/testDbAbstraction.o $(sqliteOfile) -o $(testingFolder)/Executables/testDbAbstraction.exe
 
-testDbAbstraction:
-	g++ $(testingFolder)/testDbAbstraction.cpp $(sqliteOfile) -o $(testingFolder)/Executables/testDbAbstraction.exe
+testDbAbstraction.o:
+	g++ -c $(testingFolder)/testDbAbstraction.cpp -o $(testingFolder)/Executables/testDbAbstraction.o
 
-testLogger:
-	g++ $(testingFolder)/testLogger.cpp $(sqliteOfile) -o $(testingFolder)/Executables/testLogger.exe
+testLogger: testLogger.o
+	g++ $(testingFolder)/Executables/testLogger.o $(sqliteOfile) -o $(testingFolder)/Executables/testLogger.exe
 
-testServer:
-	g++ loanManagementServerLibrary.dll $(testingFolder)/testServer.cpp $(sqliteOfile) -o $(testingFolder)/Executables/testServer.exe
+testLogger.o:
+	g++ -c $(testingFolder)/testLogger.cpp -o $(testingFolder)/Executables/testLogger.o
+	
+testServer: testServer.o testLoanManagementServerLibrary.dll
+	g++ $(testingFolder)/Executables/loanManagementServerLibrary.dll $(testingFolder)/Executables/testServer.o $(sqliteOfile) -o $(testingFolder)/Executables/testServer.exe
 
+testServer.o:
+	g++ -c $(testingFolder)/testServer.cpp -o $(testingFolder)/Executables/testServer.o
+	
 
 
 .PHONY clean:
@@ -79,6 +98,7 @@ testServer:
 	del "testExport.exe"
 	del "runtimeConsumeDebugger.exe"
 	del "linktimeUseDebugger.exe"
+	
 
 cleanLinux:
 	rm "statisticsLibrary.o"
