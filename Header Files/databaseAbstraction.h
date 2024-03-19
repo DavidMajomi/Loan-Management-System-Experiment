@@ -22,8 +22,6 @@ namespace databaseAbstraction
 
         if (rc != SQLITE_OK)
         {
-            // Handle error
-            // cout << "Step 1 error." << endl;
             throw " FAILURE OPENING DATABASE";
         }
         else
@@ -35,10 +33,8 @@ namespace databaseAbstraction
             rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
 
             if (rc != SQLITE_OK) {
-                // Handle error
-                // cout << " Step 5 error. " << endl;
-                throw " FAILURE COMPILING SQL STATEMENT";
                 sqlite3_close(db);
+                throw " FAILURE COMPILING SQL STATEMENT";
             }
 
             int row = 0;
@@ -68,12 +64,12 @@ namespace databaseAbstraction
                     // }
                     else
                     {
+                        sqlite3_close(db);
                         throw " ERROR SEARCHING DATABASE, VALUE OUTSIDE OF CURRENT RETRIEVEABLE SQLITE DATATYPES";
                     }
                         
                 }
 
-                // dBDataMatrix.resize(row + 1);
                 dBDataMatrix.push_back(temp);
                 temp.clear();
                 
@@ -85,7 +81,78 @@ namespace databaseAbstraction
 
 
         return dBDataMatrix;
+    }
 
+
+    int getTheNumbersOfColumnsInTable(const char * databaseFullPath, string tableName)
+    {
+        int numColumns = 0;
+        string fullStatement = "SELECT * FROM " + tableName;
+        const char * sql = fullStatement.c_str();
+        sqlite3* db;
+        int rc = sqlite3_open(databaseFullPath, &db);
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            sqlite3_stmt* stmt;
+            
+            rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw " FAILURE COMPILING SQL STATEMENT";
+            }
+
+            numColumns = sqlite3_column_count(stmt);
+
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+        }
+
+
+        return numColumns;
+
+    }
+
+
+    int getTheNumbersOfRowsInTable(const char * databaseFullPath, string tableName)
+    {
+        int numRows = 0;
+        string fullStatement = "SELECT * FROM " + tableName;
+        const char * sql = fullStatement.c_str();
+        sqlite3* db;
+        int rc = sqlite3_open(databaseFullPath, &db);
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            sqlite3_stmt* stmt;
+            
+            rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw " FAILURE COMPILING SQL STATEMENT";
+            }
+
+            numRows = 0;
+            while (sqlite3_step(stmt) == SQLITE_ROW) {
+                numRows = numRows + 1;
+            }
+
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+        }
+
+
+        return numRows;
     }
 
 
@@ -109,8 +176,8 @@ namespace databaseAbstraction
             rc = sqlite3_prepare_v2(db, sql, -1, &stmt, 0);
 
             if (rc != SQLITE_OK) {
-                throw " FAILURE COMPILING SQL STATEMENT";
                 sqlite3_close(db);
+                throw " FAILURE COMPILING SQL STATEMENT";
             }
 
             int row = 0;
@@ -140,6 +207,7 @@ namespace databaseAbstraction
                     // }
                     else
                     {
+                sqlite3_close(db);
                         throw " ERROR SEARCHING DATABASE, VALUE OUTSIDE OF CURRENT RETRIEVEABLE SQLITE DATATYPES";
                     }
                         
@@ -265,6 +333,7 @@ namespace databaseAbstraction
                     }
                     else     
                     {
+                        sqlite3_close(db);
                         throw "DATA TYPE TO INSERT NOT SUPPORTED, CANNOT ADD VALUE TO DATABASE";
                     }
 
@@ -299,8 +368,8 @@ namespace databaseAbstraction
             rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
 
             if (rc != SQLITE_OK) {
-                throw sqliteErrorMessage;
                 sqlite3_close(db);
+                throw sqliteErrorMessage;
             }
 
 
@@ -516,18 +585,16 @@ namespace databaseAbstraction
                 throw sqliteErrorMessage;
             }
 
-
             completedSqlStatement = singleValueToInsert + "COMMIT;";
 
             sqlInsertLine = completedSqlStatement.c_str();
             sql = sqlInsertLine;
 
-            // cout << endl << sql <<endl;
             rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
 
             if (rc != SQLITE_OK) {
-                throw sqliteErrorMessage;
                 sqlite3_close(db);
+                throw sqliteErrorMessage;
             }
 
             sqlite3_finalize(stmt);
@@ -542,5 +609,108 @@ namespace databaseAbstraction
         return timeDouble;
 
     }
-    
+
+
+    double storeMultiRowsUsingConcatenatedInsertStmt(const char * databaseFullPath, string sqlInsertFormat, string sqlInsertTableNames, string singleValueToInsert)
+    {
+        clock_t time;
+
+        time = clock();
+
+        sqlite3* db;
+        int numberOFInsertions;
+        int rc = sqlite3_open(databaseFullPath, &db);
+        char charFinalSqlInsertStatement;
+        double timeDouble;
+        const char* sqlInsertLine;
+        char * sqliteErrorMessage;
+        string stringSql = "BEGIN TRANSACTION; " + sqlInsertFormat;
+        const char* sql = stringSql.c_str();
+        vector <string> allInsertStatements;
+        string insertToSql, stringFinalSqlInsertStatement, completedSqlStatement;
+        sqlite3_stmt* stmt;
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw " FAILURE COMPILING SQL STATEMENT";
+            }
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw sqliteErrorMessage;
+            }
+
+            completedSqlStatement = singleValueToInsert + "COMMIT;";
+
+            sqlInsertLine = completedSqlStatement.c_str();
+            sql = sqlInsertLine;
+
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw sqliteErrorMessage;
+            }
+
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+
+            time = clock() - time;
+
+            timeDouble = (double)(time);
+            
+        }
+
+        return timeDouble;
+    }
+
+
+    double deleteAllTableRows(const char * databaseFullPath, string tableName)
+    {
+        
+        clock_t time;
+
+        time = clock();
+
+        sqlite3* db;
+        int numberOFInsertions;
+        int rc = sqlite3_open(databaseFullPath, &db);
+        double timeDouble;
+        char * sqliteErrorMessage;
+        string stringSql = "DELETE FROM " + tableName + ";";
+        const char* sql = stringSql.c_str();
+        sqlite3_stmt* stmt;
+
+        if (rc != SQLITE_OK)
+        {
+            throw " FAILURE OPENING DATABASE";
+        }
+        else
+        {
+            rc = sqlite3_exec(db, sql, 0, 0, &sqliteErrorMessage);
+
+            if (rc != SQLITE_OK) {
+                sqlite3_close(db);
+                throw sqliteErrorMessage;
+            }
+
+            sqlite3_close(db);
+
+            time = clock() - time;
+
+            timeDouble = (double)(time);
+        }
+
+        return timeDouble;
+    }
 }
+

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include <utility>
+#include <assert.h>
 #include <filesystem>// cpp 17 reference https://en.cppreference.com/w/cpp/filesystem/current_paths
 #include "../header Files/databaseAbstraction.h"
 
@@ -38,7 +39,7 @@ void getData()
     vector <vector<string>> dBDataMatrix;
     try
     {
-        dBDataMatrix = databaseAbstraction::retrieveAllUserDataFromDatabaseForMatrix(DATABASE_NAME, "users");
+        dBDataMatrix = databaseAbstraction::retrieveAllUserDataFromDatabaseForMatrix(DATABASE_NAME, "shabo");
         printMatrixValues(dBDataMatrix);
     }
     catch(const std::exception& e)
@@ -312,7 +313,7 @@ void addSingleData()
 {
     try
     {
-        string values = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21";
+        string values = "'test','feb 20',3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,'A'";
         string insert = "INSERT INTO users (name , time_of_application, credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
                       " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
                       " adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate, final_loan_grade) VALUES (" + values + ");";
@@ -334,24 +335,94 @@ void addSingleData()
 }
 
 
+void deleteAllTableRows(string tableName)
+{
+    try
+    {
+        double timeMilliSeconds = databaseAbstraction::deleteAllTableRows(DATABASE_NAME, tableName);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+    }
+    
+
+}
+
+
+int getNumberOfRows(string tablename)
+{
+    int numRows = 0;
+
+    try
+    {
+        numRows = databaseAbstraction::getTheNumbersOfRowsInTable(DATABASE_NAME, tablename);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+    }
+
+    return numRows;
+}
+
+
+int getNumberOfColumns(string tablename)
+{
+    int numRows = 0;
+
+    try
+    {
+        numRows = databaseAbstraction::getTheNumbersOfColumnsInTable(DATABASE_NAME, tablename);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+    }
+
+    return numRows;
+}
+
+
 int main()
 {
-    cout << DATABASE_NAME_WITH_PATH << endl;
-    // getData();
+    int value;
     // addData<string>();
     // update();
     // deleteValue();
+    // getData();
     addSingleData();
-    retreiveData();
+    // retreiveData();
     
     addColumn();
-    cout << "Validate new column exists then press enter" << endl;
-    system("pause");
+    cout << "Validating new column exists " << endl;
+    value = getNumberOfColumns("users");
+    assert(value == 23);
+    
     deleteColumn();
-    cout << " Validate new column deleted then press enter" << endl;
-    system("pause");
+    cout << "Validating new column deleted " << endl;
+    value = getNumberOfColumns("users");
+    assert(value == 22);
 
+    cout << "Confirming shabo table exists prior to deletion" << endl;
+    deleteAllTableRows("shabo");
+    value = getNumberOfRows("shabo");
+    assert(value == 0);
     cout << "Done with all tests. " << endl;
+    // cout << "Num rows in table = " << getNumberOfRows("shabo") << endl;
+    // cout << "Num columns in table = " << getNumberOfColumns("shabo") << endl;
     
     return 0;
 }
