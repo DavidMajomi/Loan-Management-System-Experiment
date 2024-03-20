@@ -3,8 +3,9 @@
 #include <iostream>
 #include <algorithm>
 #include <utility>
+#include <assert.h>
 #include <filesystem>// cpp 17 reference https://en.cppreference.com/w/cpp/filesystem/current_paths
-#include "databaseAbstraction.h"
+#include "../header Files/databaseAbstraction.h"
 
 
 namespace fs = std::filesystem;
@@ -12,7 +13,8 @@ using namespace std;
 
 // FILE NAMES
 const string CURRENT_FULL_PATH = fs::current_path().string();
-const string DATABASE_NAME_WITH_PATH = CURRENT_FULL_PATH + "\\Header Files\\bam_bam.db";       // Has to be a constant char to be compatibe with sqlite
+const string DATABASE_NAME_WITH_PATH = CURRENT_FULL_PATH + "\\Test Files\\Executables\\bam_bam.db";       // Has to be a constant char to be compatibe with sqlite
+
 const char* DATABASE_NAME = DATABASE_NAME_WITH_PATH.c_str();
 
 template <typename T>
@@ -37,7 +39,7 @@ void getData()
     vector <vector<string>> dBDataMatrix;
     try
     {
-        dBDataMatrix = databaseAbstraction::retrieveAllUserDataFromDatabaseForMatrix(DATABASE_NAME, "users");
+        dBDataMatrix = databaseAbstraction::retrieveAllUserDataFromDatabaseForMatrix(DATABASE_NAME, "shabo");
         printMatrixValues(dBDataMatrix);
     }
     catch(const std::exception& e)
@@ -262,6 +264,7 @@ void addColumn()
     catch(const char * error)
     {
         cout << error << endl;
+        cout << " Error adding column " << endl;
     }
 
 }
@@ -269,13 +272,19 @@ void addColumn()
 
 void deleteColumn()
 {
-    double value = databaseAbstraction::deleteColumn(DATABASE_NAME, "users", "baggage");
+    try
+    {
+        double value = databaseAbstraction::deleteColumn(DATABASE_NAME, "users", "baggage");
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+    }
 }
 
 
 void retreiveData()
 {
-
     vector <vector<string>> dBDataMatrix;
     try
     {
@@ -295,18 +304,125 @@ void retreiveData()
     {
         cout << " Error exception caught: " << endl;
         cout << " Exception value: " << exception << endl;
+        cout << " Error retreiving Data" << endl;
     }
 }
 
+
+void addSingleData()
+{
+    try
+    {
+        string values = "'test','feb 20',3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,'A'";
+        string insert = "INSERT INTO users (name , time_of_application, credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
+                      " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
+                      " adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate, final_loan_grade) VALUES (" + values + ");";
+        string format = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, time_of_application TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
+                      " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
+                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, matrix_based_adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
+                      " best_possible_rate REAL, worst_possible_rate REAL, final_loan_grade TEXT)";
+        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, format, "users", insert);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+        cout << " Error storing single data. " << endl;
+    }
+}
+
+
+void deleteAllTableRows(string tableName)
+{
+    try
+    {
+        double timeMilliSeconds = databaseAbstraction::deleteAllTableRows(DATABASE_NAME, tableName);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+    }
+    
+
+}
+
+
+int getNumberOfRows(string tablename)
+{
+    int numRows = 0;
+
+    try
+    {
+        numRows = databaseAbstraction::getTheNumbersOfRowsInTable(DATABASE_NAME, tablename);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+    }
+
+    return numRows;
+}
+
+
+int getNumberOfColumns(string tablename)
+{
+    int numRows = 0;
+
+    try
+    {
+        numRows = databaseAbstraction::getTheNumbersOfColumnsInTable(DATABASE_NAME, tablename);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+    }
+
+    return numRows;
+}
+
+
 int main()
 {
-    // getData();
+    int value;
     // addData<string>();
     // update();
     // deleteValue();
-    retreiveData();
-    // addColumn();
-    // deleteColumn();
+    // getData();
+    addSingleData();
+    // retreiveData();
+    
+    addColumn();
+    cout << "Validating new column exists " << endl;
+    value = getNumberOfColumns("users");
+    assert(value == 23);
+    
+    deleteColumn();
+    cout << "Validating new column deleted " << endl;
+    int numberOfColumns = getNumberOfColumns("users");
+    assert(numberOfColumns == 22);
+
+    cout << "Confirming shabo table exists prior to deletion" << endl;
+    deleteAllTableRows("shabo");
+    int numberOfRows = getNumberOfRows("shabo");
+    assert(numberOfRows == 0);
+    cout << "Done with all tests. " << endl;
+    // cout << "Num rows in table = " << getNumberOfRows("shabo") << endl;
+    // cout << "Num columns in table = " << getNumberOfColumns("shabo") << endl;
     
     return 0;
 }

@@ -22,6 +22,9 @@ tempCodeRunnerFile.py
 # Ignore all Banking System files
 Banking System/
 
+# Ignore all test file executables
+Test Files/Executables
+
 /Header Files/sqlite3.h
 /Header Files/LoanManagementDevTools.h
 /API keys/alphaVantageApiKey.txt

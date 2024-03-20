@@ -21,6 +21,7 @@ const string CSV_FILE_FOR_ALL_GENERATED_LOAN_DATA = CURRENT_FULL_PATH + "\\Folde
 const string OUTPUT_CSV_FILE_FOR_PROCESSED_DATA = CURRENT_FULL_PATH + "\\Csv Files For Analysis\\processedLoanData.csv";
 const string CSV_FILE_FOR_STORING_ANALAYZED_DB_VALUES = CURRENT_FULL_PATH + "\\Csv Files For Analysis\\analyzedDataFromDb.csv";
 const string CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_DB = CURRENT_FULL_PATH + "\\Folder with Generated Data\\tempGeneratedLoanDataForDbStorage.csv";
+const string DATABASE_TABLE_WITH_INITIAL_APPLICATION = "users";
 
 // Best Values for Different Factors
 const double BEST_DEFAULT_RISK_SCORE = 0; 
