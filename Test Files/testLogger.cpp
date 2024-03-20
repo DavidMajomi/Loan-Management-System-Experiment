@@ -23,7 +23,7 @@ int main()
     display << "This an operator overloading test " << chucks + " "  + to_string(value);
     display << (1234);
     display.display("here we are in the zone", "testing the mic", 1234, "\nThe logger is working");
-    display << "hello " << "muhammadu" << ENDLINE << ENDLINE;
+    display << "hello " << "world" << ENDLINE << ENDLINE;
 
     return 0;
 }
