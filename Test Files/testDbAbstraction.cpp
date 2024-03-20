@@ -413,13 +413,13 @@ int main()
     
     deleteColumn();
     cout << "Validating new column deleted " << endl;
-    value = getNumberOfColumns("users");
-    assert(value == 22);
+    int numberOfColumns = getNumberOfColumns("users");
+    assert(numberOfColumns == 22);
 
     cout << "Confirming shabo table exists prior to deletion" << endl;
     deleteAllTableRows("shabo");
-    value = getNumberOfRows("shabo");
-    assert(value == 0);
+    int numberOfRows = getNumberOfRows("shabo");
+    assert(numberOfRows == 0);
     cout << "Done with all tests. " << endl;
     // cout << "Num rows in table = " << getNumberOfRows("shabo") << endl;
     // cout << "Num columns in table = " << getNumberOfColumns("shabo") << endl;
