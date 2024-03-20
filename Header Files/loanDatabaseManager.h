@@ -6,7 +6,37 @@
 namespace databaseManager
 {
     // Matrix positions of db values
-    const int NAME_POSITION = 1;
+    const unsigned short int LOAN_ID_POSITION = 0;
+    const unsigned short int NAME_POSITION = 1;
+    const unsigned short int TIME_OF_APPLICATION_POSITION = 2;
+    const unsigned short int CREDIT_SCORE_POSITION = 3;
+    const unsigned short int MONTHLY_INCOME_POSITION = 4;
+    const unsigned short int FINANCIAL_RESERVES_POSITION = 5;
+    const unsigned short int DEBT_TO_INCOME_RATIO_POSITION = 6;
+    const unsigned short int LOAN_DURATION_POSITION = 7;
+    const unsigned short int REQUESTED_LOAN_AMOUNT_POSITION = 8;
+    const unsigned short int MONTHLY_INTEREST_RATE_POSITION = 9;
+    const unsigned short int YEARLY_INTEREST_RATE_POSITION = 10;
+    const unsigned short int LOSS_GIVEN_DEFAULT_POSITION = 11;
+    const unsigned short int RECOVERY_RATE_POSITION = 12;
+    const unsigned short int OUTSTANDING_MONTHLY_DEBT_PAYMENTS_POSITION = 13;
+    const unsigned short int DEFAULT_RISK_SCORE_POSITION = 14;
+    const unsigned short int LOAN_VIABILITY_SCORE_POSITION = 15;
+    const unsigned short int ADJUSTED_LOAN_VIABILITY_SCORE_POSITION = 16;
+    const unsigned short int MATRIX_BASED_ADJUSTED_LOAN_VIABILITY_SCORE_POSITION = 17;
+    const unsigned short int INTERETS_RATE_BY_GROUP_POSITION = 18;
+    const unsigned short int BEST_POSSIBLE_RATE_POSITION = 19;
+    const unsigned short int WORST_POSSIBLE_RATE_POSITION = 20;
+    const unsigned short int FINAL_LOAN_GRADE_POSITION = 21;
+    
+    
+    // Table Names
+    const string REPORTS_TABLE_NAME = "Reports";
+    const string TABLE_OF_INITIAL_USER_APPLICATION = "users";
+    const string REJECTED_USERS_TABLE_NAME = "Rejected_users";
+    const string ACCEPTED_USERS_TABLE_NAME = "Accepted_users";
+    const string DEFAULTING_USERS_TABLE_NAME = "Defaulting_users";
+
     using namespace std;
 
 
@@ -26,9 +56,10 @@ namespace databaseManager
         }
     }
 
+
     vector<vector<string>> getAllDbDATA()
     {
-        vector<vector<string>> dataMatrix = databaseAbstraction::retrieveAllUserDataFromDatabaseForMatrix(DATABASE_NAME, DATABASE_TABLE_WITH_INITIAL_APPLICATION);
+        vector<vector<string>> dataMatrix = databaseAbstraction::retrieveAllUserDataFromDatabaseForMatrix(DATABASE_NAME, TABLE_OF_INITIAL_USER_APPLICATION);
 
         return dataMatrix;
     }
@@ -88,7 +119,7 @@ namespace databaseManager
 
     string retreiveUserNameMatchingLoanId(int loanId)
     {
-        vector<vector<string>> dbValues = databaseAbstraction::retreiveDataWithMatchingValue(DATABASE_NAME, "users", "Loan_id", to_string(loanId));
+        vector<vector<string>> dbValues = databaseAbstraction::retreiveDataWithMatchingValue(DATABASE_NAME, TABLE_OF_INITIAL_USER_APPLICATION, "Loan_id", to_string(loanId));
         
         return (dbValues[0][NAME_POSITION]);
     }
@@ -98,7 +129,28 @@ namespace databaseManager
     {
         string insertFormat = userData.getSqlInsertFormat();
         string statementWithData = userData.getInsertStatementWithData();
-        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, "users", statementWithData);
+        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, TABLE_OF_INITIAL_USER_APPLICATION, statementWithData);
+
+        return true;
+    }
+
+
+    bool addNewReport()
+    {
+
+        return true;
+    }
+
+
+    bool changeDateToNextInstallment(int loanId, int decrementBy)
+    {
+
+        return true;
+    }
+
+
+    bool moveUserFromDbToDb(int loanId)
+    {
 
         return true;
     }
