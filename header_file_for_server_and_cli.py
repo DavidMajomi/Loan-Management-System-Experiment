@@ -453,9 +453,9 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
             operation_state_to_return["successful_search"] = True
             operation_state_to_return["found_user_data"] = True
             # print("Data found:")
-            print(rows, "\n")
+            # print(rows, "\n")
             num_rows = len(rows)
-            print("Num rows = ", num_rows)
+            # print("Num rows = ", num_rows)
             
             for data in rows:
                 (loan_id, user_name, time_of_application,credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration
@@ -481,7 +481,7 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                 retrieved_user_data_copy = retrieved_user_data.copy()
                 
                 list_of_loan_data.append(retrieved_user_data_copy)
-                print(list_of_loan_data) 
+                # print(list_of_loan_data) 
  
         else:
             operation_state_to_return["successful_search"] = True
@@ -499,7 +499,7 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
         cursor.close()
         conn.close()
        
-        print(" List of loan data: ",list_of_loan_data) 
+        # print(" List of loan data: ",list_of_loan_data) 
         return list_of_loan_data, operation_state_to_return
     
     
