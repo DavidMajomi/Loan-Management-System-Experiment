@@ -10,6 +10,18 @@
 
 using namespace std;
 
+
+/* Database columns
+        calculatedBestPossibleLoanViabilityScore, 
+        calculatedWorstPossibleLoanViabilityScore,
+
+        Time left to next installment in days
+        Time left to complete loan payments in months
+        Current amount of loan and interest payments left
+        Loan decision (Accept or decline)
+*/
+
+
 EconomicMetrics CURRENT_METRICS;    // This class stores financial metrics recieved from external program using the dll file. Its vales are the
                                     // first to be modified before performing any operations.
 class Loan

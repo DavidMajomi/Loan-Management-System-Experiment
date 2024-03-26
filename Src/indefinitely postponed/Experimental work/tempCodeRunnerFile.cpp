@@ -1,0 +1,1 @@
+  todaysDate = ctime (&rawtime);
