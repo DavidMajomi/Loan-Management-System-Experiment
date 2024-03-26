@@ -149,9 +149,16 @@ namespace databaseManager
     }
 
 
-    bool moveUserFromDbToDb(int loanId)
+    bool moveUserFromDbToDb(int loanId, int from, int to)
     {
 
+        return true;
+    }
+
+    
+    bool copyUserFromDbToDb(int loanId, int from, int to)
+    {
+        
         return true;
     }
     
