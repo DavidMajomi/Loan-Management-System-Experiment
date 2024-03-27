@@ -611,8 +611,8 @@ def dev_menu_response(instructions, operation_state):
 def get_prime_rate_with_alpha_vantage_api():
     change_base_rate = True
 
-    if os.path.exists(PATH + "..\\API keys\\alphaVantageApiKey.txt"):
-        with open((PATH + "..\\API keys\\alphaVantageApiKey.txt"), "r") as file:
+    if os.path.exists(PATH + "\\..\\API keys\\alphaVantageApiKey.txt"):
+        with open((PATH + "\\..\\API keys\\alphaVantageApiKey.txt"), "r") as file:
             api_key = file.readline()
     else:
         change_base_rate = False
