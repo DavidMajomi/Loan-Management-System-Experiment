@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.10)
+# set(CMAKE_CXX_STANDARD 11)
+project(helloMake VERSION 1.0)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set (FullOutputDir "${CMAKE_SOURCE_DIR}/bin/${CMAKE_SYSTEM_NAME}/${CMAKE_BUILD_TYPE}")
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${FullOutputDir}/static libs") #For static libs
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${FullOutputDir}")
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY "${FullOutputDir}")
+
+include_directories(Header Files)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/"sqlite3-Executables")
+
+# add_library(sqlite3 OBJECT sqlite3-Executables/sqlite3.o)
+add_library(loanManagementServerLibrary SHARED loanManagementLibraryForServer.cpp) # SHared means create dll on windows
+
+
+
+# add_executable(${PROJECT_NAME} main.cpp)
+target_link_libraries(loanManagementServerLibrary PUBLIC ${CMAKE_CURRENT_LIST_DIR}/sqlite3-Executables/sqlite3.o)      
+link_directories(${CMAKE_BINARY_DIR}/Debug)

@@ -16,20 +16,14 @@ from colorama import Fore
 PATH = str(Path.cwd())
 
 FORMAT = 'utf-8'
-STAND_ALONE_CPP_EXECUTABLE = PATH + "\\just c++.exe"  
-MAIN_CPP_FILE = PATH + "\\main.cpp"
 SQLITE3_DATABASE_PATH = PATH + "\\Database files\\bam_bam.db"
-# SQLITE3_OBJECT_FILE_PATH = PATH + "\\sqlite3.o"
-LIBRARY_CPP_FILE_PATH = PATH + "\\loanManagementLibrary.cpp"
-LIBRARY_CPP_FILE_PATH_FOR_SERVER = PATH + "\\loanManagementLibraryForServer.cpp"
 OUTPUT_DLL_FILE_PATH = PATH + "\\loanManagementLibrary.dll"  
 OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
-CPP_EXECUTABLE_FROM_PYTHON_PATH = PATH + "\\executable from python interface.exe"  
 CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY = PATH + "\\Folder with Generated Data\\allGeneratedLoanData.csv"
 CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_db = PATH + "\\Folder with Generated Data\\tempGeneratedLoanDataForDbStorage.csv"
 
 
-MAX_VALUES_TO_GENERATE = 10000000000
+MAX_VALUES_TO_GENERATE = 100000
 
 class UserData(ctypes.Structure):
     _fields_ = [("user_name", ctypes.c_char_p),
@@ -522,7 +516,6 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
     
 def compile_dll_with_make():
     os.system("make")
-    os.system("make clean")
     
     
 def display_single_retrieved_data(retrieved_user_data):
