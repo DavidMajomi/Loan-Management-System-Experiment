@@ -156,6 +156,7 @@ bool outputToFile (ofstream& outputCsvFile, vector <Loan>& loanAccounts)
 
 bool storeDataInDb(vector<Loan> loanData)
 {
+    char * error = 0;
     const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
     clock_t time;
 
@@ -195,11 +196,12 @@ bool storeDataInDb(vector<Loan> loanData)
         sqlite3_close(db);
         errorStoringData = true;
     }
-    rc = sqlite3_exec(db, sql, 0, 0, 0);
+    rc = sqlite3_exec(db, sql, 0, 0, &error);
 
     if (rc != SQLITE_OK) {
         // Handle error
         cout << " Step 3 error. 2" << endl;
+        cout << error << endl;
         sqlite3_close(db);
         errorStoringData = true;
     }
@@ -261,11 +263,12 @@ bool storeDataInDb(vector<Loan> loanData)
     sqlInsertLine = completedSqlStatement.c_str();
     sql = sqlInsertLine;
 
-    rc = sqlite3_exec(db, sql, 0, 0, 0);
+    rc = sqlite3_exec(db, sql, 0, 0, &error);
 
     if (rc != SQLITE_OK) {
         // Handle error
         cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
+        cout << error << endl;
         sqlite3_close(db);
         errorStoringData = true;
     }
