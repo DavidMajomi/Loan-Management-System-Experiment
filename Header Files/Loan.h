@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 EconomicMetrics CURRENT_METRICS;    // This class stores financial metrics recieved from external program using the dll file. Its vales are the
                                     // first to be modified before performing any operations.
 class Loan

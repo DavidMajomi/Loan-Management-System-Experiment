@@ -1,7 +1,4 @@
-// #ifndef ECONOMICMETRICS_H_INCLUDED
-// #define ECONOMICMETRICS_H_INCLUDED
-
-// #pragma once
+#pragma once
 
 #include "constants.h"
 #include <iostream>

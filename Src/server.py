@@ -20,7 +20,7 @@ DISCONNECT_MESSAGE = "!!!DISCONNECT"
 RECOMPILE_DLL_FILE = "RECOMPILE_CPP"
 FORMAT = 'utf-8'
 
-OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
+OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\bin\\windows\\libloanManagementServerLibrary.dll"
 
 
 
