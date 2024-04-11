@@ -1,0 +1,25 @@
+The End of Day processing unit will be responsible for the folllowing:
+1.) Loan payouts
+2.) reporting and Analysis
+3.) loan tracking and management of existing loans such as updateing date to next installment.
+4.) Making calls to the banking system to acquire required funds.
+5.) Proper database management for completed loans, defaulted loans etc, or embelish these characteristics into the main database.
+    Arguments for and against both methods, the multi db side is on for, and the single db side is against:
+    1.) FOR: Multi db allows for a more standardized db structure.
+    2.) AGAINST: Python interface designed for single interface to search for laon data
+            FOR: Then re-implement the python db search functionality.
+                AGAINST: Too much time will be spent learning proper sqlite3 implementations fo this, since no solid db structure has been thought through.
+    3.) FOR: This whole experiment is for learning, how will i learn if i am running away from utilising a more standard approach.
+            AGAINST: It is not about running away, it is about delivering a project as fast as possible.
+            NEUTRAL: the argument comes down to do you want to learn more or do you  want to finish this part of the project as soon as possible.
+            FOR: Design compromise:
+                1.) Use the current db to store all 
+
+
+
+############################################## Stages of Development ##############################################
+2.) First implement the loan grading system.
+    A.) Why is the loan grading system under end of day processing rather than anywhere else.
+        Answer: Because it is easier to scale scoring systems to involve more functionalitiies like demand based scoring in end of day processing compared 
+                to anywhere ele.
+    B.) 
