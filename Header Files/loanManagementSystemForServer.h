@@ -365,19 +365,19 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
                 financialReserves = sqlite3_column_double(stmt, 5);
                 debtToIncomeRatio = sqlite3_column_double(stmt, 6);
                 loanDurationInMonths = sqlite3_column_double(stmt, 7);
-                loanAmount = sqlite3_column_double(stmt, 8);
-                monthlyInteresRate = sqlite3_column_double(stmt, 9);
-                yearlyInterestRate = sqlite3_column_double(stmt, 10);
-                lossGivenDefault = sqlite3_column_double(stmt, 11);
-                recoveryRate = sqlite3_column_double(stmt, 12);
-                outstandingMonthlyDebtPaymentsFromLoan = sqlite3_column_double(stmt, 13);
-                defaultRiskScore = sqlite3_column_double(stmt, 14);
-                loanViabilityScore = sqlite3_column_double(stmt, 15);
-                adjustedLoanViabilityScore = sqlite3_column_double(stmt, 16);
-                matrixBasedAdjustedLoanViabilityScore = sqlite3_column_double(stmt, 17);
-                interestRateByGroup = sqlite3_column_double(stmt, 18);
-                bestPossibleRate = sqlite3_column_double(stmt, 19);
-                worstPossibleRate = sqlite3_column_double(stmt, 20);
+                loanAmount = sqlite3_column_double(stmt, 9);
+                monthlyInteresRate = sqlite3_column_double(stmt, 10);
+                yearlyInterestRate = sqlite3_column_double(stmt, 11);
+                lossGivenDefault = sqlite3_column_double(stmt, 12);
+                recoveryRate = sqlite3_column_double(stmt, 13);
+                outstandingMonthlyDebtPaymentsFromLoan = sqlite3_column_double(stmt, 14);
+                defaultRiskScore = sqlite3_column_double(stmt, 17);
+                loanViabilityScore = sqlite3_column_double(stmt, 18);
+                adjustedLoanViabilityScore = sqlite3_column_double(stmt, 19);
+                matrixBasedAdjustedLoanViabilityScore = sqlite3_column_double(stmt, 20);
+                interestRateByGroup = sqlite3_column_double(stmt, 21);
+                bestPossibleRate = sqlite3_column_double(stmt, 22);
+                worstPossibleRate = sqlite3_column_double(stmt, 23);
 
 
                 outputCsvFile << userName << ",";
