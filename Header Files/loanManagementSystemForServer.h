@@ -493,18 +493,7 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
         bestPossibleRate = loanData[count].getBestPossibleRate();
         worstPossibleRate = loanData[count].getWorstPossibleRate();
 
-
-        // stringFinalSqlInsertStatement = "'" + userName + "',";
-        // stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + to_string(creditScore) + "," + to_string(monthlyIncome) + "," + to_string(financialReserves) + "," + to_string(debtToIncomeRatio) + "," 
-        //                                 + to_string(loanDurationInMonths) + "," +  to_string(loanAmount) + "," + to_string(monthlyInteresRate) + "," + to_string(yearlyInterestRate) + "," + to_string(lossGivenDefault) + "," 
-        //                                 + to_string(recoveryRate) + "," + to_string(outstandingMonthlyDebtPaymentsFromLoan) + "," +  to_string(defaultRiskScore) + "," + to_string(loanViabilityScore) + "," 
-        //                                 + to_string(adjustedLoanViabilityScore) + "," + to_string(interestRateByGroup) + "," + to_string(bestPossibleRate) + ","
-        //                                 + to_string(worstPossibleRate);
-
-        // cout << stringFinalSqlInsertStatement << endl;
-
         insertToSql = loanData[count].getInsertStatementWithData();
-        // cout << insertToSql;
 
         allInsertStatements.push_back(insertToSql);
     }
@@ -526,7 +515,6 @@ bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
     rc = sqlite3_exec(db, sql, 0, 0, 0);
 
     if (rc != SQLITE_OK) {
-        // Handle error
         cout << " Step 4 error.  Sql statement error in store generated data function." << endl;
         sqlite3_close(db);
         errorStoringData = true;
