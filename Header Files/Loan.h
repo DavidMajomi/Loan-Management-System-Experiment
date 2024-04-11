@@ -18,12 +18,13 @@ class Loan
 private:
     unsigned short int creditScore, duration;
     string userName, timeOfApplication, sqlInsertFormat, stringSqlInsertData;
+    string defaultLoanDecisionProcessing = "2";
 
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
            outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, finalLoanViabilityScore,
            finalAdjustedLoanViabilityScore, interestRateByGroup, bestPossibleRate = CURRENT_METRICS.getSuperPrimeRate(), worstPossibleRate = CURRENT_METRICS.getDeepSubPrimeRate(),
            calculatedBestPossibleLoanViabilityScore, calculatedWorstPossibleLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore, 
-           calculatedWorstPossibleAdjustedLoanViabilityScore, matrixBasedAdjustedLoanViabilityScore;
+           calculatedWorstPossibleAdjustedLoanViabilityScore, matrixBasedAdjustedLoanViabilityScore, potentialProfitFromLoan;
 
 
     static double normalizeScore(double rawScore, double maxScore, double minScore);
@@ -84,15 +85,15 @@ private:
         + to_string(financialReserves) + "," 
         + to_string(debtToIncomeRatio) + "," 
         + to_string(duration) + "," 
-        + to_string(duration * 60) + "," 
+        + to_string(30) + "," 
         + to_string(loanAmount) + "," 
         + to_string(finalMonthlyInterestRate) + "," 
         + to_string(getYearlyInterestRate()) + ","
         + to_string(lossGivenDefault) + "," 
         + to_string(recoveryRate) + ","
+        + to_string(outstandingMonthlyDebtPaymentsPriorToLoan + loanAmount) + "," 
         + to_string(outstandingMonthlyDebtPaymentsPriorToLoan) + "," 
-        + to_string(outstandingMonthlyDebtPaymentsPriorToLoan) + "," 
-        + to_string(loanAmount) + "," 
+        + to_string(loanAmount / duration) + "," 
         + to_string(defaultRiskScore) + "," 
         + to_string(finalLoanViabilityScore) + "," 
         + to_string(finalAdjustedLoanViabilityScore) + "," 
@@ -101,14 +102,16 @@ private:
         + to_string(bestPossibleRate) + ","
         + to_string(worstPossibleRate) + "," 
         + "''"+ "," 
-        + "1"+ "," 
-        + "2"+ "," 
-        + "3"+ "," 
-        + "4"+ "," 
-        + "5"+ "," 
-        + "''" + "," 
-        + "7"+ "," 
-        + "8";
+        + to_string(potentialProfitFromLoan) + "," 
+        + to_string(calculatedBestPossibleLoanViabilityScore)+ "," 
+        + to_string(calculatedWorstPossibleLoanViabilityScore)+ "," 
+        + to_string(loanAmount + potentialProfitFromLoan) + "," 
+        + defaultLoanDecisionProcessing + "," 
+        + "'Processing'" + "," 
+        + to_string((int)(true)) + "," 
+        + "1234567890";
+
+        
 
         stringSqlInsertData = "INSERT INTO users (name , "
                             "time_of_application, "
@@ -116,8 +119,8 @@ private:
                             "monthly_income, "
                             "financial_reserves, "
                             "debt_to_income_ratio, "
-                            "duration_to_next_installment_days, "
                             "loan_duration, "
+                            "duration_to_next_installment_days, "
                             "requested_loan_amount, "
                             "monthly_interest_rate,"
                             "yearly_interest_rate, "
@@ -144,8 +147,16 @@ private:
                             "account_number"
                             ") VALUES (" + stringFinalSqlInsertStatement + ");"; 
 
-
+        // cout << sqlInsertFormat << endl;
+        // cout << stringSqlInsertData << endl;
     }
+
+
+    double calculatePotentialProfitFromLoan()
+    {
+        return loanAmount * (finalMonthlyInterestRate / 100) * duration;
+    }
+
 
 public:
     double adjustLoanViabiltyScore (double rawLoanViabilityScore);
@@ -169,6 +180,7 @@ public:
         loanAmount = loanAmonutRequestedDeciaml;
         simple_set_credit_metrics();
         setFinalMonthlyInterestRate();
+        potentialProfitFromLoan = calculatePotentialProfitFromLoan();
         setSqlRelatedData();
     }
     string getUserName() const{
