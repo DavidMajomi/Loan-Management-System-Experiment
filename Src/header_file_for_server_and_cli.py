@@ -559,6 +559,7 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
     
 def compile_dll_with_make():
     os.system("make")
+    os.system("make clean")
     
     
 def display_single_retrieved_data(retrieved_user_data):
