@@ -16,7 +16,9 @@ from colorama import Fore
 PATH = str(Path.cwd())
 
 FORMAT = 'utf-8'
-SQLITE3_DATABASE_PATH = PATH + "\\Database files\\bam_bam.db"
+
+SQLITE3_DATABASE_PATH = PATH + "\\Database files\\loans.db"
+
 OUTPUT_DLL_FILE_PATH = PATH + "\\loanManagementLibrary.dll"  
 OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
 CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY = PATH + "\\Folder with Generated Data\\allGeneratedLoanData.csv"
@@ -361,22 +363,34 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             time_of_application,
             credit_score, 
             monthly_income, 
-            financial_reserves, 
-            debt_to_income_ratio, 
-            loan_duration, 
+            financial_reserves,
+            debt_to_income_ratio,
+            duration_to_next_installment_days,
+            loan_duration,
             requested_loan_amount,
-            monthly_interest_rate, 
-            yearly_interst_rate, 
-            loss_given_default, 
-            recovery_rate, 
-            outstanding_monthly_debt_payments_to_satisfy_loan, 
-            default_risk_score, 
-            loan_viability_score, 
-            adjusted_loan_viability_score, 
+            monthly_interest_rate,   
+            yearly_interest_rate,
+            loss_given_default,
+            recovery_rate,
+            outstanding_monthly_debt_paymentd_from_loan,
+            outstanding_monthly_debt_payments_prior_to_loan,
+            amount_to_pay_at_next_installment,
+            default_risk_score,
+            loan_viability_score,                
+            adjusted_loan_viability_score,
             matrix_based_adjusted_loan_viability_score,
-            interest_rate_by_group,best_possible_rate,
-            worst_possible_rate, 
-            final_loan_grade) = row
+            interest_rate_by_group,
+            best_possible_yearly_rate,
+            worst_possible_yearly_rate,
+            final_loan_grade,
+            potential_profit_from_loan,
+            calculated_best_possible_loan_viabbility_score,
+            calculated_worst_possible_loan_viabbility_score,
+            amount_of_current_loan_and_interests_left,
+            loan_decision,
+            loan_status,
+            applied_today_or_not,
+            account_number) = row
             # print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
             
             retrieved_user_data = {
@@ -389,7 +403,7 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
                 "loan_duration_left" : loan_duration,
                 "requested_loan_amount" : requested_loan_amount,
                 "monthly_interest_rate" : monthly_interest_rate,
-                "yearly_interst_rate" : yearly_interst_rate
+                "yearly_interst_rate" : yearly_interest_rate
                 
                 # "loss_given_default" : loss_given_default,
                 # "recovery_rate" : recovery_rate,
@@ -469,11 +483,40 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
             # print("Num rows = ", num_rows)
             
             for data in rows:
-                (loan_id, user_name, time_of_application,credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration
-                , requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default
-                , recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score
-                , adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score,interest_rate_by_group,best_possible_rate,worst_possible_rate, final_loan_grade) = data
-                # (loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score) = data
+                (loan_id, 
+                user_name, 
+                time_of_application,
+                credit_score, 
+                monthly_income, 
+                financial_reserves,
+                debt_to_income_ratio,
+                duration_to_next_installment_days,
+                loan_duration,
+                requested_loan_amount,
+                monthly_interest_rate,   
+                yearly_interest_rate,
+                loss_given_default,
+                recovery_rate,
+                outstanding_monthly_debt_paymentd_from_loan,
+                outstanding_monthly_debt_payments_prior_to_loan,
+                amount_to_pay_at_next_installment,
+                default_risk_score,
+                loan_viability_score,                
+                adjusted_loan_viability_score,
+                matrix_based_adjusted_loan_viability_score,
+                interest_rate_by_group,
+                best_possible_yearly_rate,
+                worst_possible_yearly_rate,
+                final_loan_grade,
+                potential_profit_from_loan,
+                calculated_best_possible_loan_viabbility_score,
+                calculated_worst_possible_loan_viabbility_score,
+                amount_of_current_loan_and_interests_left,
+                loan_decision,
+                loan_status,
+                applied_today_or_not,
+                account_number) = data
+                
                 
                 retrieved_user_data = {
                     "loan_id" : loan_id,
@@ -485,7 +528,7 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                     "loan_duration_left" : loan_duration,
                     "requested_loan_amount" : requested_loan_amount,
                     "monthly_interest_rate" : monthly_interest_rate,
-                    "yearly_interst_rate" : yearly_interst_rate
+                    "yearly_interst_rate" : yearly_interest_rate
                     
                 }
                 
@@ -604,8 +647,8 @@ def dev_menu_response(instructions, operation_state):
 def get_prime_rate_with_alpha_vantage_api():
     change_base_rate = True
 
-    if os.path.exists(PATH + "..\\API keys\\alphaVantageApiKey.txt"):
-        with open((PATH + "..\\API keys\\alphaVantageApiKey.txt"), "r") as file:
+    if os.path.exists(PATH + "\\..\\API keys\\alphaVantageApiKey.txt"):
+        with open((PATH + "\\..\\API keys\\alphaVantageApiKey.txt"), "r") as file:
             api_key = file.readline()
     else:
         change_base_rate = False
