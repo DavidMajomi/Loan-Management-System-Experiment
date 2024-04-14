@@ -3,8 +3,10 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "../Header Files/loanDatabaseManager.h"
 #include "../Header Files/Logger.h"
 #include "../Header Files/loanManagementSystemForServer.h"
+#include "../Header Files/loanProcessor.h"
 
 
 // Use g++ -fPIC -shared -o loanManagementLibraryForServer.dll loanManagementLibraryForServer.cpp sqlite3.o
@@ -89,6 +91,10 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
                 fileOpeningError = true;
             }
 
+            // databaseManager::getTodaysApplications();
+
+            // LoanProcessor::startEndOfDayProcessing();
+
             return fileOpeningError;
         }
 
@@ -106,6 +112,8 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             {
                 fileOpeningError = true;
             }
+
+            // LoanProcessor::startEndOfDayProcessing();
 
             return fileOpeningError;
         }
@@ -126,6 +134,7 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
                 fileOpeningError = true;
                 // cout << " Error opening file = true. " << endl;
             }
+            
 
             return fileOpeningError;
         }

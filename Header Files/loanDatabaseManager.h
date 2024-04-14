@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include "Loan.h"
-
 #include "databaseAbstraction.h"
 
 namespace databaseManager
@@ -126,7 +125,20 @@ namespace databaseManager
         return (dbValues[0][NAME_POSITION]);
     }
 
+
+
+    vector<vector<string>> getTodaysApplications()
+    {
+        vector<vector<string>> data;
+
+        data = databaseAbstraction::retreiveDataWithMatchingValue(DATABASE_NAME, TABLE_OF_INITIAL_USER_APPLICATION, "applied_today_or_not", "1");
+
+        // printMatrixValues(data);
+
+        return data;
+    }
     
+
     bool addLoanUser(Loan userData)
     {
         string insertFormat = userData.getSqlInsertFormat();
@@ -135,13 +147,10 @@ namespace databaseManager
 
         return true;
     }
+    
 
 
-    bool addNewReport()
-    {
 
-        return true;
-    }
 
 
     bool changeDateToNextInstallment(int loanId, int decrementBy)
