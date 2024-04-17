@@ -6,6 +6,7 @@
 
 namespace databaseManager
 {
+    using namespace std;
     // Matrix positions of db values
     const unsigned short int LOAN_ID_POSITION = 0;
     const unsigned short int NAME_POSITION = 1;
@@ -32,13 +33,15 @@ namespace databaseManager
     
     
     // Table Names
-    const string REPORTS_TABLE_NAME = "Reports";
+    const string REPORTS_TABLE_NAME = "reports";
     const string TABLE_OF_INITIAL_USER_APPLICATION = "users";
-    const string REJECTED_USERS_TABLE_NAME = "Rejected_users";
-    const string ACCEPTED_USERS_TABLE_NAME = "Accepted_users";
-    const string DEFAULTING_USERS_TABLE_NAME = "Defaulting_users";
+    const string REJECTED_USERS_TABLE_NAME = "rejected_users";
+    const string ACCEPTED_USERS_TABLE_NAME = "rccepted_users";
+    const string DEFAULTING_USERS_TABLE_NAME = "refaulting_users";
 
-    using namespace std;
+    
+
+    
 
 
     template <typename T>
@@ -139,6 +142,22 @@ namespace databaseManager
     }
     
 
+
+    
+    vector<vector <string>> getAllApplicationsBesideTodays()
+    {
+        vector<vector<string>> data;
+
+        data = databaseAbstraction::retreiveDataWithMatchingValue(DATABASE_NAME, TABLE_OF_INITIAL_USER_APPLICATION, "applied_today_or_not", "0");
+
+        // printMatrixValues(data);
+
+        return data;
+        
+    }
+
+
+
     bool addLoanUser(Loan userData)
     {
         string insertFormat = userData.getSqlInsertFormat();
@@ -147,13 +166,9 @@ namespace databaseManager
 
         return true;
     }
-    
 
 
-
-
-
-    bool changeDateToNextInstallment(int loanId, int decrementBy)
+    bool changeDateToNextInstallment(int loanId, int changeTo)
     {
 
         return true;
