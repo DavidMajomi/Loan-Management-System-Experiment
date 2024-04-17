@@ -7,7 +7,7 @@
 #include "loanDatabaseManager.h"
 #include "stats.h"
 
-namespace LoanProcessor
+namespace endOfDayProcessor
 {
     using namespace std;
 
@@ -258,10 +258,13 @@ namespace LoanProcessor
 
             if(appliedToday == true)
             {
-                durationToNextInstallmentDays = processDurationToNextInstallment();
                 // amountOfCurrentLoanAndInteerestsLeft = 
                 finalLoanGrade = processFinalLoanGrade();
                 loanDecision = processLoanDecision();
+            }
+            else
+            {
+                durationToNextInstallmentDays = processDurationToNextInstallment();
             }
 
             loanStatus = updateLoanStatus();
@@ -472,6 +475,7 @@ namespace LoanProcessor
         int numEgrade = 0;
         int numFgrade = 0;
         int numAppliedToday = 0;
+        double sumPotentialProfitFromLoan = 0;
 
 
         vector <double> creditScoreData;
@@ -519,6 +523,7 @@ namespace LoanProcessor
                             "mean_loan_viability_score REAL,"
                             "mean_adjusted_loan_viability_score REAL,"
                             "mean_potential_profit_from_loan REAL,"
+                            "sum_potential_profit_from_loan,"
                             "median_credit_score REAL,"
                             "median_duration_to_next_installment_days REAL,"
                             "median_monthly_income REAL,"
@@ -633,6 +638,7 @@ namespace LoanProcessor
             + to_string(meanLoanViabilityScore) + ","
             + to_string(meanAdjustedLoanViabilityScore) + ","
             + to_string(meanPotentialProfitFromLoan) + ","
+            + to_string(sumPotentialProfitFromLoan) + ","
             + to_string(medianCreditScore) + ","
             + to_string(medianDurationToNextInstallmentDays) + ","
             + to_string(medianMonthlyIncome) + ","
@@ -715,6 +721,7 @@ namespace LoanProcessor
                             "mean_loan_viability_score, "
                             "mean_adjusted_loan_viability_score, "
                             "mean_potential_profit_from_loan, "
+                            "sum_potential_profit_from_loan, "
                             "median_credit_score, "
                             "median_duration_to_next_installment_days, "
                             "median_monthly_income, "
@@ -809,6 +816,9 @@ namespace LoanProcessor
             defaultRiskScoreData.push_back(data.getDefaultRiskScore());
             loanViabilityScoreData.push_back(data.getLoanViabilityScore());
             adjustedLoanViabilityScoreData.push_back(data.getAdjustedLoanViabilityScore());
+            sumPotentialProfitFromLoan = sumPotentialProfitFromLoan + data.getPotentialProfitFromLoan();
+
+            // sumPotentialProfitFromLoan
 
 
             if(finalLoanGrade == 'A')
@@ -896,6 +906,7 @@ namespace LoanProcessor
             modeDefaultRiskScore = stats::getMode(defaultRiskScoreData);
             modeLoanViabilityScore = stats::getMode(loanViabilityScoreData);
             modeAdjustedLoanViabilityScore = stats::getMode(adjustedLoanViabilityScoreData);
+            modePotentialProfitFromLoan = stats::getMode(potentialProfitFromLoan);
 
 
             stdDeviationCreditScore = stats::getStandardDeviation(creditScoreData);
@@ -925,10 +936,12 @@ namespace LoanProcessor
 
         }
 
+
         string getSqlInsertFormat()
         {
             return sqlInsertFormat;
         }
+
 
         string getInsertStatementWithData()
         {
@@ -966,30 +979,9 @@ namespace LoanProcessor
     // }
 
 
-    // void processPriorApplications()
-    // {
-    //     vector<vector<string>> allDbData = databaseManager::getAllDbDATA();
-    //     vector<loanUpdates> existingApplicationChanges;
-
-    //     for(int count = 0; count < allDbData.size(); count++)
-    //     {
-    //         userDataFromDb userInfo(allDbData[count]);
-
-    //         existingApplicationChanges.push_back(userInfo.getNewUpdates());
-    //     }
-
-    //     for(int count = 0; count < existingApplicationChanges.size(); count++)
-    //     {
-    //         // databaseAbstraction::update()
-    //     }
-    // }
-
-    void processNewApplications()
+    void processPriorApplications()
     {
-        reportData report;
-        vector<vector <string>> data = databaseManager::getTodaysApplications();
-        // databaseManager::printMatrixValues(data);
-        vector<loanUpdates> newApplicationChanges;
+        vector<vector <string>> data = databaseManager::getAllApplicationsBesideTodays();
 
         for(int count = 0; count < data.size(); count++)
         {
@@ -1008,33 +1000,57 @@ namespace LoanProcessor
 
             // newApplicationChanges.push_back(userInfo.getNewUpdates());
             
-            report.update(userInfo);
         }
 
-
-        report.processStats();
-        string insertFormat = report.getSqlInsertFormat();
-        string statementWithData = report.getInsertStatementWithData();
         // try{
         // cout << "call" << endl;
+    }
 
-        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, "reports", statementWithData);
 
-        
-        // }
-        // catch(const char * error)
-        // {
-            // cout << error << endl;
+    void processNewApplications()
+    {
+        reportData report;
+        vector<vector <string>> data = databaseManager::getTodaysApplications();
 
-        // }
-        // cout << "hey" << endl;
-        // cout << 
+        if(!(data.empty()))
+        {
+            for(int count = 0; count < data.size(); count++)
+            {
+                userDataFromDb userInfo(data[count]);
+                loanUpdates changes = userInfo.getNewUpdates();
+
+                string loanGrade;
+                loanGrade = changes.getFinalLoanGrade();
+                
+
+                double time = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_next_installment_days", to_string(changes.getDurationToNextInstallmentDays()), "Loan_id", (changes.getLoanId()));
+                double timeH = databaseAbstraction::update(DATABASE_NAME, "users",  "final_loan_grade", loanGrade, "Loan_id", (changes.getLoanId()));
+                double timeB = databaseAbstraction::update(DATABASE_NAME, "users", "loan_decision", to_string(changes.getLoanDecision()), "Loan_id", (changes.getLoanId()));
+                double timeC = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
+                double timeD = databaseAbstraction::update(DATABASE_NAME, "users", "applied_today_or_not", to_string(changes.getAppliedToday()), "Loan_id", (changes.getLoanId()));
+
+                // newApplicationChanges.push_back(userInfo.getNewUpdates());
+                
+                report.update(userInfo);
+            }
+
+
+            report.processStats();
+            string insertFormat = report.getSqlInsertFormat();
+            string statementWithData = report.getInsertStatementWithData();
+            // try{
+            // cout << "call" << endl;
+
+            double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, "reports", statementWithData);
+
+        }
 
     }
     
 
     void startEndOfDayProcessing()
     {
+        processPriorApplications();
         processNewApplications();
 
 
