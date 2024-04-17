@@ -101,7 +101,8 @@ def get_customer_data_from_cli():
         "generate_data_for_db" : False,
         "num_data_to_generate" : None,
         "perform_data_analysis_on_all_generated_csv_data" : False,
-        "store_all_db_data_for_external_analysis" : False
+        "store_all_db_data_for_external_analysis" : False,
+        "start_end_of_day_processing" : False
     }
 
     menu_response = menu_for_server_client()
@@ -125,6 +126,8 @@ def get_customer_data_from_cli():
             instructions["perform_data_analysis_on_all_generated_csv_data"] = True
         elif (dev_menu_response == 3):
             instructions["store_all_db_data_for_external_analysis"] = True
+        elif (dev_menu_response == 4):
+            instructions["start_end_of_day_processing"] = True
     
     instructions['menu_response'] = menu_response  ##
     instructions['dev_menu_response'] = dev_menu_response  ##
