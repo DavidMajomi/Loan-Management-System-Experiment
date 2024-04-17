@@ -144,13 +144,14 @@ def display_dev_menu_for_server_client():
 
         print("1.) Enter 1 to generate and store new data in database.")
         print("2.) Enter 2 to perform data analysis on all csv generated data throughout the history of the program in csv file for data analysis.")
-        print("3.) Enter 3 to retrive all stored database values in csv file for data analysis. \n")
+        print("3.) Enter 3 to retrive all stored database values in csv file for data analysis.")
+        print("4.) Enter 4 to force start end of day processing. \n")
 
         dev_menu_response = input(" What would you like to do: ")
         
         # Change these anytime you modify the number of available user options
         min_options = 1         
-        max_options = 3
+        max_options = 4
         
         valid_inputs = validate_string_input_for_num_value(dev_menu_response, max_options, min_options)
         
@@ -746,7 +747,9 @@ def use_cpp_from_server(recieved_data, cpp_library):
         "error_searching_db" : False,
         "sqlite_error_value" : None,
         "error_opening_file_to_store_analyzed_data" : False,
-        "error_getting_data_from_db_to_analyze" : False
+        "error_getting_data_from_db_to_analyze" : False,
+        "succesfull_end_of_day_processing" : False
+        # "running_end_of_day_processing " : False
     }
     
     single_retrieved_user_data_to_return = {
@@ -836,6 +839,10 @@ def use_cpp_from_server(recieved_data, cpp_library):
         elif (dev_menu_response == 3):
             # recieved_instructions["store_all_db_data_for_external_analysis"] = True
             operation_state_to_return["error_getting_data_from_db_to_analyze"] = bool(cpp_library.readAllDatabaseDataForAnalysis())
+            
+        elif(recieved_instructions["start_end_of_day_processing"] == True):
+            operation_state_to_return["succesfull_end_of_day_processing"] = not (bool(cpp_library.startEndOfDayOperations()))
+            
             
             
     data_to_send_Back_to_client = {
