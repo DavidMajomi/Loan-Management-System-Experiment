@@ -6,7 +6,7 @@
 #include "../Header Files/loanDatabaseManager.h"
 #include "../Header Files/Logger.h"
 #include "../Header Files/loanManagementSystemForServer.h"
-#include "../Header Files/loanProcessor.h"
+#include "../Header Files/endOfDayProcessor.h"
 
 
 // Use g++ -fPIC -shared -o loanManagementLibraryForServer.dll loanManagementLibraryForServer.cpp sqlite3.o
@@ -177,6 +177,22 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             DISPLAY.switchScreenDisplay();
         }
 
+
+        void startEndOfDayOperations()
+        {
+            bool successfullProcessing = true;
+            string errorValue;
+            
+            try
+            {
+                endOfDayProcessor::startEndOfDayProcessing();
+            }
+            catch(const char * error)
+            {
+                errorValue = error;
+                successfullProcessing = false;
+            }
+        }
     }
 
 
