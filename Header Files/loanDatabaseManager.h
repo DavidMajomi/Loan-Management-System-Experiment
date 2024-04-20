@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include "Loan.h"
+#include "processor.h"
 #include "databaseAbstraction.h"
 
 namespace databaseManager
@@ -36,8 +37,8 @@ namespace databaseManager
     const string REPORTS_TABLE_NAME = "reports";
     const string TABLE_OF_INITIAL_USER_APPLICATION = "users";
     const string REJECTED_USERS_TABLE_NAME = "rejected_users";
-    const string ACCEPTED_USERS_TABLE_NAME = "rccepted_users";
-    const string DEFAULTING_USERS_TABLE_NAME = "refaulting_users";
+    const string ACCEPTED_USERS_TABLE_NAME = "accepted_users";
+    const string DEFAULTING_USERS_TABLE_NAME = "defaulting_users";
 
     
 
@@ -141,8 +142,6 @@ namespace databaseManager
         return data;
     }
     
-
-
     
     vector<vector <string>> getAllApplicationsBesideTodays()
     {
@@ -155,7 +154,6 @@ namespace databaseManager
         return data;
         
     }
-
 
 
     bool addLoanUser(Loan userData)
@@ -175,16 +173,24 @@ namespace databaseManager
     }
 
 
-    bool moveUserFromDbToDb(int loanId, int from, int to)
+    bool copyUserDataToCompletedTable(Processor::userDataFromDb userData)
     {
+        string insertFormat = userData.getSqlInsertformat();
+        string statementWithData = userData.getSqlInsertValues();
 
+        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, TABLE_OF_INITIAL_USER_APPLICATION, statementWithData);
+       
         return true;
     }
 
-    
-    bool copyUserFromDbToDb(int loanId, int from, int to)
+
+    bool copyUserDataToDefaultedTable(Processor::userDataFromDb userData)
     {
-        
+        string insertFormat = userData.getSqlInsertformat();
+        string statementWithData = userData.getSqlInsertValues();
+
+        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, TABLE_OF_INITIAL_USER_APPLICATION, statementWithData);
+       
         return true;
     }
     

@@ -136,6 +136,8 @@ def display_dev_menu ():
 
 
 def display_dev_menu_for_server_client():
+    num_data_to_generate = None
+    numDaysToSimulate = None
     valid_inputs = False
     
     while (valid_inputs is False):
@@ -145,13 +147,14 @@ def display_dev_menu_for_server_client():
         print("1.) Enter 1 to generate and store new data in database.")
         print("2.) Enter 2 to perform data analysis on all csv generated data throughout the history of the program in csv file for data analysis.")
         print("3.) Enter 3 to retrive all stored database values in csv file for data analysis.")
-        print("4.) Enter 4 to force start end of day processing. \n")
+        print("4.) Enter 4 to force start end of day processing.")
+        print("5.) Enter 5 to simulate multiple days of end of day processing. \n")
 
         dev_menu_response = input(" What would you like to do: ")
         
         # Change these anytime you modify the number of available user options
         min_options = 1         
-        max_options = 4
+        max_options = 5
         
         valid_inputs = validate_string_input_for_num_value(dev_menu_response, max_options, min_options)
         
@@ -162,10 +165,14 @@ def display_dev_menu_for_server_client():
     
     if (dev_menu_response == 1):
         num_data_to_generate = int(input(f" How much data would you like to generate (how many users do you want to generate) note cannot generate more than, {MAX_VALUES_TO_GENERATE} users at a time: "))
+    elif (dev_menu_response == 5):
+        numDaysToSimulate = int(input(f" How many days would you like to simulate: "))
+        num_data_to_generate = None
     else:
         num_data_to_generate = None
+        numDaysToSimulate = None
     
-    return dev_menu_response, num_data_to_generate
+    return dev_menu_response, num_data_to_generate, numDaysToSimulate
 
 
 def get_customer_data_from_cli_for_server():
@@ -841,7 +848,11 @@ def use_cpp_from_server(recieved_data, cpp_library):
             operation_state_to_return["error_getting_data_from_db_to_analyze"] = bool(cpp_library.readAllDatabaseDataForAnalysis())
             
         elif(recieved_instructions["start_end_of_day_processing"] == True):
-            operation_state_to_return["succesfull_end_of_day_processing"] = not (bool(cpp_library.startEndOfDayOperations()))
+            # if(recieved_instructions[""])
+            
+            for x in range(int((recieved_instructions["num_days_to_simulate"]))):
+                print("Performing end of days")
+                operation_state_to_return["succesfull_end_of_day_processing"] = not (bool(cpp_library.startEndOfDayOperations()))
             
             
             
@@ -856,12 +867,3 @@ def use_cpp_from_server(recieved_data, cpp_library):
     
     
     
-    
-####################################################    Commented out Functions    #######################################################################    
-    
-    
-# def compile_dll_for_server():
-#     compile_commands = "g++ -fPIC -shared -o"
-    
-#     complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH_FOR_SERVER + " " + SQLITE3_OBJECT_FILE_PATH
-#     subprocess.run(complete_command_instruction, check=True)
