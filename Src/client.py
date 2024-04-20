@@ -102,7 +102,8 @@ def get_customer_data_from_cli():
         "num_data_to_generate" : None,
         "perform_data_analysis_on_all_generated_csv_data" : False,
         "store_all_db_data_for_external_analysis" : False,
-        "start_end_of_day_processing" : False
+        "start_end_of_day_processing" : False,
+        "num_days_to_simulate" : 1
     }
 
     menu_response = menu_for_server_client()
@@ -117,7 +118,7 @@ def get_customer_data_from_cli():
         customer_data.update(search_menu_response_data)
         
     elif (menu_response == 3):
-        dev_menu_response, num_data_to_generate = display_dev_menu_for_server_client() ##
+        dev_menu_response, num_data_to_generate, numDaysToSimulate = display_dev_menu_for_server_client() ##
         
         if (dev_menu_response == 1):
             instructions["generate_data_for_db"] = True
@@ -128,6 +129,11 @@ def get_customer_data_from_cli():
             instructions["store_all_db_data_for_external_analysis"] = True
         elif (dev_menu_response == 4):
             instructions["start_end_of_day_processing"] = True
+            instructions["num_days_to_simulate"] = int(1)
+        elif (dev_menu_response == 5):
+            instructions["start_end_of_day_processing"] = True
+            instructions["num_days_to_simulate"] = numDaysToSimulate
+            
     
     instructions['menu_response'] = menu_response  ##
     instructions['dev_menu_response'] = dev_menu_response  ##

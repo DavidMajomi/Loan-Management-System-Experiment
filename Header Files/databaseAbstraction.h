@@ -427,7 +427,7 @@ namespace databaseAbstraction
     }
 
 
-    double deleteRow(const char * databaseFullPath, string tableName, string columnName, string primaryKey, int keyValue)
+    double deleteRow(const char * databaseFullPath, string tableName, string primaryKey, int keyValue)
     {
         clock_t time;
 
