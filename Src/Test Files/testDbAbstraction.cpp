@@ -245,7 +245,7 @@ void deleteValue()
 {
     try
     {
-        double value = databaseAbstraction::deleteRow(DATABASE_NAME, "users", "name", "Loan_id", 20);
+        double value = databaseAbstraction::deleteRow(DATABASE_NAME, "users", "Loan_id", 20);
     }
     catch(const char * error)
     {
