@@ -178,7 +178,7 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
         }
 
 
-        void startEndOfDayOperations()
+        bool startEndOfDayOperations()
         {
             bool successfullProcessing = true;
             string errorValue;
@@ -191,7 +191,13 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             {
                 errorValue = error;
                 successfullProcessing = false;
+                cout << error << endl;
+                
             }
+
+
+            return successfullProcessing;
+
         }
     }
 

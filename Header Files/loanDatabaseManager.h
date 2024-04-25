@@ -189,7 +189,10 @@ namespace databaseManager
         string insertFormat = userData.getSqlInsertformat();
         string statementWithData = userData.getSqlInsertValues();
 
-        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, TABLE_OF_INITIAL_USER_APPLICATION, statementWithData);
+        // cout << insertFormat << endl;
+        // cout << statementWithData << endl;
+
+        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, DEFAULTING_USERS_TABLE_NAME, statementWithData);
        
         return true;
     }
