@@ -374,6 +374,7 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             financial_reserves,
             debt_to_income_ratio,
             duration_to_next_installment_days,
+            duration_to_loan_settlement_months,
             loan_duration,
             requested_loan_amount,
             monthly_interest_rate,   
@@ -398,7 +399,8 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             loan_decision,
             loan_status,
             applied_today_or_not,
-            account_number) = row
+            account_number,
+            endOfProcessing) = row
             # print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
             
             retrieved_user_data = {
@@ -499,6 +501,7 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                 financial_reserves,
                 debt_to_income_ratio,
                 duration_to_next_installment_days,
+                duration_to_loan_settlement_months,
                 loan_duration,
                 requested_loan_amount,
                 monthly_interest_rate,   
@@ -523,7 +526,8 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                 loan_decision,
                 loan_status,
                 applied_today_or_not,
-                account_number) = data
+                account_number,
+                endOfProcessing) = data
                 
                 
                 retrieved_user_data = {

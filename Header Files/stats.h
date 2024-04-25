@@ -102,18 +102,24 @@ namespace stats
 
     double getStandardDeviation(vector<double> dataSet)
     {
-        int numElementsInDataSet = dataSet.size();
-        double standardDeviation = 0, mean = 0, summationResult = 0;
+        double standardDeviation = 0;
 
-        mean = getMean(dataSet);
-
-        for(int count = 0; count < numElementsInDataSet; count++)
+        if(dataSet.size() > 1)
         {
-            summationResult += pow((dataSet[count] - mean), 2);
+            int numElementsInDataSet = dataSet.size();
+            double mean = 0, summationResult = 0;
+
+            mean = getMean(dataSet);
+
+            for(int count = 0; count < numElementsInDataSet; count++)
+            {
+                summationResult += pow((dataSet[count] - mean), 2);
+            }
+
+            standardDeviation = sqrt((summationResult / (numElementsInDataSet - 1)));
+
         }
-
-        standardDeviation = sqrt((summationResult / (numElementsInDataSet - 1)));
-
+        
         return standardDeviation;
     }
 }

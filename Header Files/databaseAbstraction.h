@@ -207,7 +207,7 @@ namespace databaseAbstraction
                     // }
                     else
                     {
-                sqlite3_close(db);
+                        sqlite3_close(db);
                         throw " ERROR SEARCHING DATABASE, VALUE OUTSIDE OF CURRENT RETRIEVEABLE SQLITE DATATYPES";
                     }
                         

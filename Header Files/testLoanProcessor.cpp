@@ -1,9 +1,12 @@
-#include "loanProcessor.h"
+#include "endOfDayProcessor.h"
 
 int main()
 {
+    cout << "Hello World of processing" << endl;
 
-    LoanProcessor::startEndOfDayProcessing();
+    endOfDayProcessor::startEndOfDayProcessing();
+
+    cout << "Done" << endl;
 
     return 0;
 }
