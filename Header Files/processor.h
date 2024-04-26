@@ -322,7 +322,7 @@ namespace Processor
                         "end_of_term_copying_done INTEGER"
                         ");";
 
-                        cout << tableName << endl;
+                        // cout << tableName << endl;
 
             return format;
 
