@@ -33,7 +33,7 @@ The current server based files currently has most of the functionality used in t
  5.) Included logger for logging while debugging. <br>
 
 # Installation
- 1.) Install Python <br>
+ 1.) Install Python and create a virtual environment<br>
  2.) Install a Mingw and add it to path <br>
  3.) Install make and add it to path manually, or use chocolatey to add it automatically. <br>
  4.) Get an alpha vantage api key for free, and store it in the file to get up to date federal funds rate and other related metrics. Do note there is an option to use default rate values wihout requiring API keys <br>
