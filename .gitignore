@@ -56,3 +56,4 @@ Header Files/makefile
 Header Files/sqlite3.o
 Src/loanManagementServerLibrary.dll
 Src/testStruct.cpp
+Src/LMSModel.pickle
