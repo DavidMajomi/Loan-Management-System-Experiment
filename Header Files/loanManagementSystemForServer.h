@@ -417,8 +417,8 @@ bool retrieveAllUserDataFromDatabase(ofstream& outputCsvFile)
                 outputCsvFile << calculatedBestPossibleLoanViabilityScore << ",";
                 outputCsvFile << calculatedWorstPossibleLoanViabilityScore<< ",";
                 outputCsvFile << amountOfCurrentLoanAndInterestsLeft << ",";
-                outputCsvFile << loanDecision << ",";
-                outputCsvFile << "\n";
+                outputCsvFile << loanDecision;
+                outputCsvFile << endl;
 
             }
 
