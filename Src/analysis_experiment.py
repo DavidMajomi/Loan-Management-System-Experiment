@@ -7,6 +7,8 @@ from sklearn import preprocessing
 from sklearn import linear_model
 from sklearn.preprocessing import StandardScaler
 import pickle
+from sklearn import tree
+from sklearn.tree import DecisionTreeClassifier
 
 
 
@@ -96,8 +98,8 @@ debt_to_income_ratio = 0
 Duration_in_months = 1
 loan_amount_requested = 20000
 
-# credit_score = 831
-# monthly_income = 1921.70
+# credit_score = 350
+# monthly_income = 2000
 # financial_reserves = 1084.64
 # debt_to_income_ratio = 0.42
 # Duration_in_months = 13
@@ -130,11 +132,21 @@ adjusted_loan_viability_score = float(model.predict([[credit_score, monthly_inco
 
 normal_monthly_interest_rate = (slope * adjusted_loan_viability_score) + deep_sub_prime_rate
 
-list_of_models = [model]
 
 print(adjusted_loan_viability_score)
 print(f" This is normal rate: {normal_monthly_interest_rate} ")
 print(f" This is default risk score: {defult_risk_score} ")
+
+
+score = df[['Adjusted_Loan_viability_Score']]
+decision = df['loan_decision']
+
+theTree = DecisionTreeClassifier()
+theTree = theTree.fit(score, decision)
+
+print("Loan Decision: ",theTree.predict([[adjusted_loan_viability_score]]))
+
+list_of_models = [model, theTree]
 
 with open("LMSModel.pickle", "wb") as file:
     pickle.dump(list_of_models, file)
