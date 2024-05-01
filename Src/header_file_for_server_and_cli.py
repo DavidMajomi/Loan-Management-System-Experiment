@@ -630,11 +630,6 @@ def dev_menu_response(instructions, operation_state):
                 
     elif (instructions["dev_menu_response"] == 3):
         
-        # if (instructions["generate_data_for_db"] == True):    
-        #     if not (operation_state["error_getting_data_from_db_to_analyze"]):
-        #             print(Fore.GREEN + " Analyzed Data Successfully")7
-        #     else:
-        #         print(Fore.RED + " Failed to analyze data.")
         if (instructions["generate_data_for_db"] == True):
             
             if not operation_state["error_opening_file_to_store_generated_data"]:
