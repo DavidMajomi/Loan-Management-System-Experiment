@@ -144,7 +144,7 @@ decision = df['loan_decision']
 theTree = DecisionTreeClassifier()
 theTree = theTree.fit(score, decision)
 
-print("Loan Decision: ",theTree.predict([[adjusted_loan_viability_score]]))
+print("Loan Decision: ", theTree.predict([[adjusted_loan_viability_score]]))
 
 list_of_models = [model, theTree]
 
