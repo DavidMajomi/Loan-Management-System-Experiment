@@ -27,12 +27,12 @@ deep_sub_prime_rate = 30.00
 
 slope = (deep_sub_prime_rate - super_prime_rate) / -100 
 
-credit_score = 850
-monthly_income = 12000
-financial_reserves = 50000
-debt_to_income_ratio = 0
-Duration_in_months = 1
-loan_amount_requested = 20000
+credit_score = 612
+monthly_income = 6361.51
+financial_reserves = 17294.92
+debt_to_income_ratio = 0.40
+Duration_in_months = 59
+loan_amount_requested = 14185.0
 
 if (credit_score >= 781):
     interestRateByGroup = super_prime_rate

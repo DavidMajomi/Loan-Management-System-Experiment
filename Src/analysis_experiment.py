@@ -80,11 +80,11 @@ columns = ["credit_score", "monthly_income", "financial_reserves", "debt_to_inco
 x = df[columns]
 y = df['Adjusted_Loan_viability_Score']
 
-X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=101) 
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.4, random_state=101) 
 
 model = LinearRegression()
 
-model.fit(X_train, y_train)
+model.fit(X_train.values, y_train.values)
 
 predictions = model.predict(X_test)
 
@@ -142,7 +142,7 @@ score = df[['Adjusted_Loan_viability_Score']]
 decision = df['loan_decision']
 
 theTree = DecisionTreeClassifier()
-theTree = theTree.fit(score, decision)
+theTree = theTree.fit(score.values, decision.values)
 
 print("Loan Decision: ", theTree.predict([[adjusted_loan_viability_score]]))
 
