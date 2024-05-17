@@ -403,25 +403,45 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             endOfProcessing) = row
             # print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
             
-            retrieved_user_data = {
-                "loan_id" : loan_id,
-                "user_name" : user_name,
-                "credit_score" : credit_score,
-                "monthly_income" : monthly_income,
-                "financial_reserves" : financial_reserves,
-                "debt_to_income_ratio" : debt_to_income_ratio,
-                "loan_duration_left" : loan_duration,
-                "requested_loan_amount" : requested_loan_amount,
-                "monthly_interest_rate" : monthly_interest_rate,
-                "yearly_interst_rate" : yearly_interest_rate
+            # retrieved_user_data = {
+            #     "loan_id" : loan_id,
+            #     "user_name" : user_name,
+            #     "credit_score" : credit_score,
+            #     "monthly_income" : monthly_income,
+            #     "financial_reserves" : financial_reserves,
+            #     "debt_to_income_ratio" : debt_to_income_ratio,
+            #     "loan_duration_left" : loan_duration,
+            #     "requested_loan_amount" : requested_loan_amount,
+            #     "monthly_interest_rate" : monthly_interest_rate,
+            #     "yearly_interst_rate" : yearly_interest_rate
                 
-                # "loss_given_default" : loss_given_default,
-                # "recovery_rate" : recovery_rate,
-                # "outstanding_monthly_debt_payments_to_satisfy_loan" : outstanding_monthly_debt_payments_to_satisfy_loan,
-                # "default_risk_score" : default_risk_score,
-                # "loan_viability_score" : loan_viability_score,
-                # "adjusted_loan_viability_score" : adjusted_loan_viability_score
-            }
+            #     # "loss_given_default" : loss_given_default,
+            #     # "recovery_rate" : recovery_rate,
+            #     # "outstanding_monthly_debt_payments_to_satisfy_loan" : outstanding_monthly_debt_payments_to_satisfy_loan,
+            #     # "default_risk_score" : default_risk_score,
+            #     # "loan_viability_score" : loan_viability_score,
+            #     # "adjusted_loan_viability_score" : adjusted_loan_viability_score
+            # }
+            retrieved_user_data = {
+                    "loan_id" : loan_id,
+                    "user_name" : user_name,
+                    "credit_score" : credit_score,
+                    "monthly_income" : monthly_income,
+                    "financial_reserves" : financial_reserves,
+                    "debt_to_income_ratio" : debt_to_income_ratio,
+                    "loan_duration_left" : loan_duration,
+                    "duration_to_next_installment_days" : duration_to_next_installment_days,
+                    "duration_to_loan_settlement_months" : duration_to_loan_settlement_months,
+                    "requested_loan_amount" : requested_loan_amount,
+                    "monthly_interest_rate" : monthly_interest_rate,
+                    "yearly_interst_rate" : yearly_interest_rate,
+                    "outstanding_monthly_debt_paymentd_from_loan" : outstanding_monthly_debt_paymentd_from_loan,
+                    "outstanding_monthly_debt_payments_prior_to_loan" : outstanding_monthly_debt_payments_prior_to_loan,
+                    "amount_to_pay_at_next_installment" : amount_to_pay_at_next_installment,
+                    "loan_decision" :loan_decision,
+                    "loan_status" : loan_status,
+                    "account_number" : account_number
+                }
             # print(f" print loan id {loan_id}")
             
             user_accessible_db_data.update(retrieved_user_data)
@@ -538,10 +558,17 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                     "financial_reserves" : financial_reserves,
                     "debt_to_income_ratio" : debt_to_income_ratio,
                     "loan_duration_left" : loan_duration,
+                    "duration_to_next_installment_days" : duration_to_next_installment_days,
+                    "duration_to_loan_settlement_months" : duration_to_loan_settlement_months,
                     "requested_loan_amount" : requested_loan_amount,
                     "monthly_interest_rate" : monthly_interest_rate,
-                    "yearly_interst_rate" : yearly_interest_rate
-                    
+                    "yearly_interst_rate" : yearly_interest_rate,
+                    "outstanding_monthly_debt_paymentd_from_loan" : outstanding_monthly_debt_paymentd_from_loan,
+                    "outstanding_monthly_debt_payments_prior_to_loan" : outstanding_monthly_debt_payments_prior_to_loan,
+                    "amount_to_pay_at_next_installment" : amount_to_pay_at_next_installment,
+                    "loan_decision" :loan_decision,
+                    "loan_status" : loan_status,
+                    "account_number" : account_number
                 }
                 
                 retrieved_user_data_copy = retrieved_user_data.copy()
@@ -589,8 +616,17 @@ def display_single_retrieved_data(retrieved_user_data):
         print("Your requested Loan Duration is", retrieved_user_data['loan_duration_left'], "months")
         print("Your requested Loan Amount: $", retrieved_user_data['requested_loan_amount'])
         print("Your monthly interest rate:", retrieved_user_data['monthly_interest_rate'], "%")
-        print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "% \n")
-
+        print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "%")
+        
+        if (bool(retrieved_user_data['loan_decision']) == True):
+            print("Loan application decision:", "Applied Succesfully, your loan has been granted.")
+            print("Your total outstanding monthly debt payments from previous and current loans at time of application:", retrieved_user_data["outstanding_monthly_debt_paymentd_from_loan"])
+            print("Amount to pay at next installment", retrieved_user_data["amount_to_pay_at_next_installment"])
+            print("Loan Status:", retrieved_user_data["loan_status"], "\n")
+        else:
+            print("Loan application decision:", "Applied Succesfully, however your appication has been denied.", " \n")
+                
+        
     else:
         print(" Credentials do not match")
  
@@ -609,7 +645,18 @@ def display_multiple_retrieved_data(list_of_retrieved_user_data):
         print("Your requested Loan Duration is", retrieved_user_data['loan_duration_left'], "months")
         print("Your requested Loan Amount: $", retrieved_user_data['requested_loan_amount'])
         print("Your monthly interest rate:", retrieved_user_data['monthly_interest_rate'], "%")
-        print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "% \n")
+        print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "%")
+        
+        if (bool(retrieved_user_data['loan_decision']) == True):
+            print("Loan application decision:", "Applied Succesfully, your loan has been granted.")
+            print("Your total outstanding monthly debt payments from previous and current loans at time of application:", retrieved_user_data["outstanding_monthly_debt_paymentd_from_loan"])
+            print("Amount to pay at next installment", retrieved_user_data["amount_to_pay_at_next_installment"])
+            print("Loan Status:", retrieved_user_data["loan_status"], "\n")
+        else:
+            print("Loan application decision:", "Applied Succesfully, however your appication has been denied.", " \n")
+                
+        
+             
         
         print("\n")
 
@@ -759,17 +806,25 @@ def use_cpp_from_server(recieved_data, cpp_library):
     }
     
     single_retrieved_user_data_to_return = {
-        "loan_id" : None,
-        "user_name" : None,
-        "credit_score" : None,
-        "monthly_income" : None,
-        "financial_reserves" : None,
-        "debt_to_income_ratio" : None,
-        "loan_duration_left" : None,
-        "requested_loan_amount" : None,
-        "monthly_interest_rate" : None,
-        "yearly_interst_rate" : None
-    }
+                    "loan_id" : None,
+                    "user_name" : None,
+                    "credit_score" : None,
+                    "monthly_income" : None,
+                    "financial_reserves" : None,
+                    "debt_to_income_ratio" : None,
+                    "loan_duration_left" : None,
+                    "duration_to_next_installment_days" : None,
+                    "duration_to_loan_settlement_months" : None,
+                    "requested_loan_amount" : None,
+                    "monthly_interest_rate" : None,
+                    "yearly_interst_rate" : None,
+                    "outstanding_monthly_debt_paymentd_from_loan" : None,
+                    "outstanding_monthly_debt_payments_prior_to_loan" : None,
+                    "amount_to_pay_at_next_installment" : None,
+                    "loan_decision" : None,
+                    "loan_status" : None,
+                    "account_number" : None
+                }
     
     data_for_each_loan_item = {
         "retrieved_user_data_to_return" : single_retrieved_user_data_to_return
