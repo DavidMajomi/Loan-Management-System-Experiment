@@ -647,13 +647,16 @@ def display_multiple_retrieved_data(list_of_retrieved_user_data):
         print("Your monthly interest rate:", retrieved_user_data['monthly_interest_rate'], "%")
         print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "%")
         
-        if (bool(retrieved_user_data['loan_decision']) == True):
+        if ((retrieved_user_data['loan_decision']) == 1):
             print("Loan application decision:", "Applied Succesfully, your loan has been granted.")
             print("Your total outstanding monthly debt payments from previous and current loans at time of application:", retrieved_user_data["outstanding_monthly_debt_paymentd_from_loan"])
             print("Amount to pay at next installment", retrieved_user_data["amount_to_pay_at_next_installment"])
             print("Loan Status:", retrieved_user_data["loan_status"], "\n")
         else:
-            print("Loan application decision:", "Applied Succesfully, however your appication has been denied.", " \n")
+            if(retrieved_user_data['loan_decision'] == 2):
+                print("Loan application decision: Your Loan Application is still being processed")
+            else:
+                print("Loan application decision:", "Applied Succesfully, however your appication has been denied.", " \n")
                 
         
              

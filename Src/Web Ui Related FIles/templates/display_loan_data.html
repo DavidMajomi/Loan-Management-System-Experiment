@@ -12,16 +12,18 @@
         <p>Your requested Loan Amount: $ {{ retrieved_user_data['requested_loan_amount'] }}</p>
         <p>Your projected yearly interest rate: {{ retrieved_user_data['yearly_interst_rate'] }} %</p>
 
-        {% if (retrieved_user_data['loan_decision']) %}
+        {% if (retrieved_user_data['loan_decision'] == 1) %}
             <p> Loan application decision: Applied Succesfully, your loan has been granted.</p>
             <p> Your total outstanding monthly debt payments from previous and current loans at time of application: {{retrieved_user_data["outstanding_monthly_debt_paymentd_from_loan"]}} </p>
             <p> Amount to pay at next installment: {{retrieved_user_data["amount_to_pay_at_next_installment"]}} </p>
             <p> Loan Status: {{retrieved_user_data["loan_status"]}} </p>
 
         {% else %}
-            <p> Loan application decision: Applied Succesfully, however your appication has been denied </p>
-        
-        
+            {% if (retrieved_user_data['loan_decision'] == 2) %}
+                <p> Loan application decision: Your Loan Application is still being processed </p>
+            {% else %}
+                <p> Loan application decision: Applied Succesfully, however your appication has been denied </p>
+            {% endif %}
         {% endif %}
         <br>
     {% endfor %}
