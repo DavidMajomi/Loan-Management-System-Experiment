@@ -33,3 +33,6 @@ Test Files/Executables
 /API keys/googleApi.txt
 /Tools still in production to be used later/cppUmlDocumenter.cpp
 test loan.txt
+Header Files/makefile
+Header Files/sqlite3.o
+Src/testStruct.cpp
