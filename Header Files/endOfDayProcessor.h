@@ -14,7 +14,7 @@ namespace endOfDayProcessor
     }
 
 
-    void processPriorApplications()
+    int processPriorApplications()
     {
         // cout << "Prior applications." << endl;
         vector<vector <string>> data = databaseManager::getAllApplicationsBesideTodays();
@@ -22,6 +22,7 @@ namespace endOfDayProcessor
         for(int count = 0; count < data.size(); count++)
         {
             bool successCopyToCompletedTable = false;
+
             userDataFromDb userInfo(data[count]);
             loanUpdates changes = userInfo.getNewUpdates();
 
@@ -32,7 +33,6 @@ namespace endOfDayProcessor
 
             if(changes.getLoanStatus() == "Completed" && (changes.getEndOfTermCopyingDone() == (int)false))
             {
-                // cout << (bool)(changes.getEndOfTermCopyingDone()) << endl;
                 successCopyToCompletedTable = databaseManager::copyUserDataToCompletedTable(userInfo);
                 double timeT = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
             }
@@ -52,15 +52,14 @@ namespace endOfDayProcessor
             double timeB = databaseAbstraction::update(DATABASE_NAME, "users", "loan_decision", to_string(changes.getLoanDecision()), "Loan_id", (changes.getLoanId()));
             double timeC = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
             double timeD = databaseAbstraction::update(DATABASE_NAME, "users", "applied_today_or_not", to_string(changes.getAppliedToday()), "Loan_id", (changes.getLoanId()));
-            
-            
-        }
 
+        }
         
+        return data.size();
     }
 
 
-    void processNewApplications()
+    int processNewApplications()
     {
         // cout << "New Application" << endl;
         reportData report;
@@ -106,14 +105,25 @@ namespace endOfDayProcessor
 
         }
 
+        return data.size();
     }
     
 
     void startEndOfDayProcessing()
     {
+
+        int numNewApplications = 0;
+        int numPriorApplications = 0;
+
         cout << "Starting processing" << endl;
-        processPriorApplications();
-        processNewApplications();
+        numPriorApplications = processPriorApplications();
+        numNewApplications = processNewApplications();
         cout << "Done Processing" << endl;
+        
+        cout << endl;
+        
+        cout << "Number of new applications processed = " << numNewApplications << endl;
+        cout << "Number of prior applications processed = " << numPriorApplications << endl;
+
     }
 }

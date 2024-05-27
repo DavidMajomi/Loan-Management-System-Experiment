@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string>
 #include "constants.h"
+#include "loanDatabaseManager.h"
 #include "stats.h"
 
 namespace Processor
@@ -421,41 +422,43 @@ namespace Processor
     public:
         userDataFromDb(vector<string> data)
         {
-            loanId = stoi(data[0]);
-            userName = (data[1]);
-            timeOfApplication = (data[2]);
-            creditScore = stoi(data[3]);
-            monthlyIncome = stod(data[4]);
-            financialReserves = stod(data[5]);
-            debtToIncomeRatio = stod(data[6]);
-            loanDuration = stod(data[7]);
-            durationToNextInstallmentDays = stod(data[8]);
-            durationToLoanSettlementMonths = stod(data[9]);
-            requestedLoanAmount = stod(data[9 + 1]);
-            monthlyInterestRate = stod(data[10 + 1]);
-            yearlyInterestRate = stod(data[11 + 1]);
-            lossGivenDefault = stod(data[12 + 1]);
-            recoveryRate = stod(data[13 + 1]);
-            outstandingMonthlyDebtsPaymentsFromLoan = stod(data[14 + 1]);
-            outsytandingMonthlyDebtPaymentsPriorToLoan = stod(data[15 + 1]);
-            amounttoPayAtNextInsstallment = stod(data[16 + 1]);
-            defaultRiskScore = stod(data[17 + 1]);
-            loanViabilityScore = stod(data[18 + 1]);
-            adjustedLoanViabilityScore = stod(data[19 + 1]);
-            matrixBasedAdjustedLoanViabilityScore = stod(data[20 + 1]);
-            interestRateByGroup = stod(data[21 + 1]);
-            bestPossibleYearlyRate = stod(data[22 + 1]);
-            worstPossibleYearlyRate = stod(data[23 + 1]);
-            finalLoanGrade = (data[24  + 1][0]);
-            potentialProfitFromLoan = stod(data[25 + 1]);
-            calculatedBestPossibleLoanViabilityScore = stod(data[26 + 1]);
-            calculatedWorstPossibleLoanViabilityScore = stod(data[27 + 1]);
-            amountOfCurrentLoanAndInteerestsLeft = stod(data[28 + 1]);
-            loanDecision = stoi(data[29 + 1]);
-            loanStatus = data[30 + 1];
-            appliedToday = stoi(data[31 + 1]);
-            accountNumber = stoi(data[32 + 1]);
-            endOfTermCopyingDone = stoi(data[33 + 1]);
+            databaseManager::userDataFromDb convertedData(data);
+            
+            loanId = convertedData.getLoanId();
+            userName = convertedData.getUserName();
+            timeOfApplication = convertedData.getTimeOfApplication();
+            creditScore = convertedData.getCreditScore();
+            monthlyIncome = convertedData.getMonthlyIncome();
+            financialReserves = convertedData.getFinancialReserves();
+            debtToIncomeRatio = convertedData.getDebtToIncomeRatio();
+            loanDuration = convertedData.getLoanDuration();
+            durationToNextInstallmentDays = convertedData.getDurationToNextInstallmentDays();
+            durationToLoanSettlementMonths = convertedData.getDurationToLoanSettlementMonths();
+            requestedLoanAmount = convertedData.getRequestedLoanAmount();
+            monthlyInterestRate = convertedData.getMonthlyInterestRate();
+            yearlyInterestRate = convertedData.getYearlyInterestRate();
+            lossGivenDefault = convertedData.getLossGivenDefault();
+            recoveryRate = convertedData.getRecoveryRate();
+            outstandingMonthlyDebtsPaymentsFromLoan = convertedData.getOutstandingMonthlyDebtsPaymentsFromLoan();
+            outsytandingMonthlyDebtPaymentsPriorToLoan = convertedData.getOutsytandingMonthlyDebtPaymentsPriorToLoan();
+            amounttoPayAtNextInsstallment = convertedData.getAmounttoPayAtNextInsstallment();
+            defaultRiskScore = convertedData.getDefaultRiskScore();
+            loanViabilityScore = convertedData.getLoanViabilityScore();
+            adjustedLoanViabilityScore = convertedData.getAdjustedLoanViabilityScore();
+            matrixBasedAdjustedLoanViabilityScore = convertedData.getMatrixBasedAdjustedLoanViabilityScore();
+            interestRateByGroup = convertedData.getInterestRateByGroup();
+            bestPossibleYearlyRate = convertedData.getBestPossibleYearlyRate();
+            worstPossibleYearlyRate = convertedData.getWorstPossibleYearlyRate();
+            finalLoanGrade = convertedData.getFinalLoanGrade();
+            potentialProfitFromLoan = convertedData.getPotentialProfitFromLoan();
+            calculatedBestPossibleLoanViabilityScore = convertedData.getCalculatedBestPossibleAdjustedLoanViabilityScore();
+            calculatedWorstPossibleLoanViabilityScore = convertedData.getCalculatedWorstpossibleAdjustedLoanViabilityScore();
+            amountOfCurrentLoanAndInteerestsLeft = convertedData.getAmountOfCurrentLoanAndInteerestsLeft();
+            loanDecision = convertedData.getLoanDecision();
+            loanStatus = convertedData.getLoanStatus();
+            appliedToday = convertedData.getAppliedToday();
+            accountNumber = convertedData.getAccountNumber();
+            endOfTermCopyingDone = convertedData.getEndOfTermCopyingDone();
 
             previousDurationToNextInstallmentDays = durationToNextInstallmentDays;
 
