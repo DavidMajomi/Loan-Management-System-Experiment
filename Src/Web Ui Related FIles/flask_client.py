@@ -61,7 +61,8 @@ def apply_for_loan():
             "generate_data_for_db" : False,
             "num_data_to_generate" : None,
             "perform_data_analysis_on_all_generated_csv_data" : False,
-            "store_all_db_data_for_external_analysis" : False
+            "store_all_db_data_for_external_analysis" : False,
+            "start_end_of_day_processing" : False
         }
         
         data_to_send = {

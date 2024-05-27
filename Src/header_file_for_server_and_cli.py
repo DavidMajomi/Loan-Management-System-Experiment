@@ -16,20 +16,16 @@ from colorama import Fore
 PATH = str(Path.cwd())
 
 FORMAT = 'utf-8'
-STAND_ALONE_CPP_EXECUTABLE = PATH + "\\just c++.exe"  
-MAIN_CPP_FILE = PATH + "\\main.cpp"
+
 SQLITE3_DATABASE_PATH = PATH + "\\Database files\\loans.db"
-# SQLITE3_OBJECT_FILE_PATH = PATH + "\\sqlite3.o"
-LIBRARY_CPP_FILE_PATH = PATH + "\\loanManagementLibrary.cpp"
-LIBRARY_CPP_FILE_PATH_FOR_SERVER = PATH + "\\loanManagementLibraryForServer.cpp"
+
 OUTPUT_DLL_FILE_PATH = PATH + "\\loanManagementLibrary.dll"  
 OUTPUT_DLL_FILE_FOR_SERVER_PATH = PATH + "\\loanManagementServerLibrary.dll"
-CPP_EXECUTABLE_FROM_PYTHON_PATH = PATH + "\\executable from python interface.exe"  
 CSV_FILE_FOR_ALL_GENERATED_DATA_THROUGHOUT_PROGRAM_HISTORY = PATH + "\\Folder with Generated Data\\allGeneratedLoanData.csv"
 CSV_FILE_FOR_TEMP_GENERATED_DATA_FOR_db = PATH + "\\Folder with Generated Data\\tempGeneratedLoanDataForDbStorage.csv"
 
 
-MAX_VALUES_TO_GENERATE = 10000000000
+MAX_VALUES_TO_GENERATE = 100000
 
 class UserData(ctypes.Structure):
     _fields_ = [("user_name", ctypes.c_char_p),
@@ -140,6 +136,8 @@ def display_dev_menu ():
 
 
 def display_dev_menu_for_server_client():
+    num_data_to_generate = None
+    numDaysToSimulate = None
     valid_inputs = False
     
     while (valid_inputs is False):
@@ -148,13 +146,15 @@ def display_dev_menu_for_server_client():
 
         print("1.) Enter 1 to generate and store new data in database.")
         print("2.) Enter 2 to perform data analysis on all csv generated data throughout the history of the program in csv file for data analysis.")
-        print("3.) Enter 3 to retrive all stored database values in csv file for data analysis. \n")
+        print("3.) Enter 3 to retrive all stored database values in csv file for data analysis.")
+        print("4.) Enter 4 to force start end of day processing.")
+        print("5.) Enter 5 to simulate multiple days of end of day processing. \n")
 
         dev_menu_response = input(" What would you like to do: ")
         
         # Change these anytime you modify the number of available user options
         min_options = 1         
-        max_options = 3
+        max_options = 5
         
         valid_inputs = validate_string_input_for_num_value(dev_menu_response, max_options, min_options)
         
@@ -165,10 +165,14 @@ def display_dev_menu_for_server_client():
     
     if (dev_menu_response == 1):
         num_data_to_generate = int(input(f" How much data would you like to generate (how many users do you want to generate) note cannot generate more than, {MAX_VALUES_TO_GENERATE} users at a time: "))
+    elif (dev_menu_response == 5):
+        numDaysToSimulate = int(input(f" How many days would you like to simulate: "))
+        num_data_to_generate = None
     else:
         num_data_to_generate = None
+        numDaysToSimulate = None
     
-    return dev_menu_response, num_data_to_generate
+    return dev_menu_response, num_data_to_generate, numDaysToSimulate
 
 
 def get_customer_data_from_cli_for_server():
@@ -369,8 +373,9 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             monthly_income, 
             financial_reserves,
             debt_to_income_ratio,
-            duration_to_next_installment_days,
             loan_duration,
+            duration_to_next_installment_days,
+            duration_to_loan_settlement_months,
             requested_loan_amount,
             monthly_interest_rate,   
             yearly_interest_rate,
@@ -394,28 +399,49 @@ def search_for_loan_data_given_loan_id_from_server(recieved_loan_id):
             loan_decision,
             loan_status,
             applied_today_or_not,
-            account_number) = row
+            account_number,
+            endOfProcessing) = row
             # print(loan_id, user_name, credit_score, monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rates, yearly_interst_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_payments_to_satisfy_loan, default_risk_score, loan_viability_score, adjusted_loan_viability_score)
             
-            retrieved_user_data = {
-                "loan_id" : loan_id,
-                "user_name" : user_name,
-                "credit_score" : credit_score,
-                "monthly_income" : monthly_income,
-                "financial_reserves" : financial_reserves,
-                "debt_to_income_ratio" : debt_to_income_ratio,
-                "loan_duration_left" : loan_duration,
-                "requested_loan_amount" : requested_loan_amount,
-                "monthly_interest_rate" : monthly_interest_rate,
-                "yearly_interst_rate" : yearly_interest_rate
+            # retrieved_user_data = {
+            #     "loan_id" : loan_id,
+            #     "user_name" : user_name,
+            #     "credit_score" : credit_score,
+            #     "monthly_income" : monthly_income,
+            #     "financial_reserves" : financial_reserves,
+            #     "debt_to_income_ratio" : debt_to_income_ratio,
+            #     "loan_duration_left" : loan_duration,
+            #     "requested_loan_amount" : requested_loan_amount,
+            #     "monthly_interest_rate" : monthly_interest_rate,
+            #     "yearly_interst_rate" : yearly_interest_rate
                 
-                # "loss_given_default" : loss_given_default,
-                # "recovery_rate" : recovery_rate,
-                # "outstanding_monthly_debt_payments_to_satisfy_loan" : outstanding_monthly_debt_payments_to_satisfy_loan,
-                # "default_risk_score" : default_risk_score,
-                # "loan_viability_score" : loan_viability_score,
-                # "adjusted_loan_viability_score" : adjusted_loan_viability_score
-            }
+            #     # "loss_given_default" : loss_given_default,
+            #     # "recovery_rate" : recovery_rate,
+            #     # "outstanding_monthly_debt_payments_to_satisfy_loan" : outstanding_monthly_debt_payments_to_satisfy_loan,
+            #     # "default_risk_score" : default_risk_score,
+            #     # "loan_viability_score" : loan_viability_score,
+            #     # "adjusted_loan_viability_score" : adjusted_loan_viability_score
+            # }
+            retrieved_user_data = {
+                    "loan_id" : loan_id,
+                    "user_name" : user_name,
+                    "credit_score" : credit_score,
+                    "monthly_income" : monthly_income,
+                    "financial_reserves" : financial_reserves,
+                    "debt_to_income_ratio" : debt_to_income_ratio,
+                    "loan_duration_left" : loan_duration,
+                    "duration_to_next_installment_days" : duration_to_next_installment_days,
+                    "duration_to_loan_settlement_months" : duration_to_loan_settlement_months,
+                    "requested_loan_amount" : requested_loan_amount,
+                    "monthly_interest_rate" : monthly_interest_rate,
+                    "yearly_interst_rate" : yearly_interest_rate,
+                    "outstanding_monthly_debt_paymentd_from_loan" : outstanding_monthly_debt_paymentd_from_loan,
+                    "outstanding_monthly_debt_payments_prior_to_loan" : outstanding_monthly_debt_payments_prior_to_loan,
+                    "amount_to_pay_at_next_installment" : amount_to_pay_at_next_installment,
+                    "loan_decision" :loan_decision,
+                    "loan_status" : loan_status,
+                    "account_number" : account_number
+                }
             # print(f" print loan id {loan_id}")
             
             user_accessible_db_data.update(retrieved_user_data)
@@ -494,8 +520,9 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                 monthly_income, 
                 financial_reserves,
                 debt_to_income_ratio,
-                duration_to_next_installment_days,
                 loan_duration,
+                duration_to_next_installment_days,
+                duration_to_loan_settlement_months,
                 requested_loan_amount,
                 monthly_interest_rate,   
                 yearly_interest_rate,
@@ -519,7 +546,8 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                 loan_decision,
                 loan_status,
                 applied_today_or_not,
-                account_number) = data
+                account_number,
+                endOfProcessing) = data
                 
                 
                 retrieved_user_data = {
@@ -530,10 +558,17 @@ def search_for_loan_data_without_loan_id_for_server(user_name):
                     "financial_reserves" : financial_reserves,
                     "debt_to_income_ratio" : debt_to_income_ratio,
                     "loan_duration_left" : loan_duration,
+                    "duration_to_next_installment_days" : duration_to_next_installment_days,
+                    "duration_to_loan_settlement_months" : duration_to_loan_settlement_months,
                     "requested_loan_amount" : requested_loan_amount,
                     "monthly_interest_rate" : monthly_interest_rate,
-                    "yearly_interst_rate" : yearly_interest_rate
-                    
+                    "yearly_interst_rate" : yearly_interest_rate,
+                    "outstanding_monthly_debt_paymentd_from_loan" : outstanding_monthly_debt_paymentd_from_loan,
+                    "outstanding_monthly_debt_payments_prior_to_loan" : outstanding_monthly_debt_payments_prior_to_loan,
+                    "amount_to_pay_at_next_installment" : amount_to_pay_at_next_installment,
+                    "loan_decision" :loan_decision,
+                    "loan_status" : loan_status,
+                    "account_number" : account_number
                 }
                 
                 retrieved_user_data_copy = retrieved_user_data.copy()
@@ -581,8 +616,17 @@ def display_single_retrieved_data(retrieved_user_data):
         print("Your requested Loan Duration is", retrieved_user_data['loan_duration_left'], "months")
         print("Your requested Loan Amount: $", retrieved_user_data['requested_loan_amount'])
         print("Your monthly interest rate:", retrieved_user_data['monthly_interest_rate'], "%")
-        print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "% \n")
-
+        print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "%")
+        
+        if (bool(retrieved_user_data['loan_decision']) == True):
+            print("Loan application decision:", "Applied Succesfully, your loan has been granted.")
+            print("Your total outstanding monthly debt payments from previous and current loans at time of application:", retrieved_user_data["outstanding_monthly_debt_paymentd_from_loan"])
+            print("Amount to pay at next installment", retrieved_user_data["amount_to_pay_at_next_installment"])
+            print("Loan Status:", retrieved_user_data["loan_status"], "\n")
+        else:
+            print("Loan application decision:", "Applied Succesfully, however your appication has been denied.", " \n")
+                
+        
     else:
         print(" Credentials do not match")
  
@@ -601,7 +645,21 @@ def display_multiple_retrieved_data(list_of_retrieved_user_data):
         print("Your requested Loan Duration is", retrieved_user_data['loan_duration_left'], "months")
         print("Your requested Loan Amount: $", retrieved_user_data['requested_loan_amount'])
         print("Your monthly interest rate:", retrieved_user_data['monthly_interest_rate'], "%")
-        print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "% \n")
+        print("Your Monthly Interest over a year:", retrieved_user_data['yearly_interst_rate'], "%")
+        
+        if ((retrieved_user_data['loan_decision']) == 1):
+            print("Loan application decision:", "Applied Succesfully, your loan has been granted.")
+            print("Your total outstanding monthly debt payments from previous and current loans at time of application:", retrieved_user_data["outstanding_monthly_debt_paymentd_from_loan"])
+            print("Amount to pay at next installment", retrieved_user_data["amount_to_pay_at_next_installment"])
+            print("Loan Status:", retrieved_user_data["loan_status"], "\n")
+        else:
+            if(retrieved_user_data['loan_decision'] == 2):
+                print("Loan application decision: Your Loan Application is still being processed")
+            else:
+                print("Loan application decision:", "Applied Succesfully, however your appication has been denied.", " \n")
+                
+        
+             
         
         print("\n")
 
@@ -622,11 +680,6 @@ def dev_menu_response(instructions, operation_state):
                 
     elif (instructions["dev_menu_response"] == 3):
         
-        # if (instructions["generate_data_for_db"] == True):    
-        #     if not (operation_state["error_getting_data_from_db_to_analyze"]):
-        #             print(Fore.GREEN + " Analyzed Data Successfully")7
-        #     else:
-        #         print(Fore.RED + " Failed to analyze data.")
         if (instructions["generate_data_for_db"] == True):
             
             if not operation_state["error_opening_file_to_store_generated_data"]:
@@ -750,21 +803,31 @@ def use_cpp_from_server(recieved_data, cpp_library):
         "error_searching_db" : False,
         "sqlite_error_value" : None,
         "error_opening_file_to_store_analyzed_data" : False,
-        "error_getting_data_from_db_to_analyze" : False
+        "error_getting_data_from_db_to_analyze" : False,
+        "succesfull_end_of_day_processing" : False
+        # "running_end_of_day_processing " : False
     }
     
     single_retrieved_user_data_to_return = {
-        "loan_id" : None,
-        "user_name" : None,
-        "credit_score" : None,
-        "monthly_income" : None,
-        "financial_reserves" : None,
-        "debt_to_income_ratio" : None,
-        "loan_duration_left" : None,
-        "requested_loan_amount" : None,
-        "monthly_interest_rate" : None,
-        "yearly_interst_rate" : None
-    }
+                    "loan_id" : None,
+                    "user_name" : None,
+                    "credit_score" : None,
+                    "monthly_income" : None,
+                    "financial_reserves" : None,
+                    "debt_to_income_ratio" : None,
+                    "loan_duration_left" : None,
+                    "duration_to_next_installment_days" : None,
+                    "duration_to_loan_settlement_months" : None,
+                    "requested_loan_amount" : None,
+                    "monthly_interest_rate" : None,
+                    "yearly_interst_rate" : None,
+                    "outstanding_monthly_debt_paymentd_from_loan" : None,
+                    "outstanding_monthly_debt_payments_prior_to_loan" : None,
+                    "amount_to_pay_at_next_installment" : None,
+                    "loan_decision" : None,
+                    "loan_status" : None,
+                    "account_number" : None
+                }
     
     data_for_each_loan_item = {
         "retrieved_user_data_to_return" : single_retrieved_user_data_to_return
@@ -841,6 +904,14 @@ def use_cpp_from_server(recieved_data, cpp_library):
             # recieved_instructions["store_all_db_data_for_external_analysis"] = True
             operation_state_to_return["error_getting_data_from_db_to_analyze"] = bool(cpp_library.readAllDatabaseDataForAnalysis())
             
+        elif(recieved_instructions["start_end_of_day_processing"] == True):
+            # if(recieved_instructions[""])
+            
+            for x in range(int((recieved_instructions["num_days_to_simulate"]))):
+                print("Performing end of days")
+                operation_state_to_return["succesfull_end_of_day_processing"] = not (bool(cpp_library.startEndOfDayOperations()))
+            
+            
             
     data_to_send_Back_to_client = {
         "operation_state_to_return" : operation_state_to_return,
@@ -853,12 +924,3 @@ def use_cpp_from_server(recieved_data, cpp_library):
     
     
     
-    
-####################################################    Commented out Functions    #######################################################################    
-    
-    
-# def compile_dll_for_server():
-#     compile_commands = "g++ -fPIC -shared -o"
-    
-#     complete_command_instruction = compile_commands + " " + OUTPUT_DLL_FILE_FOR_SERVER_PATH + " " + LIBRARY_CPP_FILE_PATH_FOR_SERVER + " " + SQLITE3_OBJECT_FILE_PATH
-#     subprocess.run(complete_command_instruction, check=True)

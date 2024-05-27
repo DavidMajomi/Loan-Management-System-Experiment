@@ -1,6 +1,6 @@
 # Loan-Management-System-Experiment
  
-In this Repo, i experiment with python and c++ features to create a Loan Management System. This repo basically works as a proof of concept, especially with python features that I am not fully skilled in. The whole idea is to actually see how things work, take a look at trade offs in readability maintainability, and scalability. This allows me to gain experience in the python language, while also having first hand experience on the structure of the loan management system.
+In this Repo, i experiment with python and c++ features to create a Loan Management System for secured personal loans. This repo basically works as a proof of concept, especially with python features that I am not fully skilled in. The whole idea is to actually see how things work, take a look at trade offs in readability maintainability, and scalability. This allows me to gain experience in the python language, while also having first hand experience on the structure of the loan management system.
 Currently, I intend to use the loan management cpp library as is. 
 
 # Current Features
@@ -27,15 +27,16 @@ The current server based files currently has most of the functionality used in t
 
 # Dependencies
  1.) C++ compiler (MINGW) version 11 <br>
- 2.) Make, which could be downloaded from chocolatey <br>
+ 2.) Make, which could be downloaded from chocolatey, cmake can be used with the cmake branch <br>
  3.) Python 3.8 and above <br>
  4.) Sqlite3 database <br>
  5.) Included logger for logging while debugging. <br>
 
 # Installation
- 1.) Install Python <br>
+ 1.) Install Python and create a virtual environment<br>
  2.) Install a Mingw and add it to path <br>
  3.) Install make and add it to path manually, or use chocolatey to add it automatically. <br>
  4.) Get an alpha vantage api key for free, and store it in the file to get up to date federal funds rate and other related metrics. Do note there is an option to use default rate values wihout requiring API keys <br>
  5.) Add the sqlite3 header file into the header files folder, or unzip the similarly named zipped file. <br>
+ 
 

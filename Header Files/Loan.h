@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 EconomicMetrics CURRENT_METRICS;    // This class stores financial metrics recieved from external program using the dll file. Its vales are the
                                     // first to be modified before performing any operations.
 class Loan
@@ -51,6 +52,7 @@ private:
                       "debt_to_income_ratio REAL,"
                       "loan_duration REAL,"
                       "duration_to_next_installment_days INTEGER,"
+                      "duration_to_loan_settlement_months INTEGER,"
                       "requested_loan_amount REAL,"
                       "monthly_interest_rate REAL,"
                       "yearly_interest_rate REAL,"
@@ -74,7 +76,8 @@ private:
                       "loan_decision INTEGER,"
                       "loan_status TEXT,"
                       "applied_today_or_not INTEGER,"
-                      "account_number INTEGER"
+                      "account_number INTEGER,"
+                      "end_of_term_copying_done INTEGER"
                       ");";
 
         stringFinalSqlInsertStatement = "'" + userName + "'," + "'" + timeOfApplication + "',";
@@ -85,6 +88,7 @@ private:
         + to_string(debtToIncomeRatio) + "," 
         + to_string(duration) + "," 
         + to_string(30) + "," 
+        + to_string(duration) + "," 
         + to_string(loanAmount) + "," 
         + to_string(finalMonthlyInterestRate) + "," 
         + to_string(getYearlyInterestRate()) + ","
@@ -108,7 +112,8 @@ private:
         + defaultLoanDecisionProcessing + "," 
         + "'Processing'" + "," 
         + to_string((int)(true)) + "," 
-        + "1234567890";
+        + "1234567890" + ","
+        + to_string((int)(false));
 
         
 
@@ -120,6 +125,7 @@ private:
                             "debt_to_income_ratio, "
                             "loan_duration, "
                             "duration_to_next_installment_days, "
+                            "duration_to_loan_settlement_months, "
                             "requested_loan_amount, "
                             "monthly_interest_rate,"
                             "yearly_interest_rate, "
@@ -143,7 +149,8 @@ private:
                             "loan_decision, "
                             "loan_status, "
                             "applied_today_or_not, "
-                            "account_number"
+                            "account_number, "
+                            "end_of_term_copying_done"
                             ") VALUES (" + stringFinalSqlInsertStatement + ");"; 
 
         // cout << sqlInsertFormat << endl;

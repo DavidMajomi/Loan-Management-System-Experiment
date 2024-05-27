@@ -52,6 +52,7 @@ namespace endOfDayProcessor
             double timeB = databaseAbstraction::update(DATABASE_NAME, "users", "loan_decision", to_string(changes.getLoanDecision()), "Loan_id", (changes.getLoanId()));
             double timeC = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
             double timeD = databaseAbstraction::update(DATABASE_NAME, "users", "applied_today_or_not", to_string(changes.getAppliedToday()), "Loan_id", (changes.getLoanId()));
+
         }
         
         return data.size();
@@ -110,6 +111,7 @@ namespace endOfDayProcessor
 
     void startEndOfDayProcessing()
     {
+
         int numNewApplications = 0;
         int numPriorApplications = 0;
 
@@ -122,5 +124,6 @@ namespace endOfDayProcessor
         
         cout << "Number of new applications processed = " << numNewApplications << endl;
         cout << "Number of prior applications processed = " << numPriorApplications << endl;
+
     }
 }

@@ -25,6 +25,25 @@ Banking System/
 # Ignore all test file executables
 Test Files/Executables
 
+# Ignore all bin contents
+src/bin/
+
+# Ignore cmakefiles directory
+src/CMakeFiles/
+
+
+# Ignore CMakeCache.txt
+src/Cmakecache.txt
+
+*.cmake
+
+
+src/simulate file deletion (temp storage)/
+
+
+src/sqlite3-executables/
+
+src/Test Files/Executables/
 /Header Files/sqlite3.h
 /Header Files/LoanManagementDevTools.h
 /API keys/alphaVantageApiKey.txt
@@ -35,4 +54,8 @@ Test Files/Executables
 test loan.txt
 Header Files/makefile
 Header Files/sqlite3.o
+
+Src/loanManagementServerLibrary.dll
 Src/testStruct.cpp
+Src/LMSModel.pickle
+

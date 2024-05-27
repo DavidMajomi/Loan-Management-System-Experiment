@@ -1,12 +1,14 @@
+#pragma once
+
 #include <fstream>
 #include "Loan.h"
-
+#include "processor.h"
 #include "databaseAbstraction.h"
 
 namespace databaseManager
 {
     using namespace std;
-    
+
     // Matrix positions of db values
     const unsigned short int LOAN_ID_POSITION = 0;
     const unsigned short int NAME_POSITION = 1;
@@ -33,13 +35,11 @@ namespace databaseManager
     
     
     // Table Names
-    const string REPORTS_TABLE_NAME = "Reports";
+    const string REPORTS_TABLE_NAME = "reports";
     const string TABLE_OF_INITIAL_USER_APPLICATION = "users";
-    const string REJECTED_USERS_TABLE_NAME = "Rejected_users";
-    const string ACCEPTED_USERS_TABLE_NAME = "Accepted_users";
-    const string DEFAULTING_USERS_TABLE_NAME = "Defaulting_users";
-
-    
+    const string REJECTED_USERS_TABLE_NAME = "rejected_users";
+    const string ACCEPTED_USERS_TABLE_NAME = "accepted_users";
+    const string DEFAULTING_USERS_TABLE_NAME = "defaulting_users";
 
 
     class userDataFromDb
@@ -376,6 +376,7 @@ namespace databaseManager
         }
     };
 
+
     
 
 
@@ -462,8 +463,20 @@ namespace databaseManager
         return (dbValues[0][NAME_POSITION]);
     }
 
+
+
+    vector<vector<string>> getTodaysApplications()
+    {
+        vector<vector<string>> data;
+
+        data = databaseAbstraction::retreiveDataWithMatchingValue(DATABASE_NAME, TABLE_OF_INITIAL_USER_APPLICATION, "applied_today_or_not", "1");
+
+        // printMatrixValues(data);
+
+        return data;
+    }
     
-    
+
     vector<vector <string>> getAllApplicationsBesideTodays()
     {
         vector<vector<string>> data;
@@ -486,30 +499,34 @@ namespace databaseManager
     }
 
 
-    bool addNewReport()
+    bool changeDateToNextInstallment(int loanId, int changeTo)
     {
 
         return true;
     }
 
 
-    bool changeDateToNextInstallment(int loanId, int decrementBy)
+    bool copyUserDataToCompletedTable(Processor::userDataFromDb userData)
     {
+        string insertFormat = userData.getSqlInsertformat();
+        string statementWithData = userData.getSqlInsertValues();
 
+        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, TABLE_OF_INITIAL_USER_APPLICATION, statementWithData);
+       
         return true;
     }
 
 
-    bool moveUserFromDbToDb(int loanId, int from, int to)
+    bool copyUserDataToDefaultedTable(Processor::userDataFromDb userData)
     {
+        string insertFormat = userData.getSqlInsertformat();
+        string statementWithData = userData.getSqlInsertValues();
 
-        return true;
-    }
+        // cout << insertFormat << endl;
+        // cout << statementWithData << endl;
 
-    
-    bool copyUserFromDbToDb(int loanId, int from, int to)
-    {
-        
+        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, DEFAULTING_USERS_TABLE_NAME, statementWithData);
+       
         return true;
     }
     
