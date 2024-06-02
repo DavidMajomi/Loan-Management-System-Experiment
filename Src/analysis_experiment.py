@@ -9,6 +9,8 @@ from sklearn.preprocessing import StandardScaler
 import pickle
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.linear_model import LogisticRegression
 
 
 
@@ -68,12 +70,48 @@ from sklearn.tree import DecisionTreeClassifier
 super_prime_rate = 8.33
 deep_sub_prime_rate = 30.00
 
-slope = (deep_sub_prime_rate - super_prime_rate) / -100 
+credit_score = 850
+monthly_income = 12000
+financial_reserves = 50000
+debt_to_income_ratio = 0
+Duration_in_months = 1
+loan_amount_requested = 20000
+
+
+    
 df = pd.read_csv("../Csv Files For Analysis/analyzedDataFromDb.csv")
+df = df.dropna()
+print(df)
 
-# print(df)
 
-# test_predict_adjusted_loan_viability_score_object = linear_model.LinearRegression()
+
+################################################################
+# Predict interest rate by group
+
+columns = ["credit_score"]
+x = df[columns]
+y = df['interest_rate_by_group']
+
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.4, random_state=101) 
+
+model = DecisionTreeRegressor()
+
+model.fit(X_train.values, y_train.values)
+
+predictions = model.predict(X_test)
+
+print("Mean Squared error: ", mean_squared_error(y_test, predictions))
+print("Mean absolute error: ", mean_absolute_error(y_test, predictions))
+
+credit_score = 850
+interestRateByGroup = float(model.predict([[credit_score]]))
+print(interestRateByGroup, " ", type(interestRateByGroup))
+
+
+
+slope = (deep_sub_prime_rate - super_prime_rate) / -100 
+
+
 
 columns = ["credit_score", "monthly_income", "financial_reserves", "debt_to_income_ratio", "Duration_in_months", "loan_amount_requested",
                                 "loss_Given_Default", "default_risk_score"]
@@ -91,13 +129,6 @@ predictions = model.predict(X_test)
 print("Mean Squared error: ", mean_squared_error(y_test, predictions))
 print("Mean absolute error: ", mean_absolute_error(y_test, predictions))
 
-credit_score = 850
-monthly_income = 12000
-financial_reserves = 50000
-debt_to_income_ratio = 0
-Duration_in_months = 1
-loan_amount_requested = 20000
-
 # credit_score = 350
 # monthly_income = 2000
 # financial_reserves = 1084.64
@@ -106,22 +137,23 @@ loan_amount_requested = 20000
 # loan_amount_requested = 9413
 
 
-if (credit_score >= 781):
-    interestRateByGroup = super_prime_rate
+columns = ["interest_rate_by_group"]
+
+x = df[columns]
+y = df['default_risk_score']
+
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.4, random_state=101) 
+
+modelRate = LinearRegression()
+
+modelRate.fit(X_train.values, y_train.values)
+
+predictions = modelRate.predict(X_test)
+
+print("Mean Squared error: ", mean_squared_error(y_test, predictions))
+print("Mean absolute error: ", mean_absolute_error(y_test, predictions))
     
-elif (credit_score >= 661 and credit_score <= 780):
-    interestRateByGroup = super_prime_rate
-    
-elif (credit_score >= 601 and credit_score <= 660):
-    interestRateByGroup = super_prime_rate
-    
-elif (credit_score >= 500 and credit_score <= 600):
-    interestRateByGroup = super_prime_rate
-    
-elif (credit_score <= 499):
-    interestRateByGroup = super_prime_rate
-    
-monthly_interest_rate_by_group = interestRateByGroup /12
+monthly_interest_rate_by_group = interestRateByGroup / 12
     
 defult_risk_score = monthly_interest_rate_by_group - (super_prime_rate / 12)
 
