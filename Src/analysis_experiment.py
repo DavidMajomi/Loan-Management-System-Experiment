@@ -75,8 +75,8 @@ deep_sub_prime_rate = 30.00
     
 df = pd.read_csv("../Csv Files For Analysis/analyzedDataFromDb.csv")
 df = df.dropna()
-df = df.drop(columns=['Name'])
-# print(df)
+df = df.drop(columns=['Name', 'final_loan_grade'])
+# print(df.corr())
 
 def predictYearlyInterestRateByGroup(credit_score):
         
@@ -92,10 +92,11 @@ def predictYearlyInterestRateByGroup(credit_score):
 
     predictions = model.predict(X_test)
 
+    print("Predicting Yearly interest rate by group")
     print("Mean Squared error: ", mean_squared_error(y_test, predictions))
     print("Mean absolute error: ", mean_absolute_error(y_test, predictions))
     
-    return float(model.predict([[credit_score]]))
+    return round(float(model.predict([[credit_score]])), 2)
 
 
 def predictALVS(credit_score, monthly_income, financial_reserves, 
@@ -120,11 +121,11 @@ def predictALVS(credit_score, monthly_income, financial_reserves,
     # print("Mean Squared error: ", mean_squared_error(y_test, predictions))
     # print("Mean absolute error: ", mean_absolute_error(y_test, predictions))
     
-    return float(model.predict([[credit_score, monthly_income, financial_reserves, 
+    return round(float(model.predict([[credit_score, monthly_income, financial_reserves, 
                                                           debt_to_income_ratio, Duration_in_months, 
                                                           loan_amount_requested, 
                                                           loss_Given_Default, 
-                                                          defult_risk_score]])), model
+                                                          defult_risk_score]])), 2), model
 
 
 def predictDefaultRiskScore(monthly_interest_rate_by_group, super_prime_rate, deep_sub_prime_rate):
@@ -143,18 +144,22 @@ def predictDefaultRiskScore(monthly_interest_rate_by_group, super_prime_rate, de
 
     predictions = modelRate.predict(X_test)
 
+    print("predicting default risk score")
     print("Mean Squared error: ", mean_squared_error(y_test, predictions))
     print("Mean absolute error: ", mean_absolute_error(y_test, predictions))
     
     # default_risk_score = float(modelRate.predict([[monthly_interest_rate_by_group, super_prime_rate, deep_sub_prime_rate]]))
     default_risk_score = float(modelRate.predict([[monthly_interest_rate_by_group]]))
     
-    # return default_risk_score, modelRate
-    return monthly_interest_rate_by_group - ((super_prime_rate - 3) / 12), modelRate
+    return round((default_risk_score), 2), modelRate
+    # print(monthly_interest_rate_by_group)
+    # print(super_prime_rate / 12)
+    # print(monthly_interest_rate_by_group - ((super_prime_rate) / 12))
+    # return round(monthly_interest_rate_by_group, 2) - round(((super_prime_rate) / 12), 2), modelRate
 
 
-def predictInterestRateFromAlvs(alvs):
-    columns = ['Adjusted_Loan_viability_Score']
+def predictInterestRateFromAlvs(alvs, deep_sub_prime_rate):
+    columns = ['Adjusted_Loan_viability_Score', 'worst_possible_rate']
     x = df[columns]
     y = df['Interest_rate_over_a_year']
 
@@ -166,10 +171,11 @@ def predictInterestRateFromAlvs(alvs):
 
     predictions = model.predict(X_test)
 
+    print("Pridicting final rate")
     print("Mean Squared error: ", mean_squared_error(y_test, predictions))
     print("Mean absolute error: ", mean_absolute_error(y_test, predictions))
     
-    return float(model.predict([[alvs]])), model
+    return round(float(model.predict([[alvs, deep_sub_prime_rate]])), 2), model
   
   
 credit_score = 850
@@ -180,7 +186,7 @@ Duration_in_months = 1
 loan_amount_requested = 20000
 
 
-# credit_score = 350
+# credit_score = 610
 # monthly_income = 2000
 # financial_reserves = 1084.64
 # debt_to_income_ratio = 0.42
@@ -190,12 +196,9 @@ loan_amount_requested = 20000
 interestRateByGroup = predictYearlyInterestRateByGroup(credit_score)
 
     
-monthly_interest_rate_by_group = interestRateByGroup / 12
+monthly_interest_rate_by_group = round((interestRateByGroup / 12), 2)
     
 # defult_risk_score = monthly_interest_rate_by_group - (super_prime_rate / 12)
-print(monthly_interest_rate_by_group - (super_prime_rate / 12))
-print(super_prime_rate)
-print("_____________________")
 defult_risk_score, defaulr_risk_model = predictDefaultRiskScore(monthly_interest_rate_by_group, super_prime_rate, deep_sub_prime_rate)
 
 loss_Given_Default = (loan_amount_requested - financial_reserves) / loan_amount_requested; # SOURCE = WIKIPEDIA
@@ -208,16 +211,15 @@ adjusted_loan_viability_score, alvsModel = predictALVS(credit_score, monthly_inc
                                                           defult_risk_score)
 
 # normal_monthly_interest_rate = (slope * adjusted_loan_viability_score) + deep_sub_prime_rate
-normal_yearly_interest_rate, yearlyInterestRateModel = predictInterestRateFromAlvs(adjusted_loan_viability_score)
+normal_yearly_interest_rate, yearlyInterestRateModel = predictInterestRateFromAlvs(adjusted_loan_viability_score, deep_sub_prime_rate)
 
 
 
-print(adjusted_loan_viability_score)
 print(f"This is interest rate by group: {interestRateByGroup}")
 print(f"This is monthly interest rate by group: {monthly_interest_rate_by_group}")
 print(f"This is  ")
 print(f"This is ")
-print(f"This is ")
+print(f"This is alvs: {adjusted_loan_viability_score}")
 print(f" This is normal rate: {normal_yearly_interest_rate} ")
 print(f" This is default risk score: {defult_risk_score} ")
 
