@@ -70,13 +70,18 @@ from sklearn.linear_model import LogisticRegression
 super_prime_rate = 8.33
 deep_sub_prime_rate = 30.00
 
+# slope = (deep_sub_prime_rate - super_prime_rate) / -100 
 
 
     
 df = pd.read_csv("../Csv Files For Analysis/analyzedDataFromDb.csv")
 df = df.dropna()
 df = df.drop(columns=['Name', 'final_loan_grade'])
+# print(df.info())
 # print(df.corr())
+df_corr = df.corr()
+print(df_corr["Interest_rate_over_a_year"])
+
 
 def predictYearlyInterestRateByGroup(credit_score):
         
@@ -158,14 +163,16 @@ def predictDefaultRiskScore(monthly_interest_rate_by_group, super_prime_rate, de
     # return round(monthly_interest_rate_by_group, 2) - round(((super_prime_rate) / 12), 2), modelRate
 
 
-def predictInterestRateFromAlvs(alvs, deep_sub_prime_rate):
-    columns = ['Adjusted_Loan_viability_Score', 'worst_possible_rate']
+def predictInterestRateFromAlvs(alvs, deep_sub_prime_rate, super_prime_rate):
+    # columns = ['Adjusted_Loan_viability_Score']
+    # columns = ['Adjusted_Loan_viability_Score', 'worst_possible_rate']
+    columns = ['Adjusted_Loan_viability_Score']
     x = df[columns]
     y = df['Interest_rate_over_a_year']
 
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.4, random_state=101) 
 
-    model = LinearRegression()
+    model = DecisionTreeRegressor()
 
     model.fit(X_train.values, y_train.values)
 
@@ -175,7 +182,9 @@ def predictInterestRateFromAlvs(alvs, deep_sub_prime_rate):
     print("Mean Squared error: ", mean_squared_error(y_test, predictions))
     print("Mean absolute error: ", mean_absolute_error(y_test, predictions))
     
-    return round(float(model.predict([[alvs, deep_sub_prime_rate]])), 2), model
+    # return ((slope * alvs) + deep_sub_prime_rate), model
+    return round(float(model.predict([[alvs]])), 2), model
+    
   
   
 credit_score = 850
@@ -184,7 +193,6 @@ financial_reserves = 50000
 debt_to_income_ratio = 0
 Duration_in_months = 1
 loan_amount_requested = 20000
-
 
 # credit_score = 610
 # monthly_income = 2000
@@ -210,18 +218,21 @@ adjusted_loan_viability_score, alvsModel = predictALVS(credit_score, monthly_inc
                                                           loss_Given_Default, 
                                                           defult_risk_score)
 
-# normal_monthly_interest_rate = (slope * adjusted_loan_viability_score) + deep_sub_prime_rate
-normal_yearly_interest_rate, yearlyInterestRateModel = predictInterestRateFromAlvs(adjusted_loan_viability_score, deep_sub_prime_rate)
+
+normal_yearly_interest_rate, yearlyInterestRateModel = predictInterestRateFromAlvs(adjusted_loan_viability_score, deep_sub_prime_rate, super_prime_rate)
 
 
 
 print(f"This is interest rate by group: {interestRateByGroup}")
 print(f"This is monthly interest rate by group: {monthly_interest_rate_by_group}")
-print(f"This is  ")
+print(f"This is ")
+print(f"This is ")
+print(f"This is ")
 print(f"This is ")
 print(f"This is alvs: {adjusted_loan_viability_score}")
 print(f" This is normal rate: {normal_yearly_interest_rate} ")
 print(f" This is default risk score: {defult_risk_score} ")
+# print(f"This is slope {slope}")
 
 
 score = df[['Adjusted_Loan_viability_Score']]
@@ -236,3 +247,6 @@ list_of_models = [alvsModel, theTree]
 
 with open("LMSModel.pickle", "wb") as file:
     pickle.dump(list_of_models, file)
+
+print("people of the greater world")
+
