@@ -156,8 +156,7 @@ namespace Processor
             }
             else if(durationToNextInstallmentDays > 0)
             {
-                return durationToNextInstallmentDays - 1;
-                
+                return durationToNextInstallmentDays - 1;  
             }
         }
 
@@ -420,7 +419,7 @@ namespace Processor
 
 
     public:
-        userDataFromDb(vector<string> data)
+        userDataFromDb(vector <string> data)
         {
             databaseManager::userDataFromDb convertedData(data);
             

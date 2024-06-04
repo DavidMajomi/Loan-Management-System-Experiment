@@ -20,7 +20,7 @@ def predict_default_risk_score(monthly_interest_rate_by_group):
     return round(float((model.predict([[monthly_interest_rate_by_group]])[0])), 2)  
 
 
-def predictloss_given_default(loan_amount_requested, financial_reserves):
+def predict_loss_given_default(loan_amount_requested, financial_reserves):
     with open('LMSModel.pickle', 'rb') as file: 
         modelList = pickle.load(file) 
   
@@ -82,7 +82,7 @@ monthly_interest_rate_by_group = interestRateByGroup / 12
     
 defult_risk_score = predict_default_risk_score(monthly_interest_rate_by_group)
 
-loss_Given_Default = predictloss_given_default(loan_amount_requested, financial_reserves)
+loss_Given_Default = predict_loss_given_default(loan_amount_requested, financial_reserves)
     
 score = get_predicted_adjusted_loan_viability_score(credit_score, monthly_income, financial_reserves, debt_to_income_ratio, Duration_in_months, loan_amount_requested, loss_Given_Default, defult_risk_score)
 decision = get_predicted_loan_decision(score)

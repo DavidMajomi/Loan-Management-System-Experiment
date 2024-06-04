@@ -2,7 +2,7 @@
 
 #include <fstream>
 #include "Loan.h"
-#include "processor.h"
+// #include "processor.h"
 #include "databaseAbstraction.h"
 
 namespace databaseManager
@@ -377,8 +377,6 @@ namespace databaseManager
     };
 
 
-    
-
 
     template <typename T>
     void printMatrixValues(vector<vector <T>> dBDataMatrix)
@@ -398,9 +396,7 @@ namespace databaseManager
 
     vector<vector<string>> getAllDbDATA()
     {
-        vector<vector<string>> dataMatrix = databaseAbstraction::retrieveAllUserDataFromDatabaseForMatrix(DATABASE_NAME, TABLE_OF_INITIAL_USER_APPLICATION);
-
-        return dataMatrix;
+        return databaseAbstraction::retrieveAllUserDataFromDatabaseForMatrix(DATABASE_NAME, TABLE_OF_INITIAL_USER_APPLICATION);
     }
 
 
@@ -408,9 +404,25 @@ namespace databaseManager
     {
         int matrixSize;
         
-        string outputDBDataToCsvHeader = "Name,credit_score,monthly_income,financial_reserves,debt_to_income_ratio,Duration_in_months,loan_amount_requested,Monthly_interest_rate,Interest_rate_over_a_year,"
-        "loss_Given_Default,Recovery_Rate,outstanding_Monthly_Debt_Payments,"
-        "default_risk_score,Loan_Viability_Score,Adjusted_Loan_viability_Score,matrix_based_adjusted_loan_viability_score,interest_rate_by_group,best_possible_rate,worst_possible_rate";
+        string outputDBDataToCsvHeader = "Name,"
+                                        "credit_score,"
+                                        "monthly_income,"
+                                        "financial_reserves,"
+                                        "debt_to_income_ratio,"
+                                        "Duration_in_months,"
+                                        "loan_amount_requested,"
+                                        "Monthly_interest_rate,"
+                                        "Interest_rate_over_a_year,"
+                                        "loss_Given_Default,"
+                                        "Recovery_Rate,"
+                                        "outstanding_Monthly_Debt_Payments,"
+                                        "default_risk_score,"
+                                        "Loan_Viability_Score,"
+                                        "Adjusted_Loan_viability_Score,"
+                                        "matrix_based_adjusted_loan_viability_score,"
+                                        "interest_rate_by_group,"
+                                        "best_possible_rate,"
+                                        "worst_possible_rate";
         
         
         vector<vector<string>> dataMatrix = getAllDbDATA();
@@ -506,29 +518,29 @@ namespace databaseManager
     }
 
 
-    bool copyUserDataToCompletedTable(Processor::userDataFromDb userData)
-    {
-        string insertFormat = userData.getSqlInsertformat();
-        string statementWithData = userData.getSqlInsertValues();
+    // bool copyUserDataToCompletedTable(Processor::userDataFromDb userData)
+    // {
+    //     string insertFormat = userData.getSqlInsertformat();
+    //     string statementWithData = userData.getSqlInsertValues();
 
-        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, TABLE_OF_INITIAL_USER_APPLICATION, statementWithData);
+    //     double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, TABLE_OF_INITIAL_USER_APPLICATION, statementWithData);
        
-        return true;
-    }
+    //     return true;
+    // }
 
 
-    bool copyUserDataToDefaultedTable(Processor::userDataFromDb userData)
-    {
-        string insertFormat = userData.getSqlInsertformat();
-        string statementWithData = userData.getSqlInsertValues();
+    // bool copyUserDataToDefaultedTable(Processor::userDataFromDb userData)
+    // {
+    //     string insertFormat = userData.getSqlInsertformat();
+    //     string statementWithData = userData.getSqlInsertValues();
 
-        // cout << insertFormat << endl;
-        // cout << statementWithData << endl;
+    //     // cout << insertFormat << endl;
+    //     // cout << statementWithData << endl;
 
-        double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, DEFAULTING_USERS_TABLE_NAME, statementWithData);
+    //     double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, insertFormat, DEFAULTING_USERS_TABLE_NAME, statementWithData);
        
-        return true;
-    }
+    //     return true;
+    // }
     
     
 }

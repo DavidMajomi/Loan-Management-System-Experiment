@@ -23,7 +23,7 @@ namespace endOfDayProcessor
         {
             bool successCopyToCompletedTable = false;
 
-            userDataFromDb userInfo(data[count]);
+            Processor::userDataFromDb userInfo(data[count]);
             loanUpdates changes = userInfo.getNewUpdates();
 
             string loanGrade;
@@ -33,14 +33,16 @@ namespace endOfDayProcessor
 
             if(changes.getLoanStatus() == "Completed" && (changes.getEndOfTermCopyingDone() == (int)false))
             {
-                successCopyToCompletedTable = databaseManager::copyUserDataToCompletedTable(userInfo);
+                // successCopyToCompletedTable = databaseManager::copyUserDataToCompletedTable(userInfo);
+                double timeTakenP = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, userInfo.getSqlInsertformat(), "users", userInfo.getSqlInsertValues());
                 double timeT = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
             }
             else if(changes.getLoanStatus() == "Defaulted" && (changes.getEndOfTermCopyingDone() == (int)false))
             {
                 // cout << (bool)(changes.getEndOfTermCopyingDone()) << endl;
 
-                successCopyToCompletedTable = databaseManager::copyUserDataToDefaultedTable(userInfo);
+                // successCopyToCompletedTable = databaseManager::copyUserDataToDefaultedTable(userInfo);
+                double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, userInfo.getSqlInsertformat(), "users", userInfo.getSqlInsertValues());
                 double timeJ = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
 
             }
