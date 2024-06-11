@@ -5,8 +5,6 @@ loan management system by being a wrapper to the database abstraction.
 
 Sample database Manager functions incude:
 
-addReport(string format, string data);
-
 getUserdata(int userLoanID); return vector (userData, bool successful or not)
 
 getUserdata(string userName); return vector (userData, bool successful or not)
@@ -31,8 +29,8 @@ moveLoanToDbWithAllInformation(loanId); return vector (bool successful or not)
 
 ################################################ DATABASES ################################################
 
-Databses that will be managed:
-1.) Main databse with initial appiclation:
+Tables that will be managed:
+1.) Main table with initial appiclation:
     Contains the following:
     1.) User name
     2.) User loan id
@@ -42,7 +40,7 @@ Databses that will be managed:
     6.) User Financial Reserves
     7.) Debt to income ratio
     8.) Loan Duration (months)
-    9.) Duration to next installment (days)
+    9.) Duration to next installment (days)                                             // Initialised to 31 days regardless of month by initial application processing, modified by end of day processing
     10.) Requested Loan Amount
     11.) Monthly Interest rate
     12.) yearly Interest rate
@@ -58,11 +56,21 @@ Databses that will be managed:
     23.) interest rate by group
     24.) best possible yearly interest rate
     25.) Worst possible yearly interest rate
-    26.) final loan grade
+    26.) final loan grade                                                               // Done by End of day processing
     27.) Potential profit from loan
-    
+    28.) calculated best possible loan viability score
+    29.) Calculated Worst possible loan viability score
+    30.) Amount of current loan + inteests left
+    31.) Loan decision                                                                  // Done by end of day processing
+    32.) Loan Status such as good standing, rejected, default / passed due              // Done by end of day processing
+    33.) Applied today or not                                                           // Done by initial application processing and modified by end of day processing
+        1.) This column contains a boolean represented as a 1 or 0 integer value.
+        2.) This data is used by the end of day processing side to further determine calculations.
+    34.) Account number         // Use will be decide later depending on the implementation of banking simulator
+        1.) Could maybe function as a method for bank transaction monitoring
 
-2.) Reports Database
+
+2.) Reports Table
     1.) Time of report
     2.) For all values such as credit score, monthly income etc store the following:
         1.) Mode
@@ -72,9 +80,17 @@ Databses that will be managed:
     4.) Lowest loanId with related user data
 
 
+3.) Rejected Table
+    1.) Contains all columns as main, but contains only values of rejected users
 
 
+4.) Defaulted_loans Table
+    1.) Contains all columns from main, but with those that default on their payments.
 
+
+5.) Completed_loans Table
+    1.) Contains all the columns of main but user data for completed / successful loans
+    
 
     ############################## Database Abstraction ##############################
     A simple Database Abstraction that works as simple function calls to obfuscate the sqlite statements.

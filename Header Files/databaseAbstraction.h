@@ -207,7 +207,7 @@ namespace databaseAbstraction
                     // }
                     else
                     {
-                sqlite3_close(db);
+                        sqlite3_close(db);
                         throw " ERROR SEARCHING DATABASE, VALUE OUTSIDE OF CURRENT RETRIEVEABLE SQLITE DATATYPES";
                     }
                         
@@ -427,7 +427,7 @@ namespace databaseAbstraction
     }
 
 
-    double deleteRow(const char * databaseFullPath, string tableName, string columnName, string primaryKey, int keyValue)
+    double deleteRow(const char * databaseFullPath, string tableName, string primaryKey, int keyValue)
     {
         clock_t time;
 

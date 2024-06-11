@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 EconomicMetrics CURRENT_METRICS;    // This class stores financial metrics recieved from external program using the dll file. Its vales are the
                                     // first to be modified before performing any operations.
 class Loan
@@ -17,12 +18,13 @@ class Loan
 private:
     unsigned short int creditScore, duration;
     string userName, timeOfApplication, sqlInsertFormat, stringSqlInsertData;
+    string defaultLoanDecisionProcessing = "2";
 
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
            outstandingMonthlyDebtPaymentsPriorToLoan, totalMonthlyDebtPaymentsAfterLoan, lossGivenDefault, defaultRiskScore, finalLoanViabilityScore,
            finalAdjustedLoanViabilityScore, interestRateByGroup, bestPossibleRate = CURRENT_METRICS.getSuperPrimeRate(), worstPossibleRate = CURRENT_METRICS.getDeepSubPrimeRate(),
            calculatedBestPossibleLoanViabilityScore, calculatedWorstPossibleLoanViabilityScore, calculatedBestPossibleAdjustedLoanViabilityScore, 
-           calculatedWorstPossibleAdjustedLoanViabilityScore, matrixBasedAdjustedLoanViabilityScore;
+           calculatedWorstPossibleAdjustedLoanViabilityScore, matrixBasedAdjustedLoanViabilityScore, potentialProfitFromLoan;
 
 
     static double normalizeScore(double rawScore, double maxScore, double minScore);
@@ -41,23 +43,126 @@ private:
     {
         string stringFinalSqlInsertStatement;
 
-        sqlInsertFormat = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, time_of_application TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
-                      " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
-                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, matrix_based_adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
-                      " best_possible_rate REAL, worst_possible_rate REAL, final_loan_grade TEXT)";
+        sqlInsertFormat = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY,"
+                      "name TEXT,"
+                      "time_of_application TEXT,"
+                      "credit_score INTEGER,"
+                      "monthly_income REAL,"
+                      "financial_reserves REAL,"
+                      "debt_to_income_ratio REAL,"
+                      "loan_duration REAL,"
+                      "duration_to_next_installment_days INTEGER,"
+                      "duration_to_loan_settlement_months INTEGER,"
+                      "requested_loan_amount REAL,"
+                      "monthly_interest_rate REAL,"
+                      "yearly_interest_rate REAL,"
+                      "loss_given_default REAL,"
+                      "recovery_rate REAL,"
+                      "outstanding_monthly_debt_paymentd_from_loan REAL,"
+                      "outstanding_monthly_debt_payments_prior_to_loan REAL,"
+                      "amount_to_pay_at_next_installment REAL,"
+                      "default_risk_score REAL,"
+                      "loan_viability_score REAL,"
+                      "adjusted_loan_viability_score REAL,"
+                      "matrix_based_adjusted_loan_viability_score REAL,"
+                      "interest_rate_by_group REAL,"
+                      "best_possible_yearly_rate REAL,"
+                      "worst_possible_yearly_rate REAL,"
+                      "final_loan_grade TEXT,"
+                      "potential_profit_from_loan REAL,"
+                      "calculated_best_possible_loan_viabbility_score REAL,"
+                      "calculated_worst_possible_loan_viabbility_score REAL,"
+                      "amount_of_current_loan_and_interests_left REAL,"
+                      "loan_decision INTEGER,"
+                      "loan_status TEXT,"
+                      "applied_today_or_not INTEGER,"
+                      "account_number INTEGER,"
+                      "end_of_term_copying_done INTEGER"
+                      ");";
 
         stringFinalSqlInsertStatement = "'" + userName + "'," + "'" + timeOfApplication + "',";
-        stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + to_string(creditScore) + "," + to_string(monthlyIncome) + "," + to_string(financialReserves) + "," + to_string(debtToIncomeRatio) + "," 
-        + to_string(duration) + "," +  to_string(loanAmount) + "," + to_string(finalMonthlyInterestRate) + "," + to_string(getYearlyInterestRate()) + "," + to_string(lossGivenDefault) + "," 
-        + to_string(recoveryRate) + "," + to_string(outstandingMonthlyDebtPaymentsPriorToLoan) + "," +  to_string(defaultRiskScore) + "," + to_string(finalLoanViabilityScore) + "," 
-        + to_string(finalAdjustedLoanViabilityScore) + "," +  to_string(matrixBasedAdjustedLoanViabilityScore) + "," + to_string(interestRateByGroup) + "," + to_string(bestPossibleRate) + ","
-        + to_string(worstPossibleRate) + "," + "''";
+        stringFinalSqlInsertStatement = stringFinalSqlInsertStatement 
+        + to_string(creditScore) + "," 
+        + to_string(monthlyIncome) + "," 
+        + to_string(financialReserves) + "," 
+        + to_string(debtToIncomeRatio) + "," 
+        + to_string(duration) + "," 
+        + to_string(30) + "," 
+        + to_string(duration) + "," 
+        + to_string(loanAmount) + "," 
+        + to_string(finalMonthlyInterestRate) + "," 
+        + to_string(getYearlyInterestRate()) + ","
+        + to_string(lossGivenDefault) + "," 
+        + to_string(recoveryRate) + ","
+        + to_string(outstandingMonthlyDebtPaymentsPriorToLoan + loanAmount) + "," 
+        + to_string(outstandingMonthlyDebtPaymentsPriorToLoan) + "," 
+        + to_string(loanAmount / duration) + "," 
+        + to_string(defaultRiskScore) + "," 
+        + to_string(finalLoanViabilityScore) + "," 
+        + to_string(finalAdjustedLoanViabilityScore) + "," 
+        + to_string(matrixBasedAdjustedLoanViabilityScore) + "," 
+        + to_string(interestRateByGroup) + "," 
+        + to_string(bestPossibleRate) + ","
+        + to_string(worstPossibleRate) + "," 
+        + "''"+ "," 
+        + to_string(potentialProfitFromLoan) + "," 
+        + to_string(calculatedBestPossibleLoanViabilityScore)+ "," 
+        + to_string(calculatedWorstPossibleLoanViabilityScore)+ "," 
+        + to_string(loanAmount + potentialProfitFromLoan) + "," 
+        + defaultLoanDecisionProcessing + "," 
+        + "'Processing'" + "," 
+        + to_string((int)(true)) + "," 
+        + "1234567890" + ","
+        + to_string((int)(false));
 
-        stringSqlInsertData = "INSERT INTO users (name , time_of_application, credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
-                      " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
-                      " adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate, final_loan_grade) VALUES (" + stringFinalSqlInsertStatement + ");"; 
+        
 
+        stringSqlInsertData = "INSERT INTO users (name , "
+                            "time_of_application, "
+                            "credit_score , "
+                            "monthly_income, "
+                            "financial_reserves, "
+                            "debt_to_income_ratio, "
+                            "loan_duration, "
+                            "duration_to_next_installment_days, "
+                            "duration_to_loan_settlement_months, "
+                            "requested_loan_amount, "
+                            "monthly_interest_rate,"
+                            "yearly_interest_rate, "
+                            "loss_given_default, "
+                            "recovery_rate, "
+                            "outstanding_monthly_debt_paymentd_from_loan, "
+                            "outstanding_monthly_debt_payments_prior_to_loan, "
+                            "amount_to_pay_at_next_installment," 
+                            "default_risk_score, "
+                            "loan_viability_score,"
+                            "adjusted_loan_viability_score, "
+                            "matrix_based_adjusted_loan_viability_score, "
+                            "interest_rate_by_group, "
+                            "best_possible_yearly_rate, "
+                            "worst_possible_yearly_rate, "
+                            "final_loan_grade, "
+                            "potential_profit_from_loan, "
+                            "calculated_best_possible_loan_viabbility_score, "
+                            "calculated_worst_possible_loan_viabbility_score, "
+                            "amount_of_current_loan_and_interests_left, "
+                            "loan_decision, "
+                            "loan_status, "
+                            "applied_today_or_not, "
+                            "account_number, "
+                            "end_of_term_copying_done"
+                            ") VALUES (" + stringFinalSqlInsertStatement + ");"; 
+
+        // cout << sqlInsertFormat << endl;
+        // cout << stringSqlInsertData << endl;
     }
+
+
+    double calculatePotentialProfitFromLoan()
+    {
+        return loanAmount * (finalMonthlyInterestRate / 100) * duration;
+    }
+
 
 public:
     double adjustLoanViabiltyScore (double rawLoanViabilityScore);
@@ -81,6 +186,7 @@ public:
         loanAmount = loanAmonutRequestedDeciaml;
         simple_set_credit_metrics();
         setFinalMonthlyInterestRate();
+        potentialProfitFromLoan = calculatePotentialProfitFromLoan();
         setSqlRelatedData();
     }
     string getUserName() const{
