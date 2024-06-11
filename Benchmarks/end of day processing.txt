@@ -1,0 +1,12 @@
+Regular end of day processing prior to optimisation
+Time taken to process 209 applications:
+         time taken = 5935 millisecond(s), which is equal to 5.935 seconds
+
+Time taken to process 609 applications:
+         time taken = 35356 millisecond(s), which is equal to 35.356 seconds
+
+Time taken to process 1209 applications:
+         time taken = 59193 millisecond(s), which is equal to 59.193 seconds
+
+Time taken to process 10209 applications:
+         time taken = 662500 millisecond(s), which is equal to 662.5 seconds

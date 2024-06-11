@@ -1,0 +1,2 @@
+Time taken to store 600 applications = 7272 millisecond(s), which is equal to 7.272 seconds
+Time taken to store 9000 applications = 184150 millisecond(s), which is equal to 184.15 seconds

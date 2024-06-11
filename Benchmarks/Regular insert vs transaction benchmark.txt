@@ -1,10 +1,10 @@
-Regular Insert Results for 20000 users:
+Regular Insert Results for 20000 new users:
     time taken = 571283 millisecond(s), which is equal to 571.283 seconds
-Transaction Insert Results for 20000 users
+Transaction Insert Results for 20000 new users
     time taken = 274680 millisecond(s), which is equal to 274.68 seconds
 
 
-Regular Insert Results for 20 users
+Regular Insert Results for 20 new users
     time taken = 393 millisecond(s), which is equal to 0.393 seconds
-Transaction Insert Results for 20 users
+Transaction Insert Results for 20 new users
     time taken = 23 millisecond(s), which is equal to 0.023 seconds
