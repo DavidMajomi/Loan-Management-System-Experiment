@@ -18,10 +18,12 @@ namespace timeManip
         return localTime;
     }
 
-    time_t getTimeDiff(time_t A, time_t B)
-    {
-        // return A - B;
-    }
+    // double getTimeDiff(time_t a, time_t b)
+    // {
+    //     double aDigit = double(a);
+    //     cout << aDigit << endl;
+    //     return double(a) - double(b);
+    // }
 
     time_t getDateNDaysFromDate(time_t rawtime, int ndays)
     {
