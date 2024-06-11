@@ -17,7 +17,7 @@ int main()
 
     cout << numSecondsRaw - numSecondsRawTwo << endl;
 
-    time_t bogTime = now - rawtime;
+    // time_t bogTime = now - rawtime;
     // cout << timeManip::getDateAsStr(&bogTime);
 
     // cout << " Num seconds since unix time thingy = " << now << endl;
@@ -34,6 +34,7 @@ int main()
     
     cout << "Now: " << timeManip::getDateAsStr(&now);
     cout << "12 months from now: " << timeManip::getDateNDaysFromDateStr(now, 365);
+    
     // cout << timeManip::getDateAsStr(&oneday);
 
     cout << "Shoki" << endl;
