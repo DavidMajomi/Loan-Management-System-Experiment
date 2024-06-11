@@ -111,7 +111,7 @@ namespace endOfDayProcessor
     }
     
 
-    void startEndOfDayProcessing()
+    int startEndOfDayProcessing()
     {
 
         int numNewApplications = 0;
@@ -124,8 +124,10 @@ namespace endOfDayProcessor
         
         cout << endl;
         
-        cout << "Number of new applications processed = " << numNewApplications << endl;
-        cout << "Number of prior applications processed = " << numPriorApplications << endl;
+        // cout << "Number of new applications processed = " << numNewApplications << endl;
+        // cout << "Number of prior applications processed = " << numPriorApplications << endl;
+
+        return numNewApplications + numPriorApplications;
 
     }
 }

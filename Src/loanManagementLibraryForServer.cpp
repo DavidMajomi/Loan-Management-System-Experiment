@@ -180,12 +180,15 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 
         bool startEndOfDayOperations()
         {
+            int numprocessed = 0;
             bool successfullProcessing = true;
             string errorValue;
+            clock_t time;
+            time = clock();
             
             try
             {
-                endOfDayProcessor::startEndOfDayProcessing();
+                numprocessed = endOfDayProcessor::startEndOfDayProcessing();
             }
             catch(const char * error)
             {
@@ -194,6 +197,14 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
                 cout << error << endl;
                 
             }
+
+            time = clock() - time;
+
+            double timeInt = double(time);
+            double timeseconds = timeInt / 1000;
+
+            cout << "Time taken to process " << numprocessed << " applications: " << endl;
+            cout << "\t time taken = " << timeInt << " millisecond(s), which is equal to " << timeseconds << " seconds" << endl;
 
 
             return successfullProcessing;
