@@ -433,13 +433,13 @@ int getNumberOfColumns(string tablename)
 int main()
 {
     int value;
-    // addData<string>();
-    // update();
-    // deleteValue();
-    // getData();
+    addData<string>();
+    update();
+    deleteValue();
+    getData();
     addSingleData();
     addMultiRowData();
-    // retreiveData();
+    retreiveData();
     
     addColumn();
     cout << "Validating new column exists " << endl;
