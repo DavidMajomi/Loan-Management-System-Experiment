@@ -335,6 +335,40 @@ void addSingleData()
 }
 
 
+
+void addMultiRowData()
+{
+    try
+    {
+        string values = "'test','feb 20',3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,'A'";
+        string valuesTwo = "'test','feb 200000',3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,'A'";
+        string insert = "INSERT INTO users (name , time_of_application, credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
+                      " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
+                      " adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate, final_loan_grade) VALUES (" + values + ");";
+        string insertTwo = "INSERT INTO users (name , time_of_application, credit_score , monthly_income, financial_reserves, debt_to_income_ratio, loan_duration, requested_loan_amount, monthly_interest_rate,"
+                      " yearly_interest_rate, loss_given_default, recovery_rate, outstanding_monthly_debt_paymentd_from_loan, default_risk_score, loan_viability_score,"
+                      " adjusted_loan_viability_score, matrix_based_adjusted_loan_viability_score, interest_rate_by_group, best_possible_rate, worst_possible_rate, final_loan_grade) VALUES (" + valuesTwo + ");";
+        string format = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY, name TEXT, time_of_application TEXT, credit_score INTEGER, monthly_income REAL, financial_reserves REAL, debt_to_income_ratio REAL,"
+                      " loan_duration REAL, requested_loan_amount REAL, monthly_interest_rate REAL, yearly_interest_rate REAL, loss_given_default REAL, recovery_rate REAL,"
+                      " outstanding_monthly_debt_paymentd_from_loan REAL, default_risk_score REAL, loan_viability_score REAL, adjusted_loan_viability_score REAL, matrix_based_adjusted_loan_viability_score REAL, interest_rate_by_group REAL,"
+                      " best_possible_rate REAL, worst_possible_rate REAL, final_loan_grade TEXT)";
+
+        insert = insert + insertTwo;
+
+        double timeTaken = databaseAbstraction::storeMultiRowsUsingConcatenatedInsertStmt(DATABASE_NAME, format, "users", insert);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    catch(const char * exception)
+    {
+        cout << exception << endl;
+        cout << " Error storing single data. " << endl;
+    }
+}
+
+
 void deleteAllTableRows(string tableName)
 {
     try
@@ -399,12 +433,13 @@ int getNumberOfColumns(string tablename)
 int main()
 {
     int value;
-    // addData<string>();
-    // update();
-    // deleteValue();
-    // getData();
+    addData<string>();
+    update();
+    deleteValue();
+    getData();
     addSingleData();
-    // retreiveData();
+    addMultiRowData();
+    retreiveData();
     
     addColumn();
     cout << "Validating new column exists " << endl;
