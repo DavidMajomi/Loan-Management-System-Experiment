@@ -1,8 +1,10 @@
 #pragma once
 
+#include <mutex>
 #include <fstream>
 #include "Loan.h"
 // #include "processor.h"
+#include "constants.h"
 #include "databaseAbstraction.h"
 
 namespace databaseManager
@@ -400,9 +402,10 @@ namespace databaseManager
     }
 
 
-    int retrieveAllUserDataFromDatabaseAndOutputToCsv(ofstream& outputCsvFile)
+    bool retrieveAllUserDataFromDatabaseAndOutputToCsv(ofstream& outputCsvFile)
     {
-        int matrixSize;
+        int matrixSize = 0;
+        bool fileOpeningError = false;
         
         string outputDBDataToCsvHeader = "Name,"
                                         "credit_score,"
@@ -427,11 +430,13 @@ namespace databaseManager
         
         vector<vector<string>> dataMatrix = getAllDbDATA();
 
-        outputCsvFile.open("dbtest.csv");
+        outputCsvFile.open(OUTPUT_CSV_FILE_FOR_PROCESSED_DATA);
         
         if (outputCsvFile.fail())
         {
-            throw " Error opening File to output database values.";
+            fileOpeningError = true;
+            
+            // throw " Error opening File to output database values.";
         }
         else
         {
@@ -464,7 +469,7 @@ namespace databaseManager
             outputCsvFile.close();
         }
             
-        return 0;
+        return fileOpeningError;
     }
 
 

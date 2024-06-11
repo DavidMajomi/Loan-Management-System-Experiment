@@ -233,16 +233,16 @@ bool storeDataInDb(vector<Loan> loanData)
         timeOfApplication = loanData[count].getTimeOfApplication(); 
         // cout << loanData[count].getTimeOfApplication() << endl;
 
-        if(count >= 1)
-        {
-            if(count < 10)
-            {
-                cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = " << loanData[count].getMatrixBasedAdjustedLoanViabilityScore();
-                cout << endl;
+        // if(count >= 1)
+        // {
+        //     if(count < 10)
+        //     {
+        //         cout << " ALVS = " << loanData[count].getFinalAdjustedLoanViabilityScore() << " Matrix based ALVS = " << loanData[count].getMatrixBasedAdjustedLoanViabilityScore();
+        //         cout << endl;
   
-            }
+        //     }
 
-        }
+        // }
 
         insertToSql = loanData[count].getInsertStatementWithData();
         // cout << insertToSql;
@@ -284,7 +284,7 @@ bool storeDataInDb(vector<Loan> loanData)
 
     double timeInSeconds = double(time) / 1000;
 
-    cout << "time taken = " <<  timeInt << " millisecond(s), which is equal to " << timeInSeconds << " seconds" << endl;
+    cout << "Time taken to store " << loanData.size() << " applications = " <<  timeInt << " millisecond(s), which is equal to " << timeInSeconds << " seconds" << endl;
 
     return errorStoringData;
 }
