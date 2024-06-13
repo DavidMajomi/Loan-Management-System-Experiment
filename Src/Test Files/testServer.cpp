@@ -12,13 +12,9 @@ using namespace std;
 
 bool testAddingSingleLoanData()
 {
-    bool successfullTest, testAccess;
+    bool successfullTest = false, testAccess;
     // string timeOfApplication;
     UserData test; // {"test cpp", 500, 20000, 200000, 0, 8000, 25};
-
-    cout << " Test Access " << testAccess << endl;
-    // string name = "test cpp";
-    // char * nameChar = "test cpp";
 
     test.userName = "test cpp";
     test.creditScore = 500;
@@ -31,6 +27,8 @@ bool testAddingSingleLoanData()
     changeBaseRate(5.33);
     testAccess = addIndividualizedDataToDb(test);
     cout << " Test Access " << testAccess << endl;
+
+    successfullTest = testAccess;
 
     return successfullTest;
 }
