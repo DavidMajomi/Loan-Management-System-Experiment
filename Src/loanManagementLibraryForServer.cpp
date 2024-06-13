@@ -57,7 +57,7 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
                 cout << " This class has already being locked with todays metrics, no modification allowed." << endl;
             }
 
-                // cout << " Prime Rate has been Changed to " << getCurrentFFR() << endl;
+                
         }
 
 
@@ -68,7 +68,7 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             vector<Loan> loanAccountsToAdd;
 
             addIndividualizedLoanDataFromPythonServer (tempUserDataFromPython, loanAccountsToAdd);
-            fileOpeningError = createDatabaseToAddUserLoanData (loanAccountsToAdd);
+            fileOpeningError = databaseManager::createDatabaseToAddUserLoanData(loanAccountsToAdd);
 
             // DISPLAY.display(" This is federalFundsRate from todays metrics: ",  TODAYS_METRICS.getFederalFundsRate());
             // DISPLAY.display(" This is federalFundsRate from current metrics: ", CURRENT_METRICS.getFederalFundsRate());
@@ -84,7 +84,7 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             vector<Loan> loanAccounts;
 
             errorReadingData = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
-            errorStoringData = storeGeneratedDataInDatabase(loanAccounts);
+            errorStoringData = databaseManager::storeGeneratedDataInDatabase(loanAccounts);
 
             if (errorReadingData == true || errorStoringData == true)
             {
@@ -106,7 +106,7 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             vector<Loan> loanAccounts;
 
             errorReadingData = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
-            errorStoringData = storeDataInDbUsingSingleTransaction(loanAccounts);
+            errorStoringData = databaseManager::storeDataInDbUsingSingleTransaction(loanAccounts);
 
             if (errorReadingData == true || errorStoringData == true)
             {
@@ -127,7 +127,7 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             bool openInputFileError = false, openOutputFileError = false,  fileOpeningError = false;
 
             openInputFileError = readGeneratedData(inputFile, loanAccounts, devMenuResponse);
-            openOutputFileError = outputToFile (outputCsvFile, loanAccounts);
+            openOutputFileError = outputToFile(outputCsvFile, loanAccounts);
 
             if ((openInputFileError == true) || (openOutputFileError == true))
             {
@@ -145,7 +145,8 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
             bool errorRetrievingData = false;
             ofstream outputCsvFile;
 
-            errorRetrievingData = retrieveAllUserDataFromDatabase(outputCsvFile);
+            // errorRetrievingData = databaseManager::retrieveAllUserDataFromDatabase(outputCsvFile);
+            errorRetrievingData = databaseManager::retrieveAllUserDataFromDatabaseAndOutputToCsv(outputCsvFile);
 
             return errorRetrievingData;
         }

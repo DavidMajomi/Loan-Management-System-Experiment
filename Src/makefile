@@ -60,8 +60,8 @@ runTestDbAbstraction:
 	make testDbAbstraction
 	$(testingFolder)/Executables/testDbAbstraction.exe
 	
-testLoanDbManager: testLoanDatabaseManager.o
-	g++ $(testingFolder)/Executables/testLoanDatabaseManager.o $(sqliteOfile) -o $(testingFolder)/Executables/testLoanDbManager.exe
+testLoanDbManager: testLoanDatabaseManager.o testLoanManagementServerLibrary.dll
+	g++ $(testingFolder)/Executables/loanManagementServerLibrary.dll $(testingFolder)/Executables/testLoanDatabaseManager.o $(sqliteOfile) -o $(testingFolder)/Executables/testLoanDbManager.exe
 
 testLoanDatabaseManager.o:
 	g++ -c $(testingFolder)/testLoanDatabaseManager.cpp -o $(testingFolder)/Executables/testLoanDatabaseManager.o

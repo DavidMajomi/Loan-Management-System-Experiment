@@ -10,3 +10,6 @@ Time taken to process 1209 applications:
 
 Time taken to process 10209 applications:
          time taken = 662500 millisecond(s), which is equal to 662.5 seconds
+
+Time taken to process 20212 applications:
+         time taken = 1.09192e+06 millisecond(s), which is equal to 1091.92 seconds
