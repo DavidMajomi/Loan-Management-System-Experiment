@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "timeManip.h"
 #include "matrixCalculator.h"
 #include "constants.h"
 #include "EconomicMetrics.h"
@@ -17,7 +18,7 @@ class Loan
 {
 private:
     unsigned short int creditScore, duration;
-    string userName, timeOfApplication, sqlInsertFormat, stringSqlInsertData;
+    string userName, timeOfApplication, loanDueDate, monthlyInstallmentDueDate, sqlInsertFormat, stringSqlInsertData;
     string defaultLoanDecisionProcessing = "2";
 
     double loanAmount, finalMonthlyInterestRate, monthlyIncome, financialReserves, debtToIncomeRatio, recoveryRate, monthlyDebtPaymentsFromLoan,
@@ -38,47 +39,19 @@ private:
     double calculateInterestForDefaultRisk ();
     
     void simple_set_credit_metrics();
+    
+
+    string encapsulateStringForDb(string value)
+    {
+        return "'" + value + "'";
+    }
+
 
     void setSqlRelatedData()
     {
         string stringFinalSqlInsertStatement;
 
-        sqlInsertFormat = "CREATE TABLE IF NOT EXISTS users (Loan_id INTEGER PRIMARY KEY,"
-                      "name TEXT,"
-                      "time_of_application TEXT,"
-                      "credit_score INTEGER,"
-                      "monthly_income REAL,"
-                      "financial_reserves REAL,"
-                      "debt_to_income_ratio REAL,"
-                      "loan_duration REAL,"
-                      "duration_to_next_installment_days INTEGER,"
-                      "duration_to_loan_settlement_months INTEGER,"
-                      "requested_loan_amount REAL,"
-                      "monthly_interest_rate REAL,"
-                      "yearly_interest_rate REAL,"
-                      "loss_given_default REAL,"
-                      "recovery_rate REAL,"
-                      "outstanding_monthly_debt_paymentd_from_loan REAL,"
-                      "outstanding_monthly_debt_payments_prior_to_loan REAL,"
-                      "amount_to_pay_at_next_installment REAL,"
-                      "default_risk_score REAL,"
-                      "loan_viability_score REAL,"
-                      "adjusted_loan_viability_score REAL,"
-                      "matrix_based_adjusted_loan_viability_score REAL,"
-                      "interest_rate_by_group REAL,"
-                      "best_possible_yearly_rate REAL,"
-                      "worst_possible_yearly_rate REAL,"
-                      "final_loan_grade TEXT,"
-                      "potential_profit_from_loan REAL,"
-                      "calculated_best_possible_loan_viabbility_score REAL,"
-                      "calculated_worst_possible_loan_viabbility_score REAL,"
-                      "amount_of_current_loan_and_interests_left REAL,"
-                      "loan_decision INTEGER,"
-                      "loan_status TEXT,"
-                      "applied_today_or_not INTEGER,"
-                      "account_number INTEGER,"
-                      "end_of_term_copying_done INTEGER"
-                      ");";
+        sqlInsertFormat = "CREATE TABLE IF NOT EXISTS users" + USERS_TABLE_COLUMN_FORMAT;
 
         stringFinalSqlInsertStatement = "'" + userName + "'," + "'" + timeOfApplication + "',";
         stringFinalSqlInsertStatement = stringFinalSqlInsertStatement 
@@ -87,8 +60,8 @@ private:
         + to_string(financialReserves) + "," 
         + to_string(debtToIncomeRatio) + "," 
         + to_string(duration) + "," 
-        + to_string(30) + "," 
-        + to_string(duration) + "," 
+        + encapsulateStringForDb(monthlyInstallmentDueDate) + ","
+        + encapsulateStringForDb(loanDueDate) + ","
         + to_string(loanAmount) + "," 
         + to_string(finalMonthlyInterestRate) + "," 
         + to_string(getYearlyInterestRate()) + ","
@@ -117,41 +90,7 @@ private:
 
         
 
-        stringSqlInsertData = "INSERT INTO users (name , "
-                            "time_of_application, "
-                            "credit_score , "
-                            "monthly_income, "
-                            "financial_reserves, "
-                            "debt_to_income_ratio, "
-                            "loan_duration, "
-                            "duration_to_next_installment_days, "
-                            "duration_to_loan_settlement_months, "
-                            "requested_loan_amount, "
-                            "monthly_interest_rate,"
-                            "yearly_interest_rate, "
-                            "loss_given_default, "
-                            "recovery_rate, "
-                            "outstanding_monthly_debt_paymentd_from_loan, "
-                            "outstanding_monthly_debt_payments_prior_to_loan, "
-                            "amount_to_pay_at_next_installment," 
-                            "default_risk_score, "
-                            "loan_viability_score,"
-                            "adjusted_loan_viability_score, "
-                            "matrix_based_adjusted_loan_viability_score, "
-                            "interest_rate_by_group, "
-                            "best_possible_yearly_rate, "
-                            "worst_possible_yearly_rate, "
-                            "final_loan_grade, "
-                            "potential_profit_from_loan, "
-                            "calculated_best_possible_loan_viabbility_score, "
-                            "calculated_worst_possible_loan_viabbility_score, "
-                            "amount_of_current_loan_and_interests_left, "
-                            "loan_decision, "
-                            "loan_status, "
-                            "applied_today_or_not, "
-                            "account_number, "
-                            "end_of_term_copying_done"
-                            ") VALUES (" + stringFinalSqlInsertStatement + ");"; 
+        stringSqlInsertData = "INSERT INTO users " + USERS_TABLE_INSERT_FORMT + stringFinalSqlInsertStatement + ");"; 
 
         // cout << sqlInsertFormat << endl;
         // cout << stringSqlInsertData << endl;
@@ -176,6 +115,8 @@ public:
         time_t rawtime;
         time(&rawtime);
         timeOfApplication = ctime(&rawtime);
+        monthlyInstallmentDueDate = timeManip::getDateNMonthsFromDateStr(localtime(&rawtime), 1);
+        loanDueDate = timeManip::getDateNMonthsFromDateStr(localtime(&rawtime), durationInMonthsInteger);
         
         this->userName = newUserName;
         creditScore = (creditScoreInteger);

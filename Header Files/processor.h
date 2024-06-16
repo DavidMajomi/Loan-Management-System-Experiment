@@ -90,8 +90,6 @@ namespace Processor
         {
             this -> endOfTermCopyingDone = (int)(done);
         }
-        
-
     };
 
 
@@ -109,6 +107,8 @@ namespace Processor
 
         int durationToNextInstallmentDays;
         int previousDurationToNextInstallmentDays;
+        string monthlyInstallmentDueDate;
+        string loanDueDate;
 
         int durationToLoanSettlementMonths;
         double requestedLoanAmount;
@@ -145,6 +145,12 @@ namespace Processor
 
         string sqlInsertFormat;
         string stringSqlInsertData;
+
+
+        string encapsulateStringForDb(string value)
+        {
+            return "'" + value + "'";
+        }
 
 
         int processDurationToNextInstallment()
@@ -285,48 +291,9 @@ namespace Processor
 
         string createSqlFormat(string tableName)
         {
-            string format = "CREATE TABLE IF NOT EXISTS " + tableName + " (Loan_id INTEGER,"
-                        "name TEXT,"
-                        "time_of_application TEXT,"
-                        "credit_score INTEGER,"
-                        "monthly_income REAL,"
-                        "financial_reserves REAL,"
-                        "debt_to_income_ratio REAL,"
-                        "loan_duration REAL,"
-                        "duration_to_next_installment_days INTEGER,"
-                        "duration_to_loan_settlement_months INTEGER,"
-                        "requested_loan_amount REAL,"
-                        "monthly_interest_rate REAL,"
-                        "yearly_interest_rate REAL,"
-                        "loss_given_default REAL,"
-                        "recovery_rate REAL,"
-                        "outstanding_monthly_debt_paymentd_from_loan REAL,"
-                        "outstanding_monthly_debt_payments_prior_to_loan REAL,"
-                        "amount_to_pay_at_next_installment REAL,"
-                        "default_risk_score REAL,"
-                        "loan_viability_score REAL,"
-                        "adjusted_loan_viability_score REAL,"
-                        "matrix_based_adjusted_loan_viability_score REAL,"
-                        "interest_rate_by_group REAL,"
-                        "best_possible_yearly_rate REAL,"
-                        "worst_possible_yearly_rate REAL,"
-                        "final_loan_grade TEXT,"
-                        "potential_profit_from_loan REAL,"
-                        "calculated_best_possible_loan_viabbility_score REAL,"
-                        "calculated_worst_possible_loan_viabbility_score REAL,"
-                        "amount_of_current_loan_and_interests_left REAL,"
-                        "loan_decision INTEGER,"
-                        "loan_status TEXT,"
-                        "applied_today_or_not INTEGER,"
-                        "account_number INTEGER,"
-                        "end_of_term_copying_done INTEGER"
-                        ");";
-
-                        // cout << tableName << endl;
+            string format = "CREATE TABLE IF NOT EXISTS " + tableName + NON_USER_TABLE_COLUMN_FORMAT;
 
             return format;
-
-           
         }
 
 
@@ -346,8 +313,8 @@ namespace Processor
             + to_string(financialReserves) + "," 
             + to_string(debtToIncomeRatio) + "," 
             + to_string(loanDuration) + "," 
-            + to_string(durationToNextInstallmentDays) + "," 
-            + to_string(durationToLoanSettlementMonths) + ","
+            + encapsulateStringForDb(monthlyInstallmentDueDate) + ","
+            + encapsulateStringForDb(loanDueDate) + ","
             + to_string(requestedLoanAmount) + "," 
             + to_string(monthlyInterestRate) + "," 
             + to_string(getYearlyInterestRate()) + ","
@@ -375,42 +342,7 @@ namespace Processor
             + to_string((int)(endOfTermCopyingDone));
             
 
-            insertData = "INSERT INTO " + tableName +  " (Loan_id, " 
-                                "name, "
-                                "time_of_application, "
-                                "credit_score, "
-                                "monthly_income, "
-                                "financial_reserves, "
-                                "debt_to_income_ratio, "
-                                "loan_duration, "
-                                "duration_to_next_installment_days, "
-                                "duration_to_loan_settlement_months, "
-                                "requested_loan_amount, "
-                                "monthly_interest_rate,"
-                                "yearly_interest_rate, "
-                                "loss_given_default, "
-                                "recovery_rate, "
-                                "outstanding_monthly_debt_paymentd_from_loan, "
-                                "outstanding_monthly_debt_payments_prior_to_loan, "
-                                "amount_to_pay_at_next_installment," 
-                                "default_risk_score, "
-                                "loan_viability_score,"
-                                "adjusted_loan_viability_score, "
-                                "matrix_based_adjusted_loan_viability_score, "
-                                "interest_rate_by_group, "
-                                "best_possible_yearly_rate, "
-                                "worst_possible_yearly_rate, "
-                                "final_loan_grade, "
-                                "potential_profit_from_loan, "
-                                "calculated_best_possible_loan_viabbility_score, "
-                                "calculated_worst_possible_loan_viabbility_score, "
-                                "amount_of_current_loan_and_interests_left, "
-                                "loan_decision, "
-                                "loan_status, "
-                                "applied_today_or_not, "
-                                "account_number, "
-                                "end_of_term_copying_done"
-                                ") VALUES (" + stringFinalSqlInsertStatement + ");"; 
+            insertData = "INSERT INTO " + tableName +  NON_USER_TABLE_INSERT_FORMT + stringFinalSqlInsertStatement + ");"; 
 
             // cout << sqlInsertFormat << endl;
             // cout << stringSqlInsertData << endl;
@@ -762,7 +694,7 @@ namespace Processor
                             "mean_recovery_rate REAL,"
                             "mean_outstanding_monthly_debts_payments_from_loan REAL,"
                             "mean_outsytanding_monthly_debt_payments_prior_to_loan REAL,"
-                            "mean_amountto_pay_at_next_insstallment REAL,"
+                            "mean_amount_to_pay_at_next_insstallment REAL,"
                             "mean_default_risk_score REAL,"
                             "mean_loan_viability_score REAL,"
                             "mean_adjusted_loan_viability_score REAL,"
@@ -960,7 +892,7 @@ namespace Processor
                             "mean_recovery_rate, "
                             "mean_outstanding_monthly_debts_payments_from_loan, "
                             "mean_outsytanding_monthly_debt_payments_prior_to_loan, "
-                            "mean_amountto_pay_at_next_insstallment, "
+                            "mean_amount_to_pay_at_next_insstallment, "
                             "mean_default_risk_score, "
                             "mean_loan_viability_score, "
                             "mean_adjusted_loan_viability_score, "

@@ -72,6 +72,9 @@ namespace databaseManager
         int durationToNextInstallmentDays;
         int previousDurationToNextInstallmentDays;
 
+        string nextInstallmentDate;
+        string loanDueDate;
+
         int durationToLoanSettlementMonths;
         double requestedLoanAmount;
         double monthlyInterestRate;
@@ -254,8 +257,16 @@ namespace databaseManager
             financialReserves = stod(data[FINANCIAL_RESERVES_POSITION]);
             debtToIncomeRatio = stod(data[DEBT_TO_INCOME_RATIO_POSITION]);
             loanDuration = stod(data[LOAN_DURATION_POSITION]);
-            durationToNextInstallmentDays = stod(data[DURATION_TO_NEXT_INSTALLMENT_DAYS_POSITION]);
-            durationToLoanSettlementMonths = stod(data[DURATION_TO_LOAN_SETTLEMENT_MONTHS_POSITION]);
+
+            nextInstallmentDate = (data[DURATION_TO_NEXT_INSTALLMENT_DAYS_POSITION]);
+            loanDueDate = (data[DURATION_TO_LOAN_SETTLEMENT_MONTHS_POSITION]);
+            
+            // durationToNextInstallmentDays = stod(data[DURATION_TO_NEXT_INSTALLMENT_DAYS_POSITION]);
+            // durationToLoanSettlementMonths = stod(data[DURATION_TO_LOAN_SETTLEMENT_MONTHS_POSITION]);
+
+            durationToNextInstallmentDays = 31;
+            durationToLoanSettlementMonths = 60;
+
             requestedLoanAmount = stod(data[REQUESTED_LOAN_AMOUNT_POSITION]);
             monthlyInterestRate = stod(data[MONTHLY_INTEREST_RATE_POSITION]);
             yearlyInterestRate = stod(data[YEARLY_INTEREST_RATE_POSITION]);
@@ -860,7 +871,6 @@ namespace databaseManager
     }
 
 
-    // Use time.h here to track insertion speeds to track which method of insertion is better between this and sqlite3 transactions
     bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
     {
         const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
@@ -877,10 +887,7 @@ namespace databaseManager
         string stringSql = "BEGIN TRANSACTION; " + loanData[0].getSqlInsertFormat();
         const char* sql = stringSql.c_str();
         vector <string> allInsertStatements;
-        string insertToSql, userName, stringFinalSqlInsertStatement, completedSqlStatement;
-        double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
-            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
-            adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
+        string insertToSql, userName, settlementDueDate, loanDueDate, stringFinalSqlInsertStatement, completedSqlStatement;
         sqlite3_stmt* stmt;
 
 
@@ -912,26 +919,6 @@ namespace databaseManager
 
         for (int count = 0; count < numberOfAddedLoanValues; count++)
         {
-            creditScore = loanData[count].getCreditScore();
-            monthlyIncome = loanData[count].getMonthlyIncome() ;
-            financialReserves = loanData[count].getFinancialReserves() ;
-            debtToIncomeRatio = loanData[count].getDebtToIncomeRatio() ;
-            loanDurationInMonths = loanData[count].getDurationInMonths() ;
-            loanAmount = loanData[count].getLoanAmount();
-            monthlyInteresRate = loanData[count].getMonthlyInterestRate();
-            yearlyInterestRate = loanData[count].getYearlyInterestRate();
-            userName =  loanData[count].getUserName();
-            // DISPLAY << loanData[count].getUserName();
-            lossGivenDefault = loanData[count].getLossGivenDefault();
-            recoveryRate = loanData[count].getRecoveryRate();
-            outstandingMonthlyDebtPaymentsFromLoan = loanData[count].getTotalOutstandingMonthlyDebtPaymentsAfterLoan();
-            defaultRiskScore = loanData[count].getDefaultRiskScore();
-            loanViabilityScore = loanData[count].getLoanViabilityScore();
-            adjustedLoanViabilityScore = loanData[count].getFinalAdjustedLoanViabilityScore();
-            interestRateByGroup = loanData[count].getInterestRateByGroup();
-            bestPossibleRate = loanData[count].getBestPossibleRate();
-            worstPossibleRate = loanData[count].getWorstPossibleRate();
-
             insertToSql = loanData[count].getInsertStatementWithData();
 
             allInsertStatements.push_back(insertToSql);
