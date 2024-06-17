@@ -6,6 +6,7 @@ using namespace std;
 
 int main()
 {
+    string value = "Sat Jun 15 16:46:06 2024\n";
     time_t now = time(0);
     time_t rawtime;
     time_t bingeTime;
@@ -36,6 +37,14 @@ int main()
     cout << "12 months from now: " << timeManip::getDateNDaysFromDateStr(now, 365);
     
     // cout << timeManip::getDateAsStr(&oneday);
+
+    time_t fake = timeManip::createDateFromString(value);
+    cout << value;
+    cout << ctime(&fake);
+    time_t check = timeManip::createDateFromStringTimeIrrelevant(value);
+    cout << ctime(&check);
+
+    
 
     cout << "Shoki" << endl;
 
