@@ -126,7 +126,7 @@ namespace timeManip
 
     inline double convSecsToMonths(double val)
     {
-        return convSecsToWeeks(val) / 4;
+        return val / 2592000;
     }
 
 
@@ -147,12 +147,6 @@ namespace timeManip
         string word;
 
         tokens >> weekDay >> month >> dayOfMonth >> time >> year;
-
-        // cout << weekDay << endl;
-        // cout << month << endl;
-        // cout << dayOfMonth << endl;
-        // cout << time << endl;
-        // cout << year << endl;
 
         stringstream timeVals(time);
 
@@ -179,7 +173,6 @@ namespace timeManip
         timeStruct.tm_sec = timeSeconds;
         timeStruct.tm_isdst = -1;
 
-        cout << timeStruct.tm_hour << endl;
 
         // cout << asctime(&timeStruct);
 
