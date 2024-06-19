@@ -24,6 +24,28 @@ namespace timeManip
         return localTime;
     }
 
+
+    time_t getLocalTimeStruct()
+    {
+        time_t now;
+
+        tm * localTime;
+        time(&now);
+
+        return now;
+    }
+
+
+    string getLocalTimeStr()
+    {
+        time_t now;
+
+        tm * localTime;
+        time(&now);
+
+        return ctime(&now);
+    }
+
     // double getTimeDiff(time_t a, time_t b)
     // {
     //     double aDigit = double(a);
@@ -77,11 +99,42 @@ namespace timeManip
         return table[month];
     }
 
-    // inline int convStringTo
+
+    inline double convSecsToMins(double vals)
+    {
+        return vals / 60;
+    }
+
+
+    inline double convSecsToHours(double vals)
+    {
+        return convSecsToMins(vals) / 60;
+    }
+
+
+    inline double convSecsToDays(double vals)
+    {
+        return convSecsToHours(vals) / 24;
+    }
+
+
+    inline double convSecsToWeeks(double val)
+    {
+        return convSecsToDays(val) / 7;
+    }
+
+
+    inline double convSecsToMonths(double val)
+    {
+        return convSecsToWeeks(val) / 4;
+    }
+
 
     time_t createDateFromString(string timeValue)
     {
         const char * val = timeValue.c_str();
+
+        time_t timeT;
 
         struct tm timeStruct;
         string timeTokens;
@@ -108,6 +161,9 @@ namespace timeManip
             timeNums.push_back(stoi(timeTokens));
         }
 
+        cout << "Time nums: ";
+        cout << timeNums[0] << endl;
+
         timeHours = timeNums[0];
         timeMinutes = timeNums[1];
         timeSeconds = timeNums[2];
@@ -117,41 +173,50 @@ namespace timeManip
         // timeStruct.tm_wday = 0;
         timeStruct.tm_mon = convertMonthToInt(month);
         timeStruct.tm_mday = stoi(dayOfMonth);
-        timeStruct.tm_hour = timeHours - 1;
+        timeStruct.tm_year = stoi(year) - 1900;
+        timeStruct.tm_hour = timeHours;
         timeStruct.tm_min = timeMinutes;
         timeStruct.tm_sec = timeSeconds;
-        timeStruct.tm_year = stoi(year) - 1900;
+        timeStruct.tm_isdst = -1;
+
+        cout << timeStruct.tm_hour << endl;
 
         // cout << asctime(&timeStruct);
 
-        return mktime(&timeStruct);
+        timeT = mktime(&timeStruct);
+        // cout << ctime(&timeT);
+
+        return timeT;
     }
+
 
     time_t createDateFromStringTimeIrrelevant(string timeValue)
     {
         const char * val = timeValue.c_str();
 
+        time_t timeT;
         struct tm timeStruct;
-        string timeTokens;
         string weekDay, month, dayOfMonth, time, year;
 
-        int timeHours = 0, timeMinutes = 0, timeSeconds = 0;
-
         stringstream tokens(val);
-        string word;
 
         tokens >> weekDay >> month >> dayOfMonth >> time >> year;
 
         timeStruct.tm_mon = convertMonthToInt(month);
         timeStruct.tm_mday = stoi(dayOfMonth);
-        timeStruct.tm_hour = -1;
+        timeStruct.tm_year = stoi(year) - 1900;
+        timeStruct.tm_hour = 0;
         timeStruct.tm_min = 0;
         timeStruct.tm_sec = 0;
-        timeStruct.tm_year = stoi(year) - 1900;
+        timeStruct.tm_isdst = -1;
+
 
         // cout << asctime(&timeStruct);
 
-        return mktime(&timeStruct);
+        timeT = mktime(&timeStruct);
+        // cout << ctime(&timeT);
+
+        return timeT;
     }
 
 }
