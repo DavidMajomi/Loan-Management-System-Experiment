@@ -264,8 +264,8 @@ namespace databaseManager
             // durationToNextInstallmentDays = stod(data[DURATION_TO_NEXT_INSTALLMENT_DAYS_POSITION]);
             // durationToLoanSettlementMonths = stod(data[DURATION_TO_LOAN_SETTLEMENT_MONTHS_POSITION]);
 
-            durationToNextInstallmentDays = 31;
-            durationToLoanSettlementMonths = 60;
+            // durationToNextInstallmentDays = 31;
+            // durationToLoanSettlementMonths = 60;
 
             requestedLoanAmount = stod(data[REQUESTED_LOAN_AMOUNT_POSITION]);
             monthlyInterestRate = stod(data[MONTHLY_INTEREST_RATE_POSITION]);
@@ -319,11 +319,11 @@ namespace databaseManager
         double getLoanDuration() const { 
             return loanDuration; 
         }
-        int getDurationToNextInstallmentDays() const { 
-            return durationToNextInstallmentDays; 
+        string getDateOfNextInstallments() const { 
+            return nextInstallmentDate; 
         }
-        int getDurationToLoanSettlementMonths() const {
-            return durationToLoanSettlementMonths;
+        string getLoanSettlementDate() const {
+            return loanDueDate;
         }
         double getRequestedLoanAmount() const { 
             return requestedLoanAmount; 
