@@ -2,6 +2,7 @@
 
 #include <time.h>
 #include <string>
+#include <cmath>
 #include "constants.h"
 #include "loanDatabaseManager.h"
 #include "stats.h"
@@ -14,25 +15,26 @@ namespace Processor
     {
     private:
         int loanId;
-        int durationToNextInstallmentDays;
-        int durationToLoanSettlementMonths;
+        string durationToNextInstallmentDays;
+        // string durationToLoanSettlementMonths;
         char finalLoanGrade;
         // double amountOfCurrentLoanAndInterestsLeft;
         int loanDecision;
         string loanStatus;
         int appliedToday;
+        bool changeInstallmentDate;
         bool endOfTermCopyingDone;
         
     public:
         // double amountOfCurrentLoanAndInterestsLeft;
-        int getDurationToNextInstallmentDays()
+        string getDurationToNextInstallmentDays()
         { 
             return durationToNextInstallmentDays;
         }
-        int getDurationToLoanSettlementMonths()
-        {
-            return durationToLoanSettlementMonths;
-        }
+        // string getDurationToLoanSettlementMonths()
+        // {
+        //     return durationToLoanSettlementMonths;
+        // }
         int getLoanId()
         {
             return loanId;
@@ -53,23 +55,26 @@ namespace Processor
         {
             return loanStatus;
         }
+        bool getChangeInstallmentDate()
+        {
+            return changeInstallmentDate;
+        }
         int getEndOfTermCopyingDone()
         {
             return endOfTermCopyingDone;
         }
-
         void setLoanId(int id)
         {
             this -> loanId = id;
         }
-        void setDurationToNextInstallmentDays(int duration)
+        void setDurationToNextInstallmentDays(string duration)
         { 
             this -> durationToNextInstallmentDays = duration;
         }
-        void setDurationToLoanSettlementMonths(int duration)
-        {
-            this -> durationToLoanSettlementMonths = duration;
-        }
+        // void setDurationToLoanSettlementMonths(string duration)
+        // {
+        //     this -> durationToLoanSettlementMonths = duration;
+        // }
         void setLoanDecision(int decision)
         {
             this -> loanDecision = decision;
@@ -85,6 +90,10 @@ namespace Processor
         void setLoanStatus(string status)
         {
             this -> loanStatus = status;
+        }
+        void setChangeInstallmentDate(bool val)
+        {
+            this -> changeInstallmentDate = val;
         }
         void setEndOfTermCopyingDone(bool done)
         {
@@ -105,10 +114,13 @@ namespace Processor
         double debtToIncomeRatio;
         double loanDuration;
 
-        int durationToNextInstallmentDays;
-        int previousDurationToNextInstallmentDays;
+        double durationToNextInstallmentDays;
+        double previousDurationToNextInstallmentDays;
+
         string monthlyInstallmentDueDate;
+        string nextMonthlyInstallmentDate = "";
         string loanDueDate;
+        bool changeInstallmentDate = false;
 
         int durationToLoanSettlementMonths;
         double requestedLoanAmount;
@@ -153,11 +165,19 @@ namespace Processor
         }
 
 
-        int processDurationToNextInstallment()
+        int processDurationToNextInstallment(string date)
         {
+
+            // cout << "Duration to next Installment days inside: " << durationToNextInstallmentDays << endl;
 
             if(durationToNextInstallmentDays == 0 && durationToLoanSettlementMonths > 0)
             {
+            
+                tm dateVal = timeManip::convertDateStrToTmStruct(date);
+                nextMonthlyInstallmentDate = timeManip::getDateNMonthsFromDateStr(&dateVal, 1);
+                // cout << "next Installment days: " << nextMonthlyInstallmentDate << endl;
+                changeInstallmentDate = true;
+                
                 return 31;
             }
             else if(durationToNextInstallmentDays > 0)
@@ -167,29 +187,29 @@ namespace Processor
         }
 
 
-        int processDurationToLoanSettlementMonths()
-        {
-            int duration;
+        // int processDurationToLoanSettlementMonths()
+        // {
+        //     int duration;
 
-            if(previousDurationToNextInstallmentDays == 0)
-            {
-                if(durationToLoanSettlementMonths > 0)
-                {
-                    duration = durationToLoanSettlementMonths - 1;
-                }
-                else
-                {
-                    duration = 0;
-                }
-            }
-            else
-            {
-                duration = durationToLoanSettlementMonths;
+        //     if(previousDurationToNextInstallmentDays == 0)
+        //     {
+        //         if(durationToLoanSettlementMonths > 0)
+        //         {
+        //             duration = durationToLoanSettlementMonths - 1;
+        //         }
+        //         else
+        //         {
+        //             duration = 0;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         duration = durationToLoanSettlementMonths;
 
-            }
+        //     }
 
-            return duration;
-        }
+        //     return duration;
+        // }
 
 
         int processLoanDecision()
@@ -351,9 +371,12 @@ namespace Processor
 
 
     public:
-        userDataFromDb(vector <string> data)
+        userDataFromDb(vector <string> data, string date)
         {
+            time_t timeOfMonthlyInstallment, timeOfLoanDueDate;
             databaseManager::userDataFromDb convertedData(data);
+            
+            time_t todayTimeIrrelevant = timeManip::createDateFromStringTimeIrrelevant(date);
             
             loanId = convertedData.getLoanId();
             userName = convertedData.getUserName();
@@ -363,8 +386,28 @@ namespace Processor
             financialReserves = convertedData.getFinancialReserves();
             debtToIncomeRatio = convertedData.getDebtToIncomeRatio();
             loanDuration = convertedData.getLoanDuration();
-            durationToNextInstallmentDays = convertedData.getDurationToNextInstallmentDays();
-            durationToLoanSettlementMonths = convertedData.getDurationToLoanSettlementMonths();
+            monthlyInstallmentDueDate = convertedData.getDateOfNextInstallments();
+            loanDueDate = convertedData.getLoanSettlementDate();
+
+            timeOfMonthlyInstallment = timeManip::createDateFromStringTimeIrrelevant(monthlyInstallmentDueDate);
+            timeOfLoanDueDate = timeManip::createDateFromStringTimeIrrelevant(loanDueDate);
+
+            durationToNextInstallmentDays =  (abs(timeManip::convSecsToDays(difftime(timeOfMonthlyInstallment, todayTimeIrrelevant))));
+            durationToLoanSettlementMonths = ((int)(timeManip::convSecsToMonths(difftime(timeOfLoanDueDate, todayTimeIrrelevant))));
+
+            // cout << endl;
+            // cout << ctime(&todayTimeIrrelevant) << endl;
+            // cout << "Entered installment due date: " << monthlyInstallmentDueDate << endl;
+            // cout << "Converted installment due date: " << ctime(&timeOfMonthlyInstallment) << endl;
+            // cout << "Entered loan due date: " << loanDueDate << endl;
+            // cout << "Converted loan due date: " << ctime(&timeOfLoanDueDate) << endl;
+
+            // cout << "Duration to next Installment days: " << durationToNextInstallmentDays << endl;
+            // cout << "Duration to settlement months: " << durationToLoanSettlementMonths << endl;
+
+            // cout << endl;
+
+
             requestedLoanAmount = convertedData.getRequestedLoanAmount();
             monthlyInterestRate = convertedData.getMonthlyInterestRate();
             yearlyInterestRate = convertedData.getYearlyInterestRate();
@@ -397,7 +440,6 @@ namespace Processor
 
             if(appliedToday == true)
             {
-                // amountOfCurrentLoanAndInteerestsLeft = 
                 finalLoanGrade = processFinalLoanGrade();
                 loanDecision = processLoanDecision();
             }
@@ -405,8 +447,10 @@ namespace Processor
             {
                 // if((loanStatus != "Completed"))
                 // {
-                durationToNextInstallmentDays = processDurationToNextInstallment();
-                durationToLoanSettlementMonths = processDurationToLoanSettlementMonths();
+                // cout << "Duration to next Installment days: " << durationToNextInstallmentDays << endl;
+                durationToNextInstallmentDays = processDurationToNextInstallment(monthlyInstallmentDueDate);
+                // cout << "Duration to next Installment days: " << durationToNextInstallmentDays << endl;
+                // durationToLoanSettlementMonths = processDurationToLoanSettlementMonths();
                 // }
             }
 
@@ -433,8 +477,6 @@ namespace Processor
             {
                 // sqlInsertFormat = createSqlFormat("defaulte");   
             }
-
-
 
         }
         int getLoanId() const { 
@@ -542,8 +584,9 @@ namespace Processor
 
             data.setLoanId(loanId);
             data.setAppliedToday(appliedToday);
-            data.setDurationToNextInstallmentDays(durationToNextInstallmentDays);
-            data.setDurationToLoanSettlementMonths(durationToLoanSettlementMonths);
+            data.setChangeInstallmentDate(changeInstallmentDate);
+            data.setDurationToNextInstallmentDays(nextMonthlyInstallmentDate);
+            // data.setDurationToLoanSettlementMonths(durationToLoanSettlementMonths);
             data.setFinalLoanGrade(this -> finalLoanGrade);
             data.setLoanDecision(this -> loanDecision);
             data.setLoanStatus(this -> loanStatus);

@@ -906,10 +906,12 @@ def use_cpp_from_server(recieved_data, cpp_library):
             
         elif(recieved_instructions["start_end_of_day_processing"] == True):
             # if(recieved_instructions[""])
+            simulateEndOfDayProcessingDays = cpp_library.simulateEndOfDayProcessingDays
+            simulateEndOfDayProcessingDays.restype = ctypes.c_bool
             
-            for x in range(int((recieved_instructions["num_days_to_simulate"]))):
-                print("Performing end of days")
-                operation_state_to_return["succesfull_end_of_day_processing"] = not (bool(cpp_library.startEndOfDayOperations()))
+            print(int((recieved_instructions["num_days_to_simulate"])))
+            print("Performing end of days")
+            operation_state_to_return["succesfull_end_of_day_processing"] = not (bool(cpp_library.simulateEndOfDayProcessingDays(int((recieved_instructions["num_days_to_simulate"])))))
             
             
             
