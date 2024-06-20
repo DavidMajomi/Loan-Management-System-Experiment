@@ -36,12 +36,15 @@ namespace endOfDayProcessor
                 // successCopyToCompletedTable = databaseManager::copyUserDataToCompletedTable(userInfo);
                 double timeTakenP = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, userInfo.getSqlInsertformat(), "users", userInfo.getSqlInsertValues());
                 double timeT = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
+                double timeGH = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
+
             }
             else if(changes.getLoanStatus() == "Defaulted" && (changes.getEndOfTermCopyingDone() == (int)false))
             {
                 // successCopyToCompletedTable = databaseManager::copyUserDataToDefaultedTable(userInfo);
                 double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, userInfo.getSqlInsertformat(), "users", userInfo.getSqlInsertValues());
                 double timeJ = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
+                double timeFH = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
             }
 
             if(changes.getChangeInstallmentDate() == true)
