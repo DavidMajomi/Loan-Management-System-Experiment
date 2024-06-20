@@ -14,10 +14,10 @@ int main()
     time_t oneday = 24 * 60 * 60;
     time(&rawtime);
     time(&bingeTime);
-    int numSecondsRaw = rawtime;
-    int numSecondsRawTwo = bingeTime;
+    // int numSecondsRaw = rawtime;
+    // int numSecondsRawTwo = bingeTime;
 
-    cout << numSecondsRaw - numSecondsRawTwo << endl;
+    // cout << numSecondsRaw - numSecondsRawTwo << endl;
 
     // time_t bogTime = now - rawtime;
     // cout << timeManip::getDateAsStr(&bogTime);
@@ -26,13 +26,11 @@ int main()
 
     tm * localTime = localtime(&now);
     time_t locTime = mktime(localTime);
-    int mid  = locTime - rawtime;
-    // cout << ctime(&mid);
-    // cout << mid;
     
     // localTime -> tm_mon = localTime -> tm_mon + 13;
-    // cout << timeManip::getDateNMonthsFromDateStr(localTime, 13);
-    // cout << localTime -> tm_mon << endl;
+    cout << ctime(&locTime);
+    cout << timeManip::getDateNMonthsFromDateStr(localTime, 13);
+    // cout << localTime -> tm_mon + 13 << endl;
     
     cout << "Now: " << timeManip::getDateAsStr(&now);
     cout << "12 months from now: " << timeManip::getDateNDaysFromDateStr(now, 365);
