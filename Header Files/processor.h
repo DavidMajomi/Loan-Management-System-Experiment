@@ -2,6 +2,7 @@
 
 #include <time.h>
 #include <string>
+#include <cmath>
 #include "constants.h"
 #include "loanDatabaseManager.h"
 #include "stats.h"
@@ -14,25 +15,26 @@ namespace Processor
     {
     private:
         int loanId;
-        int durationToNextInstallmentDays;
-        int durationToLoanSettlementMonths;
+        string durationToNextInstallmentDays;
+        // string durationToLoanSettlementMonths;
         char finalLoanGrade;
         // double amountOfCurrentLoanAndInterestsLeft;
         int loanDecision;
         string loanStatus;
         int appliedToday;
+        bool changeInstallmentDate;
         bool endOfTermCopyingDone;
         
     public:
         // double amountOfCurrentLoanAndInterestsLeft;
-        int getDurationToNextInstallmentDays()
+        string getDurationToNextInstallmentDays()
         { 
             return durationToNextInstallmentDays;
         }
-        int getDurationToLoanSettlementMonths()
-        {
-            return durationToLoanSettlementMonths;
-        }
+        // string getDurationToLoanSettlementMonths()
+        // {
+        //     return durationToLoanSettlementMonths;
+        // }
         int getLoanId()
         {
             return loanId;
@@ -53,23 +55,26 @@ namespace Processor
         {
             return loanStatus;
         }
+        bool getChangeInstallmentDate()
+        {
+            return changeInstallmentDate;
+        }
         int getEndOfTermCopyingDone()
         {
             return endOfTermCopyingDone;
         }
-
         void setLoanId(int id)
         {
             this -> loanId = id;
         }
-        void setDurationToNextInstallmentDays(int duration)
+        void setDurationToNextInstallmentDays(string duration)
         { 
             this -> durationToNextInstallmentDays = duration;
         }
-        void setDurationToLoanSettlementMonths(int duration)
-        {
-            this -> durationToLoanSettlementMonths = duration;
-        }
+        // void setDurationToLoanSettlementMonths(string duration)
+        // {
+        //     this -> durationToLoanSettlementMonths = duration;
+        // }
         void setLoanDecision(int decision)
         {
             this -> loanDecision = decision;
@@ -86,12 +91,14 @@ namespace Processor
         {
             this -> loanStatus = status;
         }
+        void setChangeInstallmentDate(bool val)
+        {
+            this -> changeInstallmentDate = val;
+        }
         void setEndOfTermCopyingDone(bool done)
         {
             this -> endOfTermCopyingDone = (int)(done);
         }
-        
-
     };
 
 
@@ -107,8 +114,13 @@ namespace Processor
         double debtToIncomeRatio;
         double loanDuration;
 
-        int durationToNextInstallmentDays;
-        int previousDurationToNextInstallmentDays;
+        double durationToNextInstallmentDays;
+        double previousDurationToNextInstallmentDays;
+
+        string monthlyInstallmentDueDate;
+        string nextMonthlyInstallmentDate = "";
+        string loanDueDate;
+        bool changeInstallmentDate = false;
 
         int durationToLoanSettlementMonths;
         double requestedLoanAmount;
@@ -147,11 +159,25 @@ namespace Processor
         string stringSqlInsertData;
 
 
-        int processDurationToNextInstallment()
+        string encapsulateStringForDb(string value)
         {
+            return "'" + value + "'";
+        }
+
+
+        int processDurationToNextInstallment(string date)
+        {
+
+            // cout << "Duration to next Installment days inside: " << durationToNextInstallmentDays << endl;
 
             if(durationToNextInstallmentDays == 0 && durationToLoanSettlementMonths > 0)
             {
+            
+                tm dateVal = timeManip::convertDateStrToTmStruct(date);
+                nextMonthlyInstallmentDate = timeManip::getDateNMonthsFromDateStr(&dateVal, 1);
+                // cout << "next Installment days: " << nextMonthlyInstallmentDate << endl;
+                changeInstallmentDate = true;
+                
                 return 31;
             }
             else if(durationToNextInstallmentDays > 0)
@@ -161,29 +187,29 @@ namespace Processor
         }
 
 
-        int processDurationToLoanSettlementMonths()
-        {
-            int duration;
+        // int processDurationToLoanSettlementMonths()
+        // {
+        //     int duration;
 
-            if(previousDurationToNextInstallmentDays == 0)
-            {
-                if(durationToLoanSettlementMonths > 0)
-                {
-                    duration = durationToLoanSettlementMonths - 1;
-                }
-                else
-                {
-                    duration = 0;
-                }
-            }
-            else
-            {
-                duration = durationToLoanSettlementMonths;
+        //     if(previousDurationToNextInstallmentDays == 0)
+        //     {
+        //         if(durationToLoanSettlementMonths > 0)
+        //         {
+        //             duration = durationToLoanSettlementMonths - 1;
+        //         }
+        //         else
+        //         {
+        //             duration = 0;
+        //         }
+        //     }
+        //     else
+        //     {
+        //         duration = durationToLoanSettlementMonths;
 
-            }
+        //     }
 
-            return duration;
-        }
+        //     return duration;
+        // }
 
 
         int processLoanDecision()
@@ -285,48 +311,9 @@ namespace Processor
 
         string createSqlFormat(string tableName)
         {
-            string format = "CREATE TABLE IF NOT EXISTS " + tableName + " (Loan_id INTEGER,"
-                        "name TEXT,"
-                        "time_of_application TEXT,"
-                        "credit_score INTEGER,"
-                        "monthly_income REAL,"
-                        "financial_reserves REAL,"
-                        "debt_to_income_ratio REAL,"
-                        "loan_duration REAL,"
-                        "duration_to_next_installment_days INTEGER,"
-                        "duration_to_loan_settlement_months INTEGER,"
-                        "requested_loan_amount REAL,"
-                        "monthly_interest_rate REAL,"
-                        "yearly_interest_rate REAL,"
-                        "loss_given_default REAL,"
-                        "recovery_rate REAL,"
-                        "outstanding_monthly_debt_paymentd_from_loan REAL,"
-                        "outstanding_monthly_debt_payments_prior_to_loan REAL,"
-                        "amount_to_pay_at_next_installment REAL,"
-                        "default_risk_score REAL,"
-                        "loan_viability_score REAL,"
-                        "adjusted_loan_viability_score REAL,"
-                        "matrix_based_adjusted_loan_viability_score REAL,"
-                        "interest_rate_by_group REAL,"
-                        "best_possible_yearly_rate REAL,"
-                        "worst_possible_yearly_rate REAL,"
-                        "final_loan_grade TEXT,"
-                        "potential_profit_from_loan REAL,"
-                        "calculated_best_possible_loan_viabbility_score REAL,"
-                        "calculated_worst_possible_loan_viabbility_score REAL,"
-                        "amount_of_current_loan_and_interests_left REAL,"
-                        "loan_decision INTEGER,"
-                        "loan_status TEXT,"
-                        "applied_today_or_not INTEGER,"
-                        "account_number INTEGER,"
-                        "end_of_term_copying_done INTEGER"
-                        ");";
-
-                        // cout << tableName << endl;
+            string format = "CREATE TABLE IF NOT EXISTS " + tableName + NON_USER_TABLE_COLUMN_FORMAT;
 
             return format;
-
-           
         }
 
 
@@ -346,8 +333,8 @@ namespace Processor
             + to_string(financialReserves) + "," 
             + to_string(debtToIncomeRatio) + "," 
             + to_string(loanDuration) + "," 
-            + to_string(durationToNextInstallmentDays) + "," 
-            + to_string(durationToLoanSettlementMonths) + ","
+            + encapsulateStringForDb(monthlyInstallmentDueDate) + ","
+            + encapsulateStringForDb(loanDueDate) + ","
             + to_string(requestedLoanAmount) + "," 
             + to_string(monthlyInterestRate) + "," 
             + to_string(getYearlyInterestRate()) + ","
@@ -375,42 +362,7 @@ namespace Processor
             + to_string((int)(endOfTermCopyingDone));
             
 
-            insertData = "INSERT INTO " + tableName +  " (Loan_id, " 
-                                "name, "
-                                "time_of_application, "
-                                "credit_score, "
-                                "monthly_income, "
-                                "financial_reserves, "
-                                "debt_to_income_ratio, "
-                                "loan_duration, "
-                                "duration_to_next_installment_days, "
-                                "duration_to_loan_settlement_months, "
-                                "requested_loan_amount, "
-                                "monthly_interest_rate,"
-                                "yearly_interest_rate, "
-                                "loss_given_default, "
-                                "recovery_rate, "
-                                "outstanding_monthly_debt_paymentd_from_loan, "
-                                "outstanding_monthly_debt_payments_prior_to_loan, "
-                                "amount_to_pay_at_next_installment," 
-                                "default_risk_score, "
-                                "loan_viability_score,"
-                                "adjusted_loan_viability_score, "
-                                "matrix_based_adjusted_loan_viability_score, "
-                                "interest_rate_by_group, "
-                                "best_possible_yearly_rate, "
-                                "worst_possible_yearly_rate, "
-                                "final_loan_grade, "
-                                "potential_profit_from_loan, "
-                                "calculated_best_possible_loan_viabbility_score, "
-                                "calculated_worst_possible_loan_viabbility_score, "
-                                "amount_of_current_loan_and_interests_left, "
-                                "loan_decision, "
-                                "loan_status, "
-                                "applied_today_or_not, "
-                                "account_number, "
-                                "end_of_term_copying_done"
-                                ") VALUES (" + stringFinalSqlInsertStatement + ");"; 
+            insertData = "INSERT INTO " + tableName +  NON_USER_TABLE_INSERT_FORMT + stringFinalSqlInsertStatement + ");"; 
 
             // cout << sqlInsertFormat << endl;
             // cout << stringSqlInsertData << endl;
@@ -419,9 +371,12 @@ namespace Processor
 
 
     public:
-        userDataFromDb(vector <string> data)
+        userDataFromDb(vector <string> data, string date)
         {
+            time_t timeOfMonthlyInstallment, timeOfLoanDueDate;
             databaseManager::userDataFromDb convertedData(data);
+            
+            time_t todayTimeIrrelevant = timeManip::createDateFromStringTimeIrrelevant(date);
             
             loanId = convertedData.getLoanId();
             userName = convertedData.getUserName();
@@ -431,8 +386,28 @@ namespace Processor
             financialReserves = convertedData.getFinancialReserves();
             debtToIncomeRatio = convertedData.getDebtToIncomeRatio();
             loanDuration = convertedData.getLoanDuration();
-            durationToNextInstallmentDays = convertedData.getDurationToNextInstallmentDays();
-            durationToLoanSettlementMonths = convertedData.getDurationToLoanSettlementMonths();
+            monthlyInstallmentDueDate = convertedData.getDateOfNextInstallments();
+            loanDueDate = convertedData.getLoanSettlementDate();
+
+            timeOfMonthlyInstallment = timeManip::createDateFromStringTimeIrrelevant(monthlyInstallmentDueDate);
+            timeOfLoanDueDate = timeManip::createDateFromStringTimeIrrelevant(loanDueDate);
+
+            durationToNextInstallmentDays =  (abs(timeManip::convSecsToDays(difftime(timeOfMonthlyInstallment, todayTimeIrrelevant))));
+            durationToLoanSettlementMonths = ((int)(timeManip::convSecsToMonths(difftime(timeOfLoanDueDate, todayTimeIrrelevant))));
+
+            // cout << endl;
+            // cout << ctime(&todayTimeIrrelevant) << endl;
+            // cout << "Entered installment due date: " << monthlyInstallmentDueDate << endl;
+            // cout << "Converted installment due date: " << ctime(&timeOfMonthlyInstallment) << endl;
+            // cout << "Entered loan due date: " << loanDueDate << endl;
+            // cout << "Converted loan due date: " << ctime(&timeOfLoanDueDate) << endl;
+
+            // cout << "Duration to next Installment days: " << durationToNextInstallmentDays << endl;
+            // cout << "Duration to settlement months: " << durationToLoanSettlementMonths << endl;
+
+            // cout << endl;
+
+
             requestedLoanAmount = convertedData.getRequestedLoanAmount();
             monthlyInterestRate = convertedData.getMonthlyInterestRate();
             yearlyInterestRate = convertedData.getYearlyInterestRate();
@@ -465,7 +440,6 @@ namespace Processor
 
             if(appliedToday == true)
             {
-                // amountOfCurrentLoanAndInteerestsLeft = 
                 finalLoanGrade = processFinalLoanGrade();
                 loanDecision = processLoanDecision();
             }
@@ -473,8 +447,10 @@ namespace Processor
             {
                 // if((loanStatus != "Completed"))
                 // {
-                durationToNextInstallmentDays = processDurationToNextInstallment();
-                durationToLoanSettlementMonths = processDurationToLoanSettlementMonths();
+                // cout << "Duration to next Installment days: " << durationToNextInstallmentDays << endl;
+                durationToNextInstallmentDays = processDurationToNextInstallment(monthlyInstallmentDueDate);
+                // cout << "Duration to next Installment days: " << durationToNextInstallmentDays << endl;
+                // durationToLoanSettlementMonths = processDurationToLoanSettlementMonths();
                 // }
             }
 
@@ -501,8 +477,6 @@ namespace Processor
             {
                 // sqlInsertFormat = createSqlFormat("defaulte");   
             }
-
-
 
         }
         int getLoanId() const { 
@@ -610,8 +584,9 @@ namespace Processor
 
             data.setLoanId(loanId);
             data.setAppliedToday(appliedToday);
-            data.setDurationToNextInstallmentDays(durationToNextInstallmentDays);
-            data.setDurationToLoanSettlementMonths(durationToLoanSettlementMonths);
+            data.setChangeInstallmentDate(changeInstallmentDate);
+            data.setDurationToNextInstallmentDays(nextMonthlyInstallmentDate);
+            // data.setDurationToLoanSettlementMonths(durationToLoanSettlementMonths);
             data.setFinalLoanGrade(this -> finalLoanGrade);
             data.setLoanDecision(this -> loanDecision);
             data.setLoanStatus(this -> loanStatus);
@@ -762,7 +737,7 @@ namespace Processor
                             "mean_recovery_rate REAL,"
                             "mean_outstanding_monthly_debts_payments_from_loan REAL,"
                             "mean_outsytanding_monthly_debt_payments_prior_to_loan REAL,"
-                            "mean_amountto_pay_at_next_insstallment REAL,"
+                            "mean_amount_to_pay_at_next_insstallment REAL,"
                             "mean_default_risk_score REAL,"
                             "mean_loan_viability_score REAL,"
                             "mean_adjusted_loan_viability_score REAL,"
@@ -960,7 +935,7 @@ namespace Processor
                             "mean_recovery_rate, "
                             "mean_outstanding_monthly_debts_payments_from_loan, "
                             "mean_outsytanding_monthly_debt_payments_prior_to_loan, "
-                            "mean_amountto_pay_at_next_insstallment, "
+                            "mean_amount_to_pay_at_next_insstallment, "
                             "mean_default_risk_score, "
                             "mean_loan_viability_score, "
                             "mean_adjusted_loan_viability_score, "

@@ -148,7 +148,7 @@ def display_dev_menu_for_server_client():
         print("2.) Enter 2 to perform data analysis on all csv generated data throughout the history of the program in csv file for data analysis.")
         print("3.) Enter 3 to retrive all stored database values in csv file for data analysis.")
         print("4.) Enter 4 to force start end of day processing.")
-        print("5.) Enter 5 to simulate multiple days of end of day processing. \n")
+        print("5.) Enter 5 to simulate multiple days of end of day processing starting fromm todays date. \n")
 
         dev_menu_response = input(" What would you like to do: ")
         
@@ -906,10 +906,12 @@ def use_cpp_from_server(recieved_data, cpp_library):
             
         elif(recieved_instructions["start_end_of_day_processing"] == True):
             # if(recieved_instructions[""])
+            simulateEndOfDayProcessingDays = cpp_library.simulateEndOfDayProcessingDays
+            simulateEndOfDayProcessingDays.restype = ctypes.c_bool
             
-            for x in range(int((recieved_instructions["num_days_to_simulate"]))):
-                print("Performing end of days")
-                operation_state_to_return["succesfull_end_of_day_processing"] = not (bool(cpp_library.startEndOfDayOperations()))
+            print(int((recieved_instructions["num_days_to_simulate"])))
+            print("Performing end of days")
+            operation_state_to_return["succesfull_end_of_day_processing"] = not (bool(cpp_library.simulateEndOfDayProcessingDays(int((recieved_instructions["num_days_to_simulate"])))))
             
             
             

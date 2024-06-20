@@ -14,7 +14,7 @@ namespace endOfDayProcessor
     }
 
 
-    int processPriorApplications()
+    int processPriorApplications(string date)
     {
         // cout << "Prior applications." << endl;
         vector<vector <string>> data = databaseManager::getAllApplicationsBesideTodays();
@@ -23,7 +23,7 @@ namespace endOfDayProcessor
         {
             bool successCopyToCompletedTable = false;
 
-            Processor::userDataFromDb userInfo(data[count]);
+            Processor::userDataFromDb userInfo(data[count], date);
             loanUpdates changes = userInfo.getNewUpdates();
 
             string loanGrade;
@@ -36,24 +36,30 @@ namespace endOfDayProcessor
                 // successCopyToCompletedTable = databaseManager::copyUserDataToCompletedTable(userInfo);
                 double timeTakenP = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, userInfo.getSqlInsertformat(), "users", userInfo.getSqlInsertValues());
                 double timeT = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
+                double timeGH = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
+
             }
             else if(changes.getLoanStatus() == "Defaulted" && (changes.getEndOfTermCopyingDone() == (int)false))
             {
-                // cout << (bool)(changes.getEndOfTermCopyingDone()) << endl;
-
                 // successCopyToCompletedTable = databaseManager::copyUserDataToDefaultedTable(userInfo);
                 double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, userInfo.getSqlInsertformat(), "users", userInfo.getSqlInsertValues());
                 double timeJ = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
+                double timeFH = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
+            }
+
+            if(changes.getChangeInstallmentDate() == true)
+            {
+                // cout << "Update update " << endl;
+                double time = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_installment_days", (changes.getDurationToNextInstallmentDays()), "Loan_id", (changes.getLoanId()));
 
             }
 
 
-            double time = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_next_installment_days", to_string(changes.getDurationToNextInstallmentDays()), "Loan_id", (changes.getLoanId()));
-            double timeY = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_loan_settlement_months", to_string(changes.getDurationToLoanSettlementMonths()), "Loan_id", (changes.getLoanId()));
-            double timeH = databaseAbstraction::update(DATABASE_NAME, "users",  "final_loan_grade", loanGrade, "Loan_id", (changes.getLoanId()));
-            double timeB = databaseAbstraction::update(DATABASE_NAME, "users", "loan_decision", to_string(changes.getLoanDecision()), "Loan_id", (changes.getLoanId()));
-            double timeC = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
-            double timeD = databaseAbstraction::update(DATABASE_NAME, "users", "applied_today_or_not", to_string(changes.getAppliedToday()), "Loan_id", (changes.getLoanId()));
+            // double timeY = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_loan_settlement_months", to_string(changes.getDurationToLoanSettlementMonths()), "Loan_id", (changes.getLoanId()));
+            // double timeH = databaseAbstraction::update(DATABASE_NAME, "users",  "final_loan_grade", loanGrade, "Loan_id", (changes.getLoanId()));
+            // double timeB = databaseAbstraction::update(DATABASE_NAME, "users", "loan_decision", to_string(changes.getLoanDecision()), "Loan_id", (changes.getLoanId()));
+            // double timeC = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
+            // double timeD = databaseAbstraction::update(DATABASE_NAME, "users", "applied_today_or_not", to_string(changes.getAppliedToday()), "Loan_id", (changes.getLoanId()));
 
         }
         
@@ -61,7 +67,7 @@ namespace endOfDayProcessor
     }
 
 
-    int processNewApplications()
+    int processNewApplications(string date)
     {
         // cout << "New Application" << endl;
         reportData report;
@@ -73,14 +79,14 @@ namespace endOfDayProcessor
             {
                 // cout << "Rerun" << endl;
 
-                userDataFromDb userInfo(data[count]);
+                userDataFromDb userInfo(data[count], date);
                 loanUpdates changes = userInfo.getNewUpdates();
 
                 string loanGrade;
                 loanGrade = changes.getFinalLoanGrade();
                 
 
-                double time = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_next_installment_days", to_string(changes.getDurationToNextInstallmentDays()), "Loan_id", (changes.getLoanId()));
+                // double time = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_next_installment_days", to_string(changes.getDurationToNextInstallmentDays()), "Loan_id", (changes.getLoanId()));
                 double timeH = databaseAbstraction::update(DATABASE_NAME, "users", "final_loan_grade", loanGrade, "Loan_id", (changes.getLoanId()));
                 double timeB = databaseAbstraction::update(DATABASE_NAME, "users", "loan_decision", to_string(changes.getLoanDecision()), "Loan_id", (changes.getLoanId()));
                 double timeC = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
@@ -111,15 +117,15 @@ namespace endOfDayProcessor
     }
     
 
-    int startEndOfDayProcessing()
+    int startEndOfDayProcessing(string date)
     {
 
         int numNewApplications = 0;
         int numPriorApplications = 0;
 
         cout << "Starting processing" << endl;
-        numPriorApplications = processPriorApplications();
-        numNewApplications = processNewApplications();
+        numPriorApplications = processPriorApplications(date);
+        numNewApplications = processNewApplications(date);
         cout << "Done Processing" << endl;
         
         cout << endl;

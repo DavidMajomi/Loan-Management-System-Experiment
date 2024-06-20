@@ -72,6 +72,9 @@ namespace databaseManager
         int durationToNextInstallmentDays;
         int previousDurationToNextInstallmentDays;
 
+        string nextInstallmentDate;
+        string loanDueDate;
+
         int durationToLoanSettlementMonths;
         double requestedLoanAmount;
         double monthlyInterestRate;
@@ -246,41 +249,49 @@ namespace databaseManager
     public:
         userDataFromDb(vector<string> data)
         {
-            loanId = stoi(data[0]);
-            userName = (data[1]);
-            timeOfApplication = (data[2]);
-            creditScore = stoi(data[3]);
-            monthlyIncome = stod(data[4]);
-            financialReserves = stod(data[5]);
-            debtToIncomeRatio = stod(data[6]);
-            loanDuration = stod(data[7]);
-            durationToNextInstallmentDays = stod(data[8]);
-            durationToLoanSettlementMonths = stod(data[9]);
-            requestedLoanAmount = stod(data[9 + 1]);
-            monthlyInterestRate = stod(data[10 + 1]);
-            yearlyInterestRate = stod(data[11 + 1]);
-            lossGivenDefault = stod(data[12 + 1]);
-            recoveryRate = stod(data[13 + 1]);
-            outstandingMonthlyDebtsPaymentsFromLoan = stod(data[14 + 1]);
-            outsytandingMonthlyDebtPaymentsPriorToLoan = stod(data[15 + 1]);
-            amounttoPayAtNextInsstallment = stod(data[16 + 1]);
-            defaultRiskScore = stod(data[17 + 1]);
-            loanViabilityScore = stod(data[18 + 1]);
-            adjustedLoanViabilityScore = stod(data[19 + 1]);
-            matrixBasedAdjustedLoanViabilityScore = stod(data[20 + 1]);
-            interestRateByGroup = stod(data[21 + 1]);
-            bestPossibleYearlyRate = stod(data[22 + 1]);
-            worstPossibleYearlyRate = stod(data[23 + 1]);
-            finalLoanGrade = (data[24  + 1][0]);
-            potentialProfitFromLoan = stod(data[25 + 1]);
-            calculatedBestPossibleLoanViabilityScore = stod(data[26 + 1]);
-            calculatedWorstPossibleLoanViabilityScore = stod(data[27 + 1]);
-            amountOfCurrentLoanAndInteerestsLeft = stod(data[28 + 1]);
-            loanDecision = stoi(data[29 + 1]);
-            loanStatus = data[30 + 1];
-            appliedToday = stoi(data[31 + 1]);
-            accountNumber = stoi(data[32 + 1]);
-            endOfTermCopyingDone = stoi(data[33 + 1]);
+            loanId = stoi(data[LOAN_ID_POSITION]);
+            userName = data[NAME_POSITION];
+            timeOfApplication = data[TIME_OF_APPLICATION_POSITION];
+            creditScore = stoi(data[CREDIT_SCORE_POSITION]);
+            monthlyIncome = stod(data[MONTHLY_INCOME_POSITION]);
+            financialReserves = stod(data[FINANCIAL_RESERVES_POSITION]);
+            debtToIncomeRatio = stod(data[DEBT_TO_INCOME_RATIO_POSITION]);
+            loanDuration = stod(data[LOAN_DURATION_POSITION]);
+
+            nextInstallmentDate = (data[DURATION_TO_NEXT_INSTALLMENT_DAYS_POSITION]);
+            loanDueDate = (data[DURATION_TO_LOAN_SETTLEMENT_MONTHS_POSITION]);
+            
+            // durationToNextInstallmentDays = stod(data[DURATION_TO_NEXT_INSTALLMENT_DAYS_POSITION]);
+            // durationToLoanSettlementMonths = stod(data[DURATION_TO_LOAN_SETTLEMENT_MONTHS_POSITION]);
+
+            // durationToNextInstallmentDays = 31;
+            // durationToLoanSettlementMonths = 60;
+
+            requestedLoanAmount = stod(data[REQUESTED_LOAN_AMOUNT_POSITION]);
+            monthlyInterestRate = stod(data[MONTHLY_INTEREST_RATE_POSITION]);
+            yearlyInterestRate = stod(data[YEARLY_INTEREST_RATE_POSITION]);
+            lossGivenDefault = stod(data[LOSS_GIVEN_DEFAULT_POSITION]);
+            recoveryRate = stod(data[RECOVERY_RATE_POSITION]);
+            outstandingMonthlyDebtsPaymentsFromLoan = stod(data[OUTSTANDING_MONTHLY_DEBT_PAYMENTD_FROM_LOAN_POSITION]);
+            outsytandingMonthlyDebtPaymentsPriorToLoan = stod(data[OUTSTANDING_MONTHLY_DEBT_PAYMENTS_PRIOR_TO_LOAN_POSITION]);
+            amounttoPayAtNextInsstallment = stod(data[AMOUNT_TO_PAY_AT_NEXT_INSTALLMENT_POSITION]);
+            defaultRiskScore = stod(data[DEFAULT_RISK_SCORE_POSITION]);
+            loanViabilityScore = stod(data[LOAN_VIABILITY_SCORE_POSITION]);
+            adjustedLoanViabilityScore = stod(data[ADJUSTED_LOAN_VIABILITY_SCORE_POSITION]);
+            matrixBasedAdjustedLoanViabilityScore = stod(data[MATRIX_BASED_ADJUSTED_LOAN_VIABILITY_SCORE_POSITION]);
+            interestRateByGroup = stod(data[INTEREST_RATE_BY_GROUP_POSITION]);
+            bestPossibleYearlyRate = stod(data[BEST_POSSIBLE_YEARLY_RATE_POSITION]);
+            worstPossibleYearlyRate = stod(data[WORST_POSSIBLE_YEARLY_RATE_POSITION]);
+            finalLoanGrade = data[FINAL_LOAN_GRADE_POSITION][0];
+            potentialProfitFromLoan = stod(data[POTENTIAL_PROFIT_FROM_LOAN_POSITION]);
+            calculatedBestPossibleLoanViabilityScore = stod(data[CALCULATED_BEST_POSSIBLE_LOAN_VIABILITY_SCORE_POSITION]);
+            calculatedWorstPossibleLoanViabilityScore = stod(data[CALCULATED_WORST_POSSIBLE_LOAN_VIABILITY_SCORE_POSITION]);
+            amountOfCurrentLoanAndInteerestsLeft = stod(data[AMOUNT_OF_CURRENT_LOAN_AND_INTERESTS_LEFT_POSITION]);
+            loanDecision = stoi(data[LOAN_DECISION_POSITION]);
+            loanStatus = data[LOAN_STATUS_POSITION];
+            appliedToday = stoi(data[APPLIED_TODAY_OR_NOT_POSITION]);
+            accountNumber = stoi(data[ACCOUNT_NUMBER_POSITION]);
+            endOfTermCopyingDone = stoi(data[END_OF_TERM_COPYING_DONE_POSITION]);
 
             previousDurationToNextInstallmentDays = durationToNextInstallmentDays;
         }
@@ -308,11 +319,11 @@ namespace databaseManager
         double getLoanDuration() const { 
             return loanDuration; 
         }
-        int getDurationToNextInstallmentDays() const { 
-            return durationToNextInstallmentDays; 
+        string getDateOfNextInstallments() const { 
+            return nextInstallmentDate; 
         }
-        int getDurationToLoanSettlementMonths() const {
-            return durationToLoanSettlementMonths;
+        string getLoanSettlementDate() const {
+            return loanDueDate;
         }
         double getRequestedLoanAmount() const { 
             return requestedLoanAmount; 
@@ -860,7 +871,6 @@ namespace databaseManager
     }
 
 
-    // Use time.h here to track insertion speeds to track which method of insertion is better between this and sqlite3 transactions
     bool storeDataInDbUsingSingleTransaction(vector<Loan> loanData)
     {
         const std::lock_guard<std::mutex> lock(DATABASELOCKMUTEX);
@@ -877,10 +887,7 @@ namespace databaseManager
         string stringSql = "BEGIN TRANSACTION; " + loanData[0].getSqlInsertFormat();
         const char* sql = stringSql.c_str();
         vector <string> allInsertStatements;
-        string insertToSql, userName, stringFinalSqlInsertStatement, completedSqlStatement;
-        double monthlyIncome, financialReserves, debtToIncomeRatio, loanDurationInMonths, loanAmount, monthlyInteresRate, 
-            yearlyInterestRate, recoveryRate, outstandingMonthlyDebtPaymentsFromLoan, defaultRiskScore, loanViabilityScore,
-            adjustedLoanViabilityScore, lossGivenDefault, interestRateByGroup, bestPossibleRate, worstPossibleRate;
+        string insertToSql, userName, settlementDueDate, loanDueDate, stringFinalSqlInsertStatement, completedSqlStatement;
         sqlite3_stmt* stmt;
 
 
@@ -912,26 +919,6 @@ namespace databaseManager
 
         for (int count = 0; count < numberOfAddedLoanValues; count++)
         {
-            creditScore = loanData[count].getCreditScore();
-            monthlyIncome = loanData[count].getMonthlyIncome() ;
-            financialReserves = loanData[count].getFinancialReserves() ;
-            debtToIncomeRatio = loanData[count].getDebtToIncomeRatio() ;
-            loanDurationInMonths = loanData[count].getDurationInMonths() ;
-            loanAmount = loanData[count].getLoanAmount();
-            monthlyInteresRate = loanData[count].getMonthlyInterestRate();
-            yearlyInterestRate = loanData[count].getYearlyInterestRate();
-            userName =  loanData[count].getUserName();
-            // DISPLAY << loanData[count].getUserName();
-            lossGivenDefault = loanData[count].getLossGivenDefault();
-            recoveryRate = loanData[count].getRecoveryRate();
-            outstandingMonthlyDebtPaymentsFromLoan = loanData[count].getTotalOutstandingMonthlyDebtPaymentsAfterLoan();
-            defaultRiskScore = loanData[count].getDefaultRiskScore();
-            loanViabilityScore = loanData[count].getLoanViabilityScore();
-            adjustedLoanViabilityScore = loanData[count].getFinalAdjustedLoanViabilityScore();
-            interestRateByGroup = loanData[count].getInterestRateByGroup();
-            bestPossibleRate = loanData[count].getBestPossibleRate();
-            worstPossibleRate = loanData[count].getWorstPossibleRate();
-
             insertToSql = loanData[count].getInsertStatementWithData();
 
             allInsertStatements.push_back(insertToSql);

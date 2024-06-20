@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "../Header Files/timeManip.h"
 #include "../Header Files/loanDatabaseManager.h"
 #include "../Header Files/Logger.h"
 #include "../Header Files/loanManagementSystemForServer.h"
@@ -179,21 +180,19 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
         }
 
 
-        bool startEndOfDayOperations()
+        bool performEndOfDayProcessing(string date)
         {
             int numprocessed = 0;
             bool successfullProcessing = true;
-            string errorValue;
             clock_t time;
             time = clock();
-            
+
             try
             {
-                numprocessed = endOfDayProcessor::startEndOfDayProcessing();
+                numprocessed = endOfDayProcessor::startEndOfDayProcessing(date);
             }
             catch(const char * error)
             {
-                errorValue = error;
                 successfullProcessing = false;
                 cout << error << endl;
                 
@@ -209,8 +208,66 @@ void addIndividualizedLoanDataFromPythonServer(UserData tempUserData,  vector <L
 
 
             return successfullProcessing;
-
         }
+
+
+        bool startEndOfDayOperations()
+        {
+            string date = timeManip::getLocalTimeStr();
+
+            return performEndOfDayProcessing(date);
+        }
+
+
+        bool simulateEndOfDayProcessingDays(int ndays)
+        {
+            bool successfullProcessing = true;
+            
+            string currDate = timeManip::getLocalTimeStr();
+
+            for (int count = 0; count < ndays; count++)
+            {
+                tm temp = timeManip::convertDateStrToTmStruct(currDate);
+                successfullProcessing = performEndOfDayProcessing(currDate);
+                currDate = timeManip::getDateNDaysFromDateStr(mktime(&temp), 1);
+                // cout << currDate << endl;
+                // cout << currDate << endl;
+
+            }
+            
+            return successfullProcessing;
+        }
+
+
+        bool simulateEndOfDayProcessingMonths(int nMonths)
+        {
+            string date;
+            int numprocessed = 0;
+            bool successfullProcessing = true;
+            clock_t time;
+            time = clock();
+
+            string currDate = timeManip::getLocalTimeStr();
+
+            for (int count = 0; count < nMonths; count++)
+            {
+                tm temp = timeManip::convertDateStrToTmStruct(currDate);
+                successfullProcessing = performEndOfDayProcessing(currDate);
+                currDate = timeManip::getDateNMonthsFromDate((&temp), 1);
+            }
+
+            time = clock() - time;
+
+            double timeInt = double(time);
+            double timeseconds = timeInt / 1000;
+
+            cout << "Time taken to process " << numprocessed << " applications: " << endl;
+            cout << "\t time taken = " << timeInt << " millisecond(s), which is equal to " << timeseconds << " seconds" << endl;
+
+
+            return successfullProcessing;
+        }
+
     }
 
 
