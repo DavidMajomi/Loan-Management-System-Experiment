@@ -130,11 +130,9 @@ namespace timeManip
     }
 
 
-    time_t createDateFromString(string timeValue)
+    tm convertDateStrToTmStruct(string timeValue)
     {
         const char * val = timeValue.c_str();
-
-        time_t timeT;
 
         struct tm timeStruct;
         string timeTokens;
@@ -155,8 +153,8 @@ namespace timeManip
             timeNums.push_back(stoi(timeTokens));
         }
 
-        cout << "Time nums: ";
-        cout << timeNums[0] << endl;
+        // cout << "Time nums: ";
+        // cout << timeNums[0] << endl;
 
         timeHours = timeNums[0];
         timeMinutes = timeNums[1];
@@ -173,8 +171,17 @@ namespace timeManip
         timeStruct.tm_sec = timeSeconds;
         timeStruct.tm_isdst = -1;
 
+        return timeStruct;
+    }
 
-        // cout << asctime(&timeStruct);
+
+    time_t createDateFromString(string timeValue)
+    {
+        const char * val = timeValue.c_str();
+
+        time_t timeT;
+
+        struct tm timeStruct = convertDateStrToTmStruct(timeValue);
 
         timeT = mktime(&timeStruct);
         // cout << ctime(&timeT);
