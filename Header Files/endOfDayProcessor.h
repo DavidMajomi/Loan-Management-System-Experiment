@@ -29,37 +29,22 @@ namespace endOfDayProcessor
             string loanGrade;
             loanGrade = changes.getFinalLoanGrade();
 
-            // cout << "Loan status: " << changes.getLoanStatus() << endl;
-
             if(changes.getLoanStatus() == "Completed" && (changes.getEndOfTermCopyingDone() == (int)false))
             {
-                // successCopyToCompletedTable = databaseManager::copyUserDataToCompletedTable(userInfo);
-                double timeTakenP = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, userInfo.getSqlInsertformat(), "users", userInfo.getSqlInsertValues());
                 double timeT = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
                 double timeGH = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
-
             }
             else if(changes.getLoanStatus() == "Defaulted" && (changes.getEndOfTermCopyingDone() == (int)false))
             {
-                // successCopyToCompletedTable = databaseManager::copyUserDataToDefaultedTable(userInfo);
-                double timeTaken = databaseAbstraction::storeSingleRowInDbUsingSingleInsert(DATABASE_NAME, userInfo.getSqlInsertformat(), "users", userInfo.getSqlInsertValues());
                 double timeJ = databaseAbstraction::update(DATABASE_NAME, "users", "end_of_term_copying_done", to_string((int)(true)), "Loan_id", (changes.getLoanId()));
                 double timeFH = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
             }
 
             if(changes.getChangeInstallmentDate() == true)
             {
-                // cout << "Update update " << endl;
                 double time = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_installment_days", (changes.getDurationToNextInstallmentDays()), "Loan_id", (changes.getLoanId()));
 
             }
-
-
-            // double timeY = databaseAbstraction::update(DATABASE_NAME, "users", "duration_to_loan_settlement_months", to_string(changes.getDurationToLoanSettlementMonths()), "Loan_id", (changes.getLoanId()));
-            // double timeH = databaseAbstraction::update(DATABASE_NAME, "users",  "final_loan_grade", loanGrade, "Loan_id", (changes.getLoanId()));
-            // double timeB = databaseAbstraction::update(DATABASE_NAME, "users", "loan_decision", to_string(changes.getLoanDecision()), "Loan_id", (changes.getLoanId()));
-            // double timeC = databaseAbstraction::update(DATABASE_NAME, "users", "loan_status", (changes.getLoanStatus()), "Loan_id", (changes.getLoanId()));
-            // double timeD = databaseAbstraction::update(DATABASE_NAME, "users", "applied_today_or_not", to_string(changes.getAppliedToday()), "Loan_id", (changes.getLoanId()));
 
         }
         
