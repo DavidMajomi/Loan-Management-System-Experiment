@@ -186,32 +186,7 @@ namespace Processor
             }
         }
 
-
-        // int processDurationToLoanSettlementMonths()
-        // {
-        //     int duration;
-
-        //     if(previousDurationToNextInstallmentDays == 0)
-        //     {
-        //         if(durationToLoanSettlementMonths > 0)
-        //         {
-        //             duration = durationToLoanSettlementMonths - 1;
-        //         }
-        //         else
-        //         {
-        //             duration = 0;
-        //         }
-        //     }
-        //     else
-        //     {
-        //         duration = durationToLoanSettlementMonths;
-
-        //     }
-
-        //     return duration;
-        // }
-
-
+        
         int processLoanDecision()
         {
             bool accept = false;
@@ -309,67 +284,6 @@ namespace Processor
         }
 
 
-        string createSqlFormat(string tableName)
-        {
-            string format = "CREATE TABLE IF NOT EXISTS " + tableName + NON_USER_TABLE_COLUMN_FORMAT;
-
-            return format;
-        }
-
-
-        string createSqlInsertValues(string tableName)
-        {
-            string stringFinalLoangrade;
-            string stringFinalSqlInsertStatement;
-            string insertData;
-            
-            stringFinalLoangrade = finalLoanGrade;
-
-            stringFinalSqlInsertStatement = to_string(loanId) + ",";
-            stringFinalSqlInsertStatement = stringFinalSqlInsertStatement + "'" + userName + "'," + "'" + timeOfApplication + "',";
-            stringFinalSqlInsertStatement = stringFinalSqlInsertStatement 
-            + to_string(creditScore) + "," 
-            + to_string(monthlyIncome) + "," 
-            + to_string(financialReserves) + "," 
-            + to_string(debtToIncomeRatio) + "," 
-            + to_string(loanDuration) + "," 
-            + encapsulateStringForDb(monthlyInstallmentDueDate) + ","
-            + encapsulateStringForDb(loanDueDate) + ","
-            + to_string(requestedLoanAmount) + "," 
-            + to_string(monthlyInterestRate) + "," 
-            + to_string(getYearlyInterestRate()) + ","
-            + to_string(lossGivenDefault) + "," 
-            + to_string(recoveryRate) + ","
-            + to_string(outstandingMonthlyDebtsPaymentsFromLoan) + "," 
-            + to_string(outsytandingMonthlyDebtPaymentsPriorToLoan) + "," 
-            + to_string(amounttoPayAtNextInsstallment) + "," 
-            + to_string(defaultRiskScore) + "," 
-            + to_string(loanViabilityScore) + "," 
-            + to_string(adjustedLoanViabilityScore) + "," 
-            + to_string(matrixBasedAdjustedLoanViabilityScore) + "," 
-            + to_string(interestRateByGroup) + "," 
-            + to_string(bestPossibleYearlyRate) + ","
-            + to_string(worstPossibleYearlyRate) + "," 
-            + "'" + stringFinalLoangrade + "'," 
-            + to_string(potentialProfitFromLoan) + "," 
-            + to_string(calculatedBestPossibleLoanViabilityScore)+ "," 
-            + to_string(calculatedWorstPossibleLoanViabilityScore)+ "," 
-            + to_string(amountOfCurrentLoanAndInteerestsLeft) + "," 
-            + to_string(loanDecision) + "," 
-            + "'" + loanStatus + "'," 
-            + to_string(appliedToday) + "," 
-            + to_string(accountNumber) + ","
-            + to_string((int)(endOfTermCopyingDone));
-            
-
-            insertData = "INSERT INTO " + tableName +  NON_USER_TABLE_INSERT_FORMT + stringFinalSqlInsertStatement + ");"; 
-
-            // cout << sqlInsertFormat << endl;
-            // cout << stringSqlInsertData << endl;
-            return insertData;
-        }
-
-
     public:
         userDataFromDb(vector <string> data, string date)
         {
@@ -457,26 +371,6 @@ namespace Processor
             loanStatus = updateLoanStatus();
             appliedToday = int(false);
 
-
-            sqlInsertFormat = createSqlFormat("users");
-            stringSqlInsertData = createSqlInsertValues("users");
-
-
-            if(loanStatus == "Completed")
-            {
-                sqlInsertFormat = createSqlFormat("completed_users");
-                stringSqlInsertData = createSqlInsertValues("completed_users");
-
-            }
-            else if(loanStatus == "Defaulted")
-            {
-                sqlInsertFormat = createSqlFormat("defaulting_users");   
-                stringSqlInsertData = createSqlInsertValues("defaulting_users");
-            }
-            else
-            {
-                // sqlInsertFormat = createSqlFormat("defaulte");   
-            }
 
         }
         int getLoanId() const { 
@@ -594,14 +488,6 @@ namespace Processor
 
             return data;
         }
-        string getSqlInsertformat() const{
-            return this -> sqlInsertFormat;
-        }
-        string getSqlInsertValues() const{
-            return this -> stringSqlInsertData;
-        }
-
-       
 
     };
 

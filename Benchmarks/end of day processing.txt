@@ -13,3 +13,15 @@ Time taken to process 10209 applications:
 
 Time taken to process 20212 applications:
          time taken = 1.09192e+06 millisecond(s), which is equal to 1091.92 seconds
+
+
+
+################################## After Performance Improvements ##################################
+
+On Average
+Time taken to process 502 applications:
+         time taken = 127 millisecond(s), which is equal to 0.127 seconds
+
+Worst case (When all applications are due on the same day)
+Time taken to process 502 applications:
+         time taken = 8668 millisecond(s), which is equal to 8.668 seconds
