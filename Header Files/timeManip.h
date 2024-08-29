@@ -46,12 +46,6 @@ namespace timeManip
         return ctime(&now);
     }
 
-    // double getTimeDiff(time_t a, time_t b)
-    // {
-    //     double aDigit = double(a);
-    //     cout << aDigit << endl;
-    //     return double(a) - double(b);
-    // }
 
     time_t getDateNDaysFromDate(time_t rawtime, int ndays)
     {
@@ -60,6 +54,7 @@ namespace timeManip
 
         return ndaysObj;
     }
+    
 
     string getDateNDaysFromDateStr(time_t rawtime, int ndays)
     {
@@ -67,6 +62,7 @@ namespace timeManip
 
         return ctime(&ndaysObj);
     }
+
 
     time_t getDateNMonthsFromDate(tm * time, int nMonths)
     {
@@ -76,6 +72,7 @@ namespace timeManip
         return timeObj;
     }
 
+
     string getDateNMonthsFromDateStr(tm * time, int nMonths)
     {
         // time -> tm_mon = time -> tm_mon + nMonths;
@@ -84,6 +81,7 @@ namespace timeManip
 
         return ctime(&timeObj);
     }
+
 
     inline string getDateAsStr(time_t * time)
     {
@@ -96,7 +94,7 @@ namespace timeManip
         map <string, int> table = {{"Jan", 0}, {"Feb", 1}, {"Mar", 2}, {"Apr", 3}, {"May", 4}, {"Jun", 5}, {"Jul", 6}, {"Aug", 7}, {"Sep", 8}, {"Oct", 9}, {"Nov", 10}, {"Dec", 11}};
 
 
-        return table[month];
+        return table[month] + 1;
     }
 
 
@@ -163,7 +161,7 @@ namespace timeManip
         // cout << "Time in hours: " << timeHours << endl;
 
         // timeStruct.tm_wday = 0;
-        timeStruct.tm_mon = convertMonthToInt(month);
+        timeStruct.tm_mon = convertMonthToInt(month) - 1;
         timeStruct.tm_mday = stoi(dayOfMonth);
         timeStruct.tm_year = stoi(year) - 1900;
         timeStruct.tm_hour = timeHours;
@@ -202,7 +200,7 @@ namespace timeManip
 
         tokens >> weekDay >> month >> dayOfMonth >> time >> year;
 
-        timeStruct.tm_mon = convertMonthToInt(month);
+        timeStruct.tm_mon = convertMonthToInt(month) - 1;
         timeStruct.tm_mday = stoi(dayOfMonth);
         timeStruct.tm_year = stoi(year) - 1900;
         timeStruct.tm_hour = 0;

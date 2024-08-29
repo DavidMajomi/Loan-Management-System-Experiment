@@ -38,12 +38,15 @@ int main()
     // cout << timeManip::getDateAsStr(&oneday);
 
     time_t fake = timeManip::createDateFromString(value);
-    cout << "_________" << endl;
+    cout << "__________________________" << endl;
     cout << value;
     cout << ctime(&fake);
-    // cout 
+
     time_t check = timeManip::createDateFromStringTimeIrrelevant(value);
     cout << ctime(&check);
+    cout << "__________________________" << endl;
+    cout << endl;
+    // cout 
     cout << timeManip::getDateAsStr(&check) << endl;
 
     cout << timeManip::convSecsToDays(86400.00) << endl;
@@ -54,9 +57,19 @@ int main()
     time_t nowAgain = timeManip::getLocalTimeStruct();
 
     cout << ctime(&nowAgain);
-    cout << timeManip::getLocalTimeStr();
 
     
+    string currTime = timeManip::getLocalTimeStr();
+    
+    cout << currTime << endl;
+
+    tm currTimeTm = timeManip::convertDateStrToTmStruct(currTime);
+
+    cout << asctime(&currTimeTm);
+    cout << endl;
+    // cout << "January is " << timeManip::convertMonthToInt("Jan") << " month of the year" << endl;
+
+
 
     cout << "Shoki" << endl;
 
