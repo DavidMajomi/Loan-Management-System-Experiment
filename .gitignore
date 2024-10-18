@@ -59,3 +59,5 @@ Src/loanManagementServerLibrary.dll
 Src/testStruct.cpp
 Src/LMSModel.pickle
 
+/linux_venv
+build/
