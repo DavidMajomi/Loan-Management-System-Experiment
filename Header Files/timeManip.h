@@ -10,10 +10,7 @@
 
 namespace timeManip
 {
-
     using namespace std;
-
-    // enum 
 
     tm * getLocalTIme()
     {
@@ -92,7 +89,6 @@ namespace timeManip
     int convertMonthToInt(string month)
     {
         map <string, int> table = {{"Jan", 0}, {"Feb", 1}, {"Mar", 2}, {"Apr", 3}, {"May", 4}, {"Jun", 5}, {"Jul", 6}, {"Aug", 7}, {"Sep", 8}, {"Oct", 9}, {"Nov", 10}, {"Dec", 11}};
-
 
         return table[month] + 1;
     }
@@ -182,7 +178,6 @@ namespace timeManip
         struct tm timeStruct = convertDateStrToTmStruct(timeValue);
 
         timeT = mktime(&timeStruct);
-        // cout << ctime(&timeT);
 
         return timeT;
     }
@@ -207,7 +202,6 @@ namespace timeManip
         timeStruct.tm_min = 0;
         timeStruct.tm_sec = 0;
         timeStruct.tm_isdst = -1;
-
 
         // cout << asctime(&timeStruct);
 
