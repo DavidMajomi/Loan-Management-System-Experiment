@@ -38,7 +38,7 @@ private:
 
     double calculateInterestForDefaultRisk ();
     
-    void simple_set_credit_metrics();
+    double setFinalLoanViabilityScore();
     
 
     string encapsulateStringForDb(string value)
@@ -47,11 +47,9 @@ private:
     }
 
 
-    void setSqlRelatedData()
+    string createSqlInsertData()
     {
         string stringFinalSqlInsertStatement;
-
-        sqlInsertFormat = "CREATE TABLE IF NOT EXISTS users" + USERS_TABLE_COLUMN_FORMAT;
 
         stringFinalSqlInsertStatement = "'" + userName + "'," + "'" + timeOfApplication + "',";
         stringFinalSqlInsertStatement = stringFinalSqlInsertStatement 
@@ -89,11 +87,9 @@ private:
         + to_string((int)(false));
 
         
-
-        stringSqlInsertData = "INSERT INTO users " + USERS_TABLE_INSERT_FORMT + stringFinalSqlInsertStatement + ");"; 
-
-        // cout << sqlInsertFormat << endl;
         // cout << stringSqlInsertData << endl;
+
+        return "INSERT INTO users " + USERS_TABLE_INSERT_FORMT + stringFinalSqlInsertStatement + ");"; 
     }
 
 
@@ -109,7 +105,7 @@ public:
     // static double calculateBestCreditMetrics();
     // static double calculateLoanViabilityScore(double normalizedCreditScore, double normalizedmonthlyIncome, double debtToIncomeRatio, double normalizedLoanAmount, double normalizedDuration, double lossGivenDefault, double normalizedFinancialReserves, double defaultRiskScore);
     
-    void setFinalMonthlyInterestRate ();
+    double setFinalMonthlyInterestRate();
     Loan(string newUserName, int creditScoreInteger, double monthlyIncomeDecimal, double financialReservesDecimal, double debtToIncomeRatioDecimal, int durationInMonthsInteger, double loanAmonutRequestedDeciaml)
     {
         time_t rawtime;
@@ -125,10 +121,29 @@ public:
         debtToIncomeRatio = (debtToIncomeRatioDecimal);
         duration = (durationInMonthsInteger);
         loanAmount = loanAmonutRequestedDeciaml;
-        simple_set_credit_metrics();
-        setFinalMonthlyInterestRate();
+        lossGivenDefault = (loanAmount - financialReserves) / loanAmount; // SOURCE = WIKIPEDIA
+        recoveryRate = 1 - lossGivenDefault;
+
+
+
+        defaultRiskScore = calculateDefaultRisk();
+        finalLoanViabilityScore = setFinalLoanViabilityScore();
+
+
+        finalAdjustedLoanViabilityScore = adjustLoanViabiltyScore(finalLoanViabilityScore);
+
+        calculatedBestPossibleAdjustedLoanViabilityScore = adjustLoanViabiltyScore(calculatedBestPossibleLoanViabilityScore);
+        calculatedWorstPossibleAdjustedLoanViabilityScore =  adjustLoanViabiltyScore(calculatedWorstPossibleLoanViabilityScore);
+
+        matrixBasedAdjustedLoanViabilityScore = matrixCalculator::calculateMatrixBasedALVS(calculatedWorstPossibleLoanViabilityScore, 1, calculatedWorstPossibleAdjustedLoanViabilityScore,
+                                                                                         calculatedBestPossibleLoanViabilityScore, 1, calculatedBestPossibleAdjustedLoanViabilityScore, finalLoanViabilityScore);
+
+        finalMonthlyInterestRate = setFinalMonthlyInterestRate();
         potentialProfitFromLoan = calculatePotentialProfitFromLoan();
-        setSqlRelatedData();
+
+        
+        stringSqlInsertData = createSqlInsertData();
+        sqlInsertFormat = "CREATE TABLE IF NOT EXISTS users" + USERS_TABLE_COLUMN_FORMAT;
     }
     string getUserName() const{
         return userName;
@@ -280,7 +295,6 @@ double Loan::calculateInterestForDefaultRisk ()
     if (creditScore >= 781)
     {
         interestRateByGroup = CURRENT_METRICS.getSuperPrimeRate();
-
     }
     else if (creditScore >= 661 && creditScore <= 780)
     {
@@ -307,7 +321,7 @@ double Loan::calculateInterestForDefaultRisk ()
  * @brief Funtion: Sets the interest rate based on the adjusted loan viability score. It uses a basic linear model to calculate the interest rate
  * 
  */
-void Loan::setFinalMonthlyInterestRate ()
+double Loan::setFinalMonthlyInterestRate ()
 {
     double baseRate, mathematicalSlope = ((CURRENT_METRICS.getDeepSubPrimeRate() - CURRENT_METRICS.getSuperPrimeRate()) / (-100));
     // double baseRate, mathematicalSlope = ((DEEP_SUBPRIME_RATE - CURRENT_METRICS.getBaseYearlyInterestRatePercentForLoans()) / (-100));
@@ -325,8 +339,7 @@ void Loan::setFinalMonthlyInterestRate ()
         baseRate = CURRENT_METRICS.getSuperPrimeRate();
     }
 
-    finalMonthlyInterestRate = baseRate / 12;
-
+    return baseRate / 12;
 }
 
 
@@ -363,13 +376,11 @@ double Loan::calculateDefaultRisk ()  // function not needed now since calc inte
 
 
 // When minimizing inefficiencies in this program, initialize the credit metrics instead of assignning them values after decleration
-void Loan::simple_set_credit_metrics ()
+double Loan::setFinalLoanViabilityScore()
 {
     double normalizedCreditScore, normalizedmonthlyIncome, normalizedLoanAmount, normalizedInterest, normalizedDuration, 
            normalizedFinancialReserves, normalizedDefaultRiskScore, baseRate = CURRENT_METRICS.getBaseMonthlyInterestRatePercentForLoans();
 
-    defaultRiskScore = calculateDefaultRisk();
-    
     normalizedCreditScore =  normalizeScore(creditScore, MAX_CREDIT_SCORE, MIN_CREDIT_SCORE);
     normalizedDuration = normalizeScore(duration, MAX_LOAN_DURATION, MIN_LOAN_DURATION);
     normalizedFinancialReserves = normalizeScore(financialReserves, MAX_FINANCIAL_RESERVES, MIN_FINANCIAL_RESERVES);
@@ -382,18 +393,7 @@ void Loan::simple_set_credit_metrics ()
     DISPLAY << " raw default risk score " + to_string(defaultRiskScore);
     DISPLAY << " normalized default risk score " + to_string(normalizedDefaultRiskScore);
 
-    lossGivenDefault = (loanAmount - financialReserves) / loanAmount; // SOURCE = WIKIPEDIA
-    recoveryRate = 1 - lossGivenDefault;
-
-    finalLoanViabilityScore = calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, debtToIncomeRatio, normalizedLoanAmount, normalizedDuration, lossGivenDefault, normalizedFinancialReserves, normalizedDefaultRiskScore);
-
-    finalAdjustedLoanViabilityScore = adjustLoanViabiltyScore(finalLoanViabilityScore);
-
-    calculatedBestPossibleAdjustedLoanViabilityScore = adjustLoanViabiltyScore(calculatedBestPossibleLoanViabilityScore);
-    calculatedWorstPossibleAdjustedLoanViabilityScore =  adjustLoanViabiltyScore(calculatedWorstPossibleLoanViabilityScore);
-
-    matrixBasedAdjustedLoanViabilityScore = matrixCalculator::calculateMatrixBasedALVS(calculatedWorstPossibleLoanViabilityScore, 1, calculatedWorstPossibleAdjustedLoanViabilityScore,
-                                                                                         calculatedBestPossibleLoanViabilityScore, 1, calculatedBestPossibleAdjustedLoanViabilityScore, finalLoanViabilityScore);
-
+    
+    return calculateLoanViabilityScore(normalizedCreditScore, normalizedmonthlyIncome, debtToIncomeRatio, normalizedLoanAmount, normalizedDuration, lossGivenDefault, normalizedFinancialReserves, normalizedDefaultRiskScore);
 }
 
