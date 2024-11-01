@@ -81,7 +81,7 @@ testLogger.o:
 	g++ -c $(testingFolder)/testLogger.cpp -o $(testingFolder)/Executables/testLogger.o
 	
 testServer: testServer.o testLoanManagementServerLibrary.dll
-	g++ $(testingFolder)/Executables/loanManagementServerLibrary.dll $(tedstingFolder)/Executables/testServer.o $(sqliteOfile) -o $(testingFolder)/Executables/testServer.exe
+	g++ $(testingFolder)/Executables/loanManagementServerLibrary.dll $(testingFolder)/Executables/testServer.o $(sqliteOfile) -o $(testingFolder)/Executables/testServer.exe
 
 testServer.o:
 	g++ -c $(testingFolder)/testServer.cpp -o $(testingFolder)/Executables/testServer.o
@@ -90,7 +90,7 @@ testTimeManip: testTimeManip.o
 	g++ $(testingFolder)/Executables/testTimeManip.o $(sqliteOfile) -o $(testingFolder)/Executables/testTimeManip.exe
 
 testTimeManip.o:
-	g++ -c $(testingFolder)/testTimeManip.cpp -o $(testingFolder)/Executables/testTimeManip.O
+	g++ -c $(testingFolder)/testTimeManip.cpp -o $(testingFolder)/Executables/testTimeManip.o
 
 
 .PHONY clean:
