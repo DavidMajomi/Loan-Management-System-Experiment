@@ -44,6 +44,23 @@ externDebugger.dll:
 # experimentalDLL: experimentalDLL.cpp
 # 	g++ -fpic -shared -o experimentalDLL.dll 
 
+
+execTestServer:
+	$(testingFolder)/Executables/testServer.exe
+
+execTestLoanDbManager:
+	$(testingFolder)/Executables/testLoanDbManager.exe
+
+execTestLogger:
+	$(testingFolder)/Executables/testLogger.exe
+
+execTestDbAbstraction:
+	$(testingFolder)/Executables/testDbAbstraction.exe
+
+execTestTimeManip:
+	$(testingFolder)/Executables/testTimeManip.exe
+
+
 runtests:
 	make testLoanDbManager
 	make testDbAbstraction
@@ -51,11 +68,11 @@ runtests:
 	make testServer
 	make testTimeManip
 	
-	$(testingFolder)/Executables/testServer.exe
-	$(testingFolder)/Executables/testLoanDbManager.exe
-	$(testingFolder)/Executables/testLogger.exe
-	$(testingFolder)/Executables/testDbAbstraction.exe
-	$(testingFolder)/Executables/testTimeManip.exe
+	make execTestServer
+	make execTestLoanDbManager
+	make execTestLogger
+	make execTestDbAbstraction
+	make execTestTimeManip
 # make runTestDbAbstraction
 
 runTestDbAbstraction:
