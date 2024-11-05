@@ -19,10 +19,7 @@ Currently, I intend to use the loan management cpp library as is.
 - Sqlite3 C++ database abstraction <br>
 
  # Known Future Changes
-  1.) A revision of the risk assessment methods to utilise statistics, this will be added once i have finished a basic statistics library in c++ <br>
-
-# Using Deprecated Files
-The current server based files currently has most of the functionality used in the depricated files, however if you want to use or modify the depricated files, remove them from the depricated files folder, and place them back into the Loan Management System Experiment folder <br>
+  1.) A revision of the risk assessment methods to utilise statistics, this will be added once I have finished a basic statistics library in c++ <br>
 
 # Dependencies
  1.) C++ compiler (MINGW) version 11 <br>
