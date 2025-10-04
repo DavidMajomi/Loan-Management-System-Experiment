@@ -120,8 +120,5 @@ This will build and run all C++ unit tests as defined in the makefile.
 
 Contributions are welcome! Please open issues or submit pull requests for improvements, bug fixes, or new features.
 
-## License
-
-[Specify your license here]
  
 
